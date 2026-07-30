@@ -24,10 +24,10 @@ export class Puestos {
   private fb = inject(FormBuilder);
 
   puestos = signal<Puesto[]>([]);
-  loading = signal(true);
-  guardando = signal(false);
+  loading = signal<boolean>(true);
+  guardando = signal<boolean>(false);
   
-  modalAbierto = signal(false);
+  modalAbierto = signal<boolean>(false);
   puestoEditando = signal<Puesto | null>(null);
 
   puestoForm: FormGroup = this.fb.group({

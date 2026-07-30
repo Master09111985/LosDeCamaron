@@ -4,6 +4,7 @@ import { Layout } from './layout/layout/layout';
 import { Home } from './pages/home/home';
 import { Almacenes } from './pages/almacenes/almacenes';
 import { Puestos } from './pages/puestos/puestos';
+import { Clientes } from './pages/clientes/clientes';
 
 export const routes: Routes = [
     { path: '', 
@@ -20,6 +21,10 @@ export const routes: Routes = [
         {
           path: 'catalogos/puestos',
           component: Puestos
+        },
+        {
+          path: 'catalogos/clientes',
+          component: Clientes
         }
       ] 
     }
