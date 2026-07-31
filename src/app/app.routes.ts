@@ -5,6 +5,8 @@ import { Home } from './pages/home/home';
 import { Almacenes } from './pages/almacenes/almacenes';
 import { Puestos } from './pages/puestos/puestos';
 import { Clientes } from './pages/clientes/clientes';
+import { UnidadMedidaService } from './services/unidadmedida.service';
+import { Unidadmedidas } from './pages/unidadmedidas/unidadmedidas';
 
 export const routes: Routes = [
     { path: '', 
@@ -25,6 +27,10 @@ export const routes: Routes = [
         {
           path: 'catalogos/clientes',
           component: Clientes
+        },
+        {
+          path: 'catalogos/unidades',
+          component: Unidadmedidas
         }
       ] 
     }

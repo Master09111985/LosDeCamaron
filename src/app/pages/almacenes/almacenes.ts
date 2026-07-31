@@ -54,7 +54,7 @@ export class Almacenes implements OnInit {
     });
   }
 
-  abrirModal(almacen?: Almacen) {
+  abrirModal(almacen?: Almacen): void {
     if (almacen) {
       this.almacenEditando.set(almacen);
       this.almacenForm.patchValue({
@@ -69,13 +69,13 @@ export class Almacenes implements OnInit {
     this.modalAbierto.set(true);
   }
 
-  cerrarModal() {
+  cerrarModal(): void {
     this.modalAbierto.set(false);
     this.almacenEditando.set(null);
     this.almacenForm.reset();
   }
 
-  guardarAlmacen() {
+  guardarAlmacen(): void {
     if (this.almacenForm.invalid) {
       this.almacenForm.markAllAsTouched();
       return;

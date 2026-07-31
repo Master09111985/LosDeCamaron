@@ -2,74 +2,74 @@
     <!-- Header -->
     <div class="flex items-center justify-between mb-8">
         <div>
-            <h2 class="text-3xl font-bold text-white">Puestos</h2>
-            <p class="text-gray-500 text-sm">Administración de puestos laborales de la empresa</p>
+            <h2 class="text-3xl font-bold text-white">Unidades de Medida</h2>
+            <p class="text-gray-500 text-sm">Administracion de unidades</p>
         </div>
-        <button 
-          (click)="abrirModal()"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-600/20 active:scale-95">
-          <mat-icon class="text-base">add</mat-icon>
-          Nuevo puesto
+        <button
+            (click)="abrirModal()"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-600/20 active:scale-95">
+            <mat-icon class="text-base">add</mat-icon>
+            Nueva unidad    
         </button>
     </div>
 
     <!-- Loading State -->
     @if (loading()) {
         <div class="bg-[#141414] rounded-xl border border-gray-800 p-12 flex flex-col items-center justify-center shadow-2xl">
-          <mat-icon class="animate-spin text-blue-600 text-base mb-4">refresh</mat-icon>
-          <p class="text-gray-500 font-medium">Cargando puestos...</p>
+            <mat-icon class="animate-spin text-blue-600 text-base mb-4">refresh</mat-icon>
+            <p class="text-gray-500 font-medium">Cargando unidades...</p>
         </div>
     } @else {
         <!-- Data Table -->
-        <div class="flex-1 bg-[#141414] rounded-xl border border-gray-800 overflow-hidden flex flex-col shadow-2xl">
+         <div class="flex-1 bg-[#141414] rounded-xl border border-gray-800 overflow-hidden flex flex-col shadow-2xl">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm whitespace-nowrap">
                     <thead class="bg-gray-800/50 border-b border-gray-800">
                         <tr>
                             <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest w-20">ID</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Nombre del Puesto</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Nombre de la Unidad</th>
                             <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest w-32">Estado</th>
                             <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest w-40 text-right">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-800">
-                        @if (puestos().length === 0) {
+                        @if (unidades().length === 0) {
                             <tr>
                                 <td colspan="4" class="px-6 py-12 text-center text-gray-500">
                                     <div class="flex flex-col items-center justify-center text-gray-500">
                                         <mat-icon class="text-base mb-4 opacity-50">inventory_2</mat-icon>
-                                        <p class="text-lg">No hay puestos registrados</p>
-                                        <p class="text-sm mt-1">Haz clic en "Nuevo Puesto" para comenzar.</p>
+                                        <p class="text-lg">No hay unidades de medida registradas</p>
+                                        <p class="text-sm mt-1">Haz click en "Nueva Unidad" para comenzar.</p>
                                     </div>
                                 </td>
                             </tr>
                         }
-                        @for (puesto of puestos(); track puesto.id) {
+                        @for (unidad of unidades(); track unidad.id) {
                             <tr class="hover:bg-white/2 transition-colors">
-                                <td class="px-6 py-4 text-sm font-mono text-blue-600">#{{ puesto.id }}</td>
-                                <td class="px-6 py-4 text-sm font-medium">{{ puesto.nombre }}</td>
+                                <td class="px-6 py-4 text-sm font-mono text-blue-600">#{{ unidad.id }}</td>
+                                <td class="px-6 py-4 text-sm font-medium">{{ unidad.nombre }}</td>
                                 <td class="px-6 py-4">
                                     <span 
                                         class="px-2.5 py-1 text-xs font-medium rounded-full border"
-                                    [class.bg-emerald-500/10]="puesto.estado"
-                                    [class.text-emerald-400]="puesto.estado"
-                                    [class.border-emerald-500/20]="puesto.estado"
-                                    [class.bg-red-500/10]="!puesto.estado"
-                                    [class.text-red-400]="!puesto.estado"
-                                    [class.border-red-500/20]="!puesto.estado">
-                                        {{ puesto.estado ? 'Activo' : 'Inactivo' }}
+                                    [class.bg-emerald-500/10]="unidad.estado"
+                                    [class.text-emerald-400]="unidad.estado"
+                                    [class.border-emerald-500/20]="unidad.estado"
+                                    [class.bg-red-500/10]="!unidad.estado"
+                                    [class.text-red-400]="!unidad.estado"
+                                    [class.border-red-500/20]="!unidad.estado">
+                                        {{ unidad.estado ? 'Activo' : 'Inactivo' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         <button 
-                                            (click)="editarPuesto(puesto)"
+                                            (click)="editarUnidad(unidad)"
                                             class="p-2 text-blue-400 hover:bg-blue-400/10 rounded-md transition-colors"
                                             title="Editar">
                                             <mat-icon class="text-base">edit</mat-icon>
                                         </button>
                                         <button 
-                                            (click)="borrarPuesto(puesto)"
+                                            (click)="borrarUnidad(unidad)"
                                             class="p-2 text-red-400 hover:bg-red-400/10 rounded-md transition-colors"
                                             title="Eliminar">
                                             <mat-icon class="text-base">delete</mat-icon>
@@ -81,41 +81,40 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+         </div>
     }
 </div>
 
+
 <!-- Modal Form -->
-@if (modalAbierto()) {
+ @if (modalAbierto()) {
     <div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fade-in">
         <div class="bg-[#1a1a1a] w-full max-w-md rounded-2xl border border-gray-800 shadow-2xl overflow-hidden animate-slide-up">
             
             <div class="p-6 border-b border-gray-800 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-white">
-                    {{ puestoEditando() ? 'Editar Puesto' : 'Agregar Nuevo Puesto' }}
-                </h3>
+                <h3></h3>
                 <button (click)="cerrarModal()" class="text-gray-500 hover:text-white transition-colors">
                     <mat-icon>close</mat-icon>
                 </button>
             </div>
 
-            <form [formGroup]="puestoForm" (ngSubmit)="guardar()">
+            <form [formGroup]="unidadForm" (ngSubmit)="guardar()">
                 <div class="p-6 space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Nombre del Puesto</label>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Nombre de la Unidad</label>
                         <input 
                             type="text" 
                             formControlName="nombre"
                             class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white"
-                            placeholder="Ej. Gerente de Turno"/>
-                        @if (puestoForm.get('nombre')?.invalid && puestoForm.get('nombre')?.touched) {
+                            placeholder="Ej. Metro"/>
+                        @if (unidadForm.get('nombre')?.invalid && unidadForm.get('nombre')?.touched) {
                             <p class="text-red-500 text-xs mt-1.5">El nombre es obligatorio.</p>
                         }
                     </div>
 
                     <div class="flex items-center gap-3">
                         <input type="checkbox" id="estado" formControlName="estado" class="w-5 h-5 accent-blue-600 bg-[#111] border-gray-700 rounded">
-                        <label for="estado" class="text-sm text-gray-300">Puesto Activo</label>
+                        <label for="estado" class="text-sm text-gray-300">Unidad Activa</label>
                     </div>
                 </div>
 
@@ -128,7 +127,7 @@
                     </button>
                     <button 
                         type="submit" 
-                        [disabled]="puestoForm.invalid || guardando()"
+                        [disabled]="unidadForm.invalid || guardando()"
                         class="flex-1 py-2.5 flex justify-center items-center gap-2 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                         @if (guardando()) {
                         <mat-icon class="animate-spin text-base">refresh</mat-icon>
@@ -143,4 +142,4 @@
 
         </div>
     </div>
-}
+ }

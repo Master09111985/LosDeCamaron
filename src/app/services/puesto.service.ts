@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 
 export class PuestoService {
     private http = inject(HttpClient);
-    private apiUrl = `${environment.apiUrl}/Puesto`;
+    private apiUrl = `${environment.apiUrl}puesto`;
 
     getPuestos(): Observable<Puesto[]> {
         return this.http.get<Puesto[]>(`${this.apiUrl}/listarpuestos`);

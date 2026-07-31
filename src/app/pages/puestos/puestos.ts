@@ -18,7 +18,7 @@ import { Puesto } from '../../interfaces/puesto.interface';
   styleUrl: './puestos.css',
 })
 
-export class Puestos {
+export class Puestos implements OnInit {
   private puestoService = inject(PuestoService);
   private toastService = inject(ToastService);
   private fb = inject(FormBuilder);
@@ -39,7 +39,7 @@ export class Puestos {
     this.cargarPuestos();
   }
 
-  cargarPuestos() {
+  cargarPuestos(): void {
     this.loading.set(true);
     this.puestoService.getPuestos().subscribe({
       next: (data) => {
@@ -54,13 +54,13 @@ export class Puestos {
     });
   }
 
-  abrirModal() {
+  abrirModal(): void {
     this.puestoEditando.set(null);
     this.puestoForm.reset({ estado: true });
     this.modalAbierto.set(true);
   }
 
-  editarPuesto(puesto: Puesto) {
+  editarPuesto(puesto: Puesto): void {
     this.puestoEditando.set(puesto);
     this.puestoForm.patchValue({
       nombre: puesto.nombre,
@@ -69,12 +69,12 @@ export class Puestos {
     this.modalAbierto.set(true);
   }
 
-  cerrarModal() {
+  cerrarModal(): void {
     this.modalAbierto.set(false);
     this.puestoForm.reset();
   }
 
-  guardar() {
+  guardar(): void {
     if (this.puestoForm.invalid) return;
 
     this.guardando.set(true);
@@ -121,7 +121,7 @@ export class Puestos {
     }
   }
 
-  borrarPuesto(puesto: Puesto) {
+  borrarPuesto(puesto: Puesto): void {
     if (confirm(`¿Estás seguro de eliminar el puesto "${puesto.nombre}"?`)) {
       this.loading.set(true);
       this.puestoService.borrarPuesto(puesto.id).subscribe({
