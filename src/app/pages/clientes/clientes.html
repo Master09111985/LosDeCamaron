@@ -1,9 +1,10 @@
-<div class="space-y-6">
+<div class="h-full flex flex-col relative animate-fade-in">
+
     <!-- Header -->
-    <div class="flex items-center justify-between mb-8">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-            <h2 class="text-3xl font-bold text-white">Clientes</h2>
-            <p class="text-gray-500 text-sm">Administracion de clientes</p>
+            <h1 class="text-2xl font-bold text-white tracking-tight">Clientes</h1>
+            <p class="text-gray-400 text-sm mt-1">Administracion de clientes</p>
         </div>
         <button
             (click)="abrirModal()"
@@ -16,6 +17,9 @@
 
 
     <!-- Loading State -->
+     <div>
+        
+     </div>
     @if (loading()) {
         <div class="bg-[#141414] rounded-xl border border-gray-800 p-12 flex flex-col items-center justify-center shadow-2xl">
             <mat-icon class="animate-spin text-blue-600 text-base mb-4">refresh</mat-icon>

@@ -86,25 +86,24 @@ export class Clientes {
     const clienteActual = this.clienteEditando();
 
     if (clienteActual) {
-      // Actualizar
       const dto: Cliente = {
         id: clienteActual.id,
-        nombre: clienteActual.nombre,
-        telefono: clienteActual.telefono,
-        direccion: clienteActual.direccion,
-        referencias: clienteActual.referencias
+        nombre: formValue.nombre,
+        telefono: formValue.telefono,
+        direccion: formValue.direccion,
+        referencias: formValue.referencias
       };
 
       this.clienteService.actualizarCliente(clienteActual.id, dto).subscribe({
         next: () => {
-          this.toastService.showSuccess('El registro se guardo satisfactoriamente');
+          this.toastService.showSuccess('El registro se guardó satisfactoriamente');
           this.cargarClientes();
           this.cerrarModal();
           this.guardando.set(false);
         },
         error: (err) => {
           console.error(err);
-          this.toastService.showError('Ocurrio un error al actualizar el cliente');
+          this.toastService.showError('Ocurrió un error al actualizar el cliente');
           this.guardando.set(false);
         }
       });

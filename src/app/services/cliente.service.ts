@@ -10,21 +10,21 @@ import { Observable } from 'rxjs';
 
 export class ClienteService {
     private http = inject(HttpClient);
-    private apiUrl = `${environment.apiUrl}/Cliente`;
+    private apiUrl = `${environment.apiUrl}Cliente`;
 
     getClientes(): Observable<Cliente[]> {
-        return this.http.get<Cliente[]>(`${this.apiUrl}/listarclientes`);
+        return this.http.get<Cliente[]>(`${this.apiUrl}/Listar`);
     }
 
     crearCliente(cliente: CrearClienteDto): Observable<Cliente> {
-        return this.http.post<Cliente>(`${this.apiUrl}/crearcliente`, cliente);
+        return this.http.post<Cliente>(`${this.apiUrl}/Guardar`, cliente);
     }
 
     actualizarCliente(id: number, cliente: Cliente): Observable<void> {
-        return this.http.patch<void>(`${this.apiUrl}/${id}`, cliente);
+        return this.http.put<void>(`${this.apiUrl}/Actualizar/${id}`, cliente);
     }
 
     borrarCliente(id: number): Observable<void> {
-        return this.http.delete<void>(`${this.apiUrl}/${id}`);
+        return this.http.delete<void>(`${this.apiUrl}/Eliminar/${id}`);
     }
 }
