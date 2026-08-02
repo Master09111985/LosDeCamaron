@@ -1,1 +1,33 @@
 @import "tailwindcss";
+
+@media print {
+  /* 1. Ocultamos absolutamente TODO (incluyendo el menú lateral) */
+  body * {
+    visibility: hidden !important;
+  }
+  
+  /* 2. Hacemos visible ÚNICAMENTE el contenedor del gafete y su contenido */
+  #printable-badge, 
+  #printable-badge * {
+    visibility: visible !important;
+  }
+
+  /* 3. Sacamos el gafete del flujo normal para que no lo empuje nada */
+  #printable-badge {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex !important; /* Anula el hidden de Tailwind */
+    justify-content: center; /* Lo centra horizontalmente */
+    align-items: flex-start; /* Lo alinea arriba */
+    padding-top: 1cm; /* Un pequeño margen superior en la hoja */
+    background-color: white;
+  }
+  
+  /* 4. Quitamos márgenes por defecto del navegador */
+  @page {
+    margin: 0;
+  }
+}

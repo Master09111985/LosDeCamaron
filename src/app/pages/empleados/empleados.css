@@ -1,0 +1,100 @@
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fadeIn 0.2s ease-out; }
+.animate-slide-up { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Make datepicker icon match dark theme */
+.color-scheme-dark {
+  color-scheme: dark;
+}
+
+@media print {
+  .print-hidden {
+    display: none !important;
+  }
+  
+  .badge-print-container {
+    width: 7cm;
+    height: 11cm;
+    border: 1px solid #e5e7eb;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    font-family: sans-serif;
+    /* Evita que el gafete se parta en dos hojas */
+    page-break-inside: avoid; 
+  }
+  
+  .badge-header {
+    width: 100%;
+    background-color: #2563eb; /* blue-600 */
+    color: white;
+    text-align: center;
+    padding: 12px 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .badge-header h1 {
+    margin: 0;
+    font-size: 18pt;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .badge-photo-container {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    border: 4px solid #2563eb;
+    border-radius: 50%;
+    padding: 4px;
+  }
+  
+  .badge-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .badge-details {
+    text-align: center;
+    padding: 0 16px;
+    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .badge-details h2 {
+    margin: 0;
+    color: #111827;
+    font-size: 16pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+  
+  .badge-details h3 {
+    margin: 8px 0 0 0;
+    color: #1d4ed8;
+    font-size: 11pt;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  
+  .badge-barcode-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 16px;
+  }
+}

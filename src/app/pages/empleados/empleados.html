@@ -1,1 +1,349 @@
-<p>empleados works!</p>
+<div class="space-y-6">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h2 class="text-3xl font-bold text-white">Empleados</h2>
+            <p class="text-gray-500 text-sm">Administración del personal de la empresa</p>
+        </div>
+        <button
+            (click)="abrirModal()"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-600/20 active:scale-95">
+            <mat-icon class="text-base">person_add</mat-icon>
+            Nuevo empleado
+        </button>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading()) {
+        <div class="bg-[#141414] rounded-xl border border-gray-800 p-12 flex flex-col items-center justify-center shadow-2xl">
+            <mat-icon class="animate-spin text-blue-600 text-base mb-4">refresh</mat-icon>
+            <p class="text-gray-500 font-medium">Cargando empleados...</p>
+        </div>
+    } @else {
+        <!-- Table Container -->
+        <div class="flex-1 bg-[#141414] rounded-xl border border-gray-800 overflow-hidden flex flex-col shadow-2xl">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm whitespace-nowrap">
+                    <thead class="bg-gray-800/50 border-b border-gray-800">
+                        <tr>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest w-20">ID</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest w-16">Foto</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Nombre</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Puesto</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Código</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest w-32">Estado</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest w-40 text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800">
+                        @if (empleados().length === 0) {
+                            <tr>
+                                <td colspan="4" class="px-6 py-12 text-center text-gray-500">
+                                    <div class="flex flex-col items-center justify-center text-gray-500">
+                                        <mat-icon class="text-base mb-4 opacity-50">inventory_2</mat-icon>
+                                        <p class="text-lg">No hay empleados registrados</p>
+                                        <p class="text-sm mt-1">Haz clic en "Nuevo Empleado" para comenzar.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        @for (empleado of empleados(); track empleado.id) {
+                            <tr class="hover:bg-white/2 transition-colors">
+                                <td class="px-6 py-4 text-sm font-mono text-blue-600">{{ empleado.id }}</td>
+                                <td class="px-6 py-4">
+                                    <img [src]="obtenerRutaImagen(empleado.fotoUrl)" class="w-10 h-10 rounded-full object-cover bg-gray-800" alt="Foto de {{ empleado.nombre }}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNGI1NTYzIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIwIDIxdi0yYTRgNCAwIDAgMC00LTRINThhNCA0IDAgMCAwLTQgMnYyIi8+PGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ii8+PC9zdmc+'" />
+                                </td>
+                                <td class="px-6 py-4 text-sm font-medium">{{ empleado.nombre }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-300">{{ empleado.puestoNombre }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-400 font-mono">{{ empleado.codigo }}</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2.5 py-1 text-xs font-medium rounded-full border"
+                                        [class.bg-emerald-500/10]="empleado.estado"
+                                        [class.text-emerald-400]="empleado.estado"
+                                        [class.border-emerald-500/20]="empleado.estado"
+                                        [class.bg-red-500/10]="!empleado.estado"
+                                        [class.text-red-400]="!empleado.estado"
+                                        [class.border-red-500/20]="!empleado.estado">
+                                            {{ empleado.estado ? 'Activo' : 'Inactivo' }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button 
+                                            (click)="editarEmpleado(empleado)"
+                                            class="-2 text-blue-400 hover:bg-blue-400/10 rounded-md transition-colors"
+                                            title="Editar">
+                                            <mat-icon class="text-base">edit</mat-icon>
+                                        </button>
+                                        <button 
+                                            (click)="imprimirGafete(empleado)"
+                                            class="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition-colors"
+                                            title="Imprimir Gafete">
+                                            <mat-icon class="text-base">print</mat-icon>
+                                        </button>
+                                        <button 
+                                            (click)="borrarEmpleado(empleado)"
+                                            class="p-2 text-red-400 hover:bg-red-400/10 rounded-md transition-colors"
+                                            title="Eliminar">
+                                            <mat-icon class="text-base">delete</mat-icon>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Modal Form -->
+@if (modalAbierto()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fade-in">
+        <div class="bg-[#1a1a1a] w-full max-w-md rounded-2xl border border-gray-800 shadow-2xl overflow-hidden animate-slide-up">
+
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+                <h3>Empleado</h3>
+                <button (click)="cerrarModal()" class="text-gray-500 hover:text-white transition-colors">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+
+            <form [formGroup]="empleadoForm" (ngSubmit)="guardar()">
+
+                <div class="p-6 space-y-4">
+
+                    <!-- Grid Layout -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Nombre -->
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Nombre Completo <span class="text-red-500">*</span></label>
+                            <input 
+                                type="text" 
+                                formControlName="nombre"
+                                class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white"
+                                placeholder="Ej. Juan Pérez"
+                            />
+                            @if (empleadoForm.get('nombre')?.invalid && empleadoForm.get('nombre')?.touched) {
+                                <p class="text-red-500 text-xs mt-1.5">El nombre es obligatorio (mín 3 caracteres).</p>
+                            }
+                        </div>
+
+                        <!-- Puesto -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Puesto <span class="text-red-500">*</span></label>
+                            <select 
+                                formControlName="puestoId"
+                                class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white appearance-none">
+                                <option value="" disabled selected>Seleccione un puesto</option>
+                                @for (puesto of puestosActivos(); track puesto.id) {
+                                    <option [value]="puesto.id">{{ puesto.nombre }}</option>
+                                }
+                            </select>
+                            @if (empleadoForm.get('puestoId')?.invalid && empleadoForm.get('puestoId')?.touched) {
+                                <p class="text-red-500 text-xs mt-1.5">Debe seleccionar un puesto.</p>
+                            }
+                        </div>
+
+                        <!-- Edad -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Edad <span class="text-red-500">*</span></label>
+                            <input 
+                                type="text" 
+                                formControlName="edad"
+                                class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white"
+                                placeholder="Ej. 25"
+                            />
+                            @if (empleadoForm.get('edad')?.invalid && empleadoForm.get('edad')?.touched) {
+                                <p class="text-red-500 text-xs mt-1.5">La edad es obligatoria.</p>
+                            }
+                        </div>
+
+                        <!-- Teléfono -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Teléfono <span class="text-red-500">*</span></label>
+                            <input 
+                                type="text" 
+                                formControlName="telefono"
+                                class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white"
+                                placeholder="Ej. 449-123-22-24"
+                            />
+                            @if (empleadoForm.get('telefono')?.invalid && empleadoForm.get('telefono')?.touched) {
+                                <p class="text-red-500 text-xs mt-1.5">Formato de teléfono no válido.</p>
+                            }
+                        </div>
+
+                        <!-- Salario Semanal -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Salario Semanal ($) <span class="text-red-500">*</span></label>
+                            <input 
+                                type="number" 
+                                formControlName="salarioSemanal"
+                                class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white"
+                                placeholder="Ej. 2500"
+                                min="0"
+                            />
+                            @if (empleadoForm.get('salarioSemanal')?.invalid && empleadoForm.get('salarioSemanal')?.touched) {
+                                <p class="text-red-500 text-xs mt-1.5">El salario es obligatorio.</p>
+                            }
+                        </div>
+
+                        <!-- Fecha Contrato -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Fecha de Contrato <span class="text-red-500">*</span></label>
+                            <input 
+                                type="date" 
+                                formControlName="fechaContrato"
+                                class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white color-scheme-dark"
+                            />
+                            @if (empleadoForm.get('fechaContrato')?.invalid && empleadoForm.get('fechaContrato')?.touched) {
+                                <p class="text-red-500 text-xs mt-1.5">La fecha de contrato es obligatoria.</p>
+                            }
+                        </div>
+
+                        <!-- Estado (Solo Editar) -->
+                        @if (empleadoEditando()) {
+                            <div class="flex items-center h-full pt-6">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" id="estadoEmp" formControlName="estado" class="w-5 h-5 accent-blue-600 bg-[#111] border-gray-700 rounded">
+                                    <label for="estadoEmp" class="text-sm text-gray-300">Empleado Activo</label>
+                                </div>
+                  <         </div>
+                        }
+
+                        <!-- Dirección -->
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Dirección <span class="text-red-500">*</span></label>
+                                <input 
+                                    type="text" 
+                                    formControlName="direccion"
+                                    class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white"
+                                    placeholder="Ej. Calle Principal #123"
+                                />
+                                @if (empleadoForm.get('direccion')?.invalid && empleadoForm.get('direccion')?.touched) {
+                                    <p class="text-red-500 text-xs mt-1.5">La dirección es obligatoria.</p>
+                                }
+                        </div>
+
+                        <!-- Foto -->
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Foto (JPG/PNG) <span *ngIf="!empleadoEditando()" class="text-red-500">*</span></label>
+                            <div class="flex items-center gap-4">
+                                <input 
+                                    type="file" 
+                                    accept=".jpg,.jpeg,.png"
+                                    (change)="onFileSelected($event)"
+                                    class="block w-full text-sm text-gray-400
+                                    file:mr-4 file:py-2.5 file:px-4
+                                    file:rounded-lg file:border-0
+                                    file:text-sm file:font-semibold
+                                  file:bg-blue-600/10 file:text-blue-600
+                                  hover:file:bg-blue-600/20 file:transition-colors"
+                                />
+                            </div>
+                            @if (empleadoForm.get('foto')?.invalid && empleadoForm.get('foto')?.touched) {
+                                <p class="text-red-500 text-xs mt-1.5">Debe adjuntar una foto del empleado.</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6 bg-gray-900/50 flex gap-3">
+                    <button 
+                        type="button" 
+                        (click)="cerrarModal()"
+                        class="flex-1 py-2.5 rounded-lg border border-gray-700 text-sm font-semibold hover:bg-gray-800 transition-colors text-gray-300">
+                        Cancelar
+                    </button>
+                    <button 
+                        type="submit" 
+                        [disabled]="empleadoForm.invalid || guardando()"
+                        class="flex-1 py-2.5 flex justify-center items-center gap-2 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                        @if (guardando()) {
+                        <mat-icon class="animate-spin text-base">refresh</mat-icon>
+                        Guardando...
+                        } @else {
+                            <mat-icon class="text-base">save</mat-icon>
+                            {{ guardando() ? 'Guardando...' : 'Guardar' }}
+                        }
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+<!-- Print Badge Modal -->
+@if (empleadoParaImprimir()) {
+    <div class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-fade-in print-hidden">
+        <div class="bg-[#1a1a1a] p-8 rounded-2xl flex flex-col items-center border border-gray-800 shadow-2xl animate-slide-up">
+            <div class="w-full flex justify-between items-center mb-6">
+                <h3 class="text-white font-bold text-lg">Vista Previa de Gafete</h3>
+                <button (click)="cerrarModalImpresion()" class="text-gray-500 hover:text-white transition-colors">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+          
+            <!-- Badge Container (Preview) -->
+            <div class="bg-white rounded-xl shadow-2xl relative overflow-hidden flex flex-col items-center" style="width: 7cm; height: 11cm; border: 1px solid #e5e7eb;">
+                <!-- Top Banner -->
+                <div class="w-full bg-blue-600 py-3 text-center shadow-md">
+                    <h1 class="text-white font-black text-xl tracking-wider uppercase">Los De Camarón</h1>
+                </div>
+            
+                <!-- Photo -->
+                <div class="mt-6 mb-4 rounded-full border-4 border-blue-600 p-1 shadow-lg">
+                    <img [src]="obtenerRutaImagen(empleadoParaImprimir()?.fotoUrl)" class="w-32 h-32 rounded-full object-cover" alt="Foto de Empleado" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNGI1NTYzIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIwIDIxdi0yYTRgNCAwIDAgMC00LTRINThhNCA0IDAgMCAwLTQgMnYyIi8+PGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ii8+PC9zdmc+'" />
+                </div>
+            
+            <!-- Details -->
+            <div class="text-center px-4 w-full flex-1">
+                <h2 class="text-gray-900 font-bold text-xl uppercase leading-tight">{{ empleadoParaImprimir()?.nombre }}</h2>
+                <p class="text-blue-700 font-bold text-sm mt-1 uppercase">{{ empleadoParaImprimir()?.puestoNombre }}</p>
+            </div>
+            
+            <!-- Barcode -->
+            <div class="w-full flex justify-center pb-4">
+                <svg id="badge-barcode"></svg>
+            </div>
+        </div>
+          
+        <!-- Actions -->
+        <div class="mt-8 flex gap-4 w-full">
+            <button 
+                (click)="cerrarModalImpresion()"
+                class="flex-1 py-3 rounded-lg border border-gray-700 text-sm font-semibold hover:bg-gray-800 transition-colors text-gray-300">
+                Cancelar
+            </button>
+            <button 
+                (click)="ejecutarImpresion()"
+                class="flex-1 py-3 flex justify-center items-center gap-2 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all">
+                <mat-icon class="text-base">print</mat-icon>
+                Imprimir Gafete
+            </button>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Actual Printable Badge (Hidden except in print media) -->
+<div id="printable-badge" class="hidden">
+    @if (empleadoParaImprimir()) {
+        <div class="badge-print-container">
+            <div class="badge-header">
+                <h1>LOS DE CAMARÓN</h1>
+            </div>
+            <div class="badge-photo-container">
+                <img [src]="obtenerRutaImagen(empleadoParaImprimir()?.fotoUrl)" class="badge-photo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNGI1NTYzIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIwIDIxdi0yYTRgNCAwIDAgMC00LTRINThhNCA0IDAgMCAwLTQgMnYyIi8+PGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ii8+PC9zdmc+'" />
+            </div>
+            <div class="badge-details">
+                <h2>{{ empleadoParaImprimir()?.nombre }}</h2>
+                <h3>{{ empleadoParaImprimir()?.puestoNombre }}</h3>
+            </div>
+            <div class="badge-barcode-container">
+                <svg id="print-badge-barcode"></svg>
+            </div>
+        </div>
+      }
+    </div>
