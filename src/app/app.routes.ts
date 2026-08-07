@@ -8,6 +8,8 @@ import { Clientes } from './pages/clientes/clientes';
 import { UnidadMedidaService } from './services/unidadmedida.service';
 import { Unidadmedidas } from './pages/unidadmedidas/unidadmedidas';
 import { Empleados } from './pages/empleados/empleados';
+import { Productos } from './pages/productos/productos';
+import { Inventarios } from './pages/inventario/inventario';
 
 export const routes: Routes = [
     { path: '', 
@@ -36,6 +38,14 @@ export const routes: Routes = [
         {
           path: 'catalogos/empleados',
           component: Empleados
+        },
+        {
+          path: 'catalogos/productos',
+          component: Productos
+        },
+        {
+          path: 'catalogos/inventarios',
+          component: Inventarios
         }
       ] 
     }
