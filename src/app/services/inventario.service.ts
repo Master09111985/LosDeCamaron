@@ -2,7 +2,7 @@ import { Injectable, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { environment } from "../environments/environment";
-import { Inventario, CrearInventarioDto } from "../interfaces/inventario.interface";
+import { Inventario, CrearInventarioDto, TrasladoInventarioDto } from "../interfaces/inventario.interface";
 
 @Injectable({
     providedIn: 'root'
@@ -37,6 +37,10 @@ export class InventarioService {
 
     actualizarInventario(id: number, inventario: Inventario): Observable<Inventario> {
         return this.http.put<Inventario>(`${this.apiUrl}/Actualizar/${id}`, inventario);
+    }
+
+    trasladarInventario(trasladoDto: TrasladoInventarioDto): Observable<any> {
+        return this.http.post(`${this.apiUrl}/Trasladar`, trasladoDto);
     }
 
     eliminarInventario(id: number): Observable<void> {

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -31,6 +31,24 @@ export class Productos implements OnInit {
   productos = signal<Producto[]>([]);
   unidades = signal<UnidadMedida[]>([]);
 
+  terminoBusqueda = signal<string>('');
+
+  productosFiltrados = computed(() => {
+    const termino = this.terminoBusqueda().toLowerCase();
+    const lista = this.productos();
+
+    if (!termino) return lista;
+
+    return lista.filter(p => 
+      p.nombre.toLowerCase().includes(termino)
+    );
+  });
+
+  actualizarBusqueda(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.terminoBusqueda.set(input.value);
+  }
+
   cargando = signal<boolean>(false);
   guardando = signal<boolean>(false);
   modalAbierto = signal<boolean>(false);
@@ -38,7 +56,7 @@ export class Productos implements OnInit {
 
   productoForm: FormGroup = this.fb.group({
     nombre: ['', [Validators.required, Validators.maxLength(100)]],
-    descripcion: [Validators.maxLength(200)],
+    descripcion: ['', Validators.maxLength(200)],
     unidadId: ['', [Validators.required]],
     estado: [true]
   });
@@ -103,13 +121,15 @@ export class Productos implements OnInit {
     const productoEditando = this.productoEditando();
 
     if (productoEditando) {
-      this.productoService.actualizarProducto(productoEditando.id, {
-        id: productoEditando.id,
+      const dtoActualizar: Producto = {
+        ...productoEditando,
         nombre: formValue.nombre,
         descripcion: formValue.descripcion,
         unidadId: Number(formValue.unidadId),
         estado: formValue.estado
-      }).subscribe({
+      };
+
+      this.productoService.actualizarProducto(productoEditando.id, dtoActualizar).subscribe({
         next: () => {
           this.toastService.showSuccess('Producto actualizado correctamente');
           this.cerrarModal();
@@ -121,7 +141,7 @@ export class Productos implements OnInit {
           this.toastService.showError('Error al actualizar producto');
           this.guardando.set(false);
         }
-      }); 
+      })
     } else {
       // Crear
       this.productoService.crearProducto({

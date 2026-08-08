@@ -26,7 +26,7 @@ export class ProductoService {
         return this.http.post<Producto>(`${this.apiUrl}/Guardar`, producto);
     }
 
-    actualizarProducto(id: number, producto: ActualizarProductoDto):Observable<void> {
+    actualizarProducto(id: number, producto: Producto):Observable<void> {
         return this.http.put<void>(`${this.apiUrl}/Actualizar/${id}`, producto);
     }
 

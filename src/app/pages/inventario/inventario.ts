@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,7 +8,7 @@ import { AlmacenService } from '../../services/almacen.service';
 import { ProductoService } from '../../services/producto.service';
 import { ToastService } from '../../services/toast.service';
 
-import { Inventario, CrearInventarioDto } from '../../interfaces/inventario.interface';
+import { Inventario, CrearInventarioDto, TrasladoInventarioDto } from '../../interfaces/inventario.interface';
 import { Almacen } from '../../interfaces/almacen.interface';
 import { Producto } from '../../interfaces/producto.interface';
 
@@ -39,13 +39,47 @@ export class Inventarios implements OnInit {
   loading = signal<boolean>(true);
   guardando = signal<boolean>(false);
   modalAbierto = signal<boolean>(false);
+  modalTrasladoAbierto = signal<boolean>(false);
   inventarioEditando = signal<Inventario | null>(null);
+  inventarioATrasladar = signal<Inventario | null>(null);
+  terminoBusqueda = signal<string>('');
+
+  inventariosFiltrados = computed(() => {
+    const termino = this.terminoBusqueda().toLowerCase();
+    const lista = this.inventarios();
+
+    // Si el buscador esta vacio, regresamos toda la lista
+    if (!termino) return lista;
+
+    // Si hay texto, filtramos buscando coincidencias en el nombre del producto
+    return lista.filter(inv =>
+      inv.productoNombre.toLowerCase().includes(termino)
+    );
+  });
+
+  actualizarBusqueda(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.terminoBusqueda.set(input.value);
+  }
+
+  //-----------------------------------//
+  //      Seccion de Formularios       //
+  //-----------------------------------//      
 
   inventarioForm: FormGroup = this.fb.group({
     almacenId: ['', Validators.required],
     productoId: ['', Validators.required],
     cantidad: ['', [Validators.required, Validators.min(0.01)]]
   });
+
+  trasladoForm: FormGroup = this.fb.group({
+    almacenDestinoId: ['', Validators.required],
+    cantidad: ['', [Validators.required, Validators.min(0.01)]]
+  });
+
+  //---------------------------------//
+  //    Seccion de carga Inicial     //
+  //---------------------------------//
 
   ngOnInit(): void {
     this.cargarDatos();
@@ -76,6 +110,10 @@ export class Inventarios implements OnInit {
     });
   }
 
+  //------------------------------------//
+  //   Seccion de apertura de modales   //
+  //------------------------------------//
+
   abrirModal(): void {
     this.inventarioEditando.set(null);
     this.inventarioForm.reset();
@@ -86,6 +124,39 @@ export class Inventarios implements OnInit {
     
     this.modalAbierto.set(true);
   }
+
+  abrirModalTraslado(inventario: Inventario): void {
+    this.inventarioATrasladar.set(inventario);
+    // Reseteamos el formulario y ponemos el maximo permitido
+    this.trasladoForm.reset();
+    this.trasladoForm.get('cantidad')?.setValidators([
+      Validators.required,
+      Validators.min(0.01),
+      Validators.max(inventario.cantidad) // No puede trasladar mas de lo que tiene
+    ]);
+    this.trasladoForm.get('cantidad')?.updateValueAndValidity();
+
+    this.modalTrasladoAbierto.set(true);
+  }
+
+  //-------------------------------//
+  //   Seccion de cerrar Modales   //
+  //-------------------------------//
+
+  cerrarModal(): void {
+    this.modalAbierto.set(false);
+    this.inventarioForm.reset();
+  }
+
+  cerrarModalTraslado(): void {
+    this.modalTrasladoAbierto.set(false);
+    this.inventarioATrasladar.set(null);
+    this.trasladoForm.reset();
+  }
+
+  //----------------------//
+  //   Seccion del CRUD   //
+  //----------------------//
 
   editarInventario(inventario: Inventario): void {
     this.inventarioEditando.set(inventario);
@@ -102,11 +173,7 @@ export class Inventarios implements OnInit {
     this.modalAbierto.set(true);
   }
 
-  cerrarModal(): void {
-    this.modalAbierto.set(false);
-    this.inventarioForm.reset();
-  }
-
+  
   guardar(): void {
     if (this.inventarioForm.invalid) return;
 
@@ -168,6 +235,45 @@ export class Inventarios implements OnInit {
       })
     }
   }
+
+  ejecutarTraslado(): void {
+    if (this.trasladoForm.invalid) return;
+
+    const invOrigen = this.inventarioATrasladar();
+    if (!invOrigen) return;
+
+    const formValue = this.trasladoForm.value;
+
+    // Validacion extra: no trasladar al mismo almacen.
+    if (Number(formValue.almacenDestinoId) === invOrigen.almacenId) {
+      this.toastService.showError('El almacen destino debe ser diferente al origen');
+      return;
+    }
+
+    this.guardando.set(true);
+
+    const dto: TrasladoInventarioDto = {
+      productoId: invOrigen.productoId,
+      almacenOrigenId: invOrigen.almacenId,
+      almacenDestinoId: Number(formValue.almacenDestinoId),
+      cantidad: Number(formValue.cantidad)
+    };
+
+    this.inventarioService.trasladarInventario(dto).subscribe({
+      next: () => {
+        this.toastService.showSuccess('Traslado completado con exito');
+        this.cargarInventario();
+        this.cerrarModalTraslado();
+        this.guardando.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastService.showError(err.error?.message || 'Error al realizar el traslado');
+        this.guardando.set(false);
+      }
+    });
+  }
+  
 
   borrarInventario(inventario: Inventario): void {
     if (confirm(`¿Estás seguro de eliminar el registro de ${inventario.productoNombre} en ${inventario.almacenNombre}?`)) {

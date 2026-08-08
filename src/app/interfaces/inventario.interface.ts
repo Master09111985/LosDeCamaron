@@ -21,3 +21,10 @@ export interface CrearInventarioDto {
     almacenId: number;
     unidadMedidaId: number;
 }
+
+export interface TrasladoInventarioDto {
+    productoId: number;
+    almacenOrigenId: number;
+    almacenDestinoId: number;
+    cantidad: number;
+}
