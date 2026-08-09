@@ -10,6 +10,7 @@ import { Unidadmedidas } from './pages/unidadmedidas/unidadmedidas';
 import { Empleados } from './pages/empleados/empleados';
 import { Productos } from './pages/productos/productos';
 import { Inventarios } from './pages/inventario/inventario';
+import { MotivosBaja } from './pages/motivos-baja/motivos-baja';
 
 export const routes: Routes = [
     { path: '', 
@@ -46,6 +47,10 @@ export const routes: Routes = [
         {
           path: 'catalogos/inventarios',
           component: Inventarios
+        },
+        {
+          path: 'catalogos/motivos-salida',
+          component: MotivosBaja
         }
       ] 
     }

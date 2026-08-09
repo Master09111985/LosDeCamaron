@@ -1,0 +1,171 @@
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <div>
+            <h2 class="text-3xl font-bold text-white">Motivos de Baja</h2>
+            <p class="text-gray-500 text-sm">Configuración de razones para salidas de inventario</p>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <!-- Buscador -->
+            <div class="relative">
+                <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-base">search</mat-icon>
+                <input 
+                    type="text" 
+                    placeholder="Buscar motivo..."
+                    (input)="actualizarBusqueda($event)"
+                    class="bg-[#111] border border-gray-800 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white w-64 md:w-72 placeholder:text-gray-600 shadow-inner">
+            </div>
+
+            <button 
+                (click)="abrirModal()"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-600/20 active:scale-95 shrink-0">
+                <mat-icon class="text-base">add</mat-icon>
+                Nuevo Motivo
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading()) {
+        <div class="bg-[#141414] rounded-xl border border-gray-800 p-12 flex flex-col items-center justify-center shadow-2xl">
+            <mat-icon class="animate-spin text-blue-600 text-base mb-4">refresh</mat-icon>
+            <p class="text-gray-500 font-medium">Cargando motivos de baja...</p>
+        </div>
+    } @else {
+        <!-- Table Container -->
+         <div class="flex-1 bg-[#141414] rounded-xl border border-gray-800 overflow-hidden flex flex-col shadow-2xl">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm whitespace-nowrap">
+                    <thead class="bg-gray-800/50 border-b border-gray-800">
+                        <tr>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest w-20">ID</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Motivo</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Descripción</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest w-32">Estado</th>
+                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest w-40 text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800">
+                        @if (motivosFiltrados().length === 0) {
+                            <tr>
+                                <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                                    <div class="flex flex-col items-center justify-center text-gray-500">
+                                        <mat-icon class="text-base mb-4 opacity-50">{{ terminoBusqueda() ? 'search_off' : 'assignment_late' }}</mat-icon>
+                                        <p class="text-lg">{{ terminoBusqueda() ? 'No se encontraron motivos' : 'No hay motivos registrados' }}</p>
+                                        @if (!terminoBusqueda()) {
+                                            <p class="text-sm mt-1">Haz clic en "Nuevo Motivo" para comenzar.</p>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        @for (motivo of motivosFiltrados(); track motivo.id) {
+                            <tr class="hover:bg-white/2 transition-colors">
+                                <td class="px-6 py-4 text-sm font-mono text-blue-600">#{{ motivo.id }}</td>
+                                <td class="px-6 py-4 text-sm font-medium text-white">{{ motivo.nombre }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-400">{{ motivo.descripcion || 'Sin descripción' }}</td>
+                                <td class="px-6 py-4">
+                                    <span 
+                                        class="px-2.5 py-1 text-xs font-medium rounded-full border"
+                                        [class.bg-emerald-500/10]="motivo.estado"
+                                        [class.text-emerald-400]="motivo.estado"
+                                        [class.border-emerald-500/20]="motivo.estado"
+                                        [class.bg-red-500/10]="!motivo.estado"
+                                        [class.text-red-400]="!motivo.estado"
+                                        [class.border-red-500/20]="!motivo.estado">
+                                        {{ motivo.estado ? 'Activo' : 'Inactivo' }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button 
+                                            (click)="editarMotivo(motivo)"
+                                            class="p-2 text-blue-400 hover:bg-blue-400/10 rounded-md transition-colors"
+                                            title="Editar">
+                                            <mat-icon class="text-base">edit</mat-icon>
+                                        </button>
+                                        <button 
+                                            (click)="borrarMotivo(motivo)"
+                                            class="p-2 text-red-400 hover:bg-red-400/10 rounded-md transition-colors"
+                                            title="Eliminar">
+                                            <mat-icon class="text-base">delete</mat-icon>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+         </div>
+    }
+</div>
+
+<!-- Modal Form -->
+@if (modalAbierto()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fade-in">
+        <div class="bg-[#1a1a1a] w-full max-w-md rounded-2xl border border-gray-800 shadow-2xl overflow-hidden animate-slide-up">
+
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-white">
+                    {{ motivoEditando() ? 'Editar Motivo' : 'Agregar Nuevo Motivo' }}
+                </h3>
+                <button (click)="cerrarModal()" class="text-gray-500 hover:text-white transition-colors">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+
+            <form [formGroup]="motivoForm" (ngSubmit)="guardar()">
+                <div class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Nombre del Motivo</label>
+                        <input
+                            type="text"
+                            formControlName="nombre"
+                            class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white"
+                            placeholder="Ej. Producto caducado"/>
+                        @if (motivoForm.get('nombre')?.invalid && motivoForm.get('nombre')?.touched) {
+                            <p class="text-red-500 text-xs mt-1.5">El nombre es obligatorio.</p>
+                        }
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Descripción (Opcional)</label>
+                        <textarea 
+                            formControlName="descripcion"
+                            rows="2"
+                            class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white resize-none"
+                            placeholder="Detalles adicionales sobre este motivo..."></textarea>
+                    </div>
+
+                    <div class="flex items-center gap-3 pt-2">
+                        <input type="checkbox" id="estado" formControlName="estado" class="w-5 h-5 accent-blue-600 bg-[#111] border-gray-700 rounded">
+                        <label for="estado" class="text-sm text-gray-300">Motivo Activo</label>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-gray-900/50 flex gap-3 border-t border-gray-800">
+                    <button 
+                        type="button" 
+                        (click)="cerrarModal()"
+                        class="flex-1 py-2.5 rounded-lg border border-gray-700 text-sm font-semibold hover:bg-gray-800 transition-colors text-gray-300">
+                        Cancelar
+                    </button>
+                    <button 
+                        type="submit" 
+                        [disabled]="motivoForm.invalid || guardando()"
+                        class="flex-1 py-2.5 flex justify-center items-center gap-2 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                        @if (guardando()) {
+                            <mat-icon class="animate-spin text-base">refresh</mat-icon>
+                            Guardando...
+                        } @else {
+                            <mat-icon class="text-base">save</mat-icon>
+                            {{ motivoEditando() ? 'Actualizar' : 'Guardar' }}
+                        }
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+}
