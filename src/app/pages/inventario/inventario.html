@@ -1,32 +1,39 @@
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex items-center justify-between mb-8">
-        
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
             <h2 class="text-3xl font-bold text-white">Inventario</h2>
             <p class="text-gray-500 text-sm">Administración de existencias por almacén</p>
         </div>
 
-        <!-- Contenedor del buscador y el boton -->
-        <div class="flex items-center gap-4">
-            <!-- Buscador -->
+    <!-- Contenedor: Buscador -> Baja -> Entrada -->
+        <div class="flex items-center gap-3">
+            <!-- 1. Buscador -->
             <div class="relative">
                 <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-base">search</mat-icon>
                 <input 
                     type="text" 
                     placeholder="Buscar por producto..."
                     (input)="actualizarBusqueda($event)"
-                    class="bg-[#111] border border-gray-800 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white w-64 md:w-72 placeholder:text-gray-600 shadow-inner">
+                    class="bg-[#111] border border-gray-800 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white w-56 lg:w-72 placeholder:text-gray-600 shadow-inner">
             </div>
 
+            <!-- 2. Botón Baja (Rojo para indicar salida) -->
+            <button 
+                (click)="abrirModalBaja()"
+                class="bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-600/20 px-5 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition-all shadow-lg active:scale-95 shrink-0">
+                <mat-icon class="text-base">remove_circle_outline</mat-icon>
+                Registrar Baja
+            </button>
+
+            <!-- 3. Botón Entrada (Azul original) -->
             <button 
                 (click)="abrirModal()"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-600/20 active:scale-95 shrink-0">
+                class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-600/20 active:scale-95 shrink-0">
                 <mat-icon class="text-base">add</mat-icon>
                 Registrar Entrada
             </button>
         </div>
-
     </div>
 
     <!-- Loading State -->
@@ -275,4 +282,112 @@
           </form>
       </div>
   </div>
+}
+
+
+<!-- Modal Baja de Inventario -->
+@if (modalBajaAbierto()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fade-in">
+        <div class="bg-[#1a1a1a] w-full max-w-md rounded-2xl border border-gray-800 shadow-2xl overflow-hidden animate-slide-up">
+            
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center bg-red-900/10">
+                <h3 class="text-xl font-bold text-red-400 flex items-center gap-2">
+                    <mat-icon>warning_amber</mat-icon> Registrar Baja
+                </h3>
+                <button (click)="cerrarModalBaja()" class="text-gray-500 hover:text-white transition-colors">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+
+            <form [formGroup]="bajaForm" (ngSubmit)="ejecutarBaja()">
+                <div class="p-6 space-y-4">
+                    
+                    <!-- Select Almacén -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Desde qué almacén</label>
+                        <select 
+                            formControlName="almacenId"
+                            class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-red-500 transition-colors text-white">
+                            <option value="" disabled selected>Seleccione un almacén...</option>
+                            @for (almacen of almacenes(); track almacen.id) {
+                                <option [value]="almacen.id">{{ almacen.nombre }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Select Producto -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Producto a descontar</label>
+                        <select 
+                            formControlName="productoId"
+                            class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-red-500 transition-colors text-white">
+                            <option value="" disabled selected>Seleccione un producto...</option>
+                            @for (producto of productos(); track producto.id) {
+                                <option [value]="producto.id">{{ producto.nombre }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Select Motivo -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Motivo de la baja</label>
+                        <select 
+                            formControlName="motivoBajaId"
+                            class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-red-500 transition-colors text-white">
+                            <option value="" disabled selected>Seleccione un motivo...</option>
+                            @for (motivo of motivosBaja(); track motivo.id) {
+                                <option [value]="motivo.id">{{ motivo.nombre }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Input Cantidad -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Cantidad a descontar</label>
+                        <input 
+                            type="number" 
+                            step="0.01"
+                            formControlName="cantidad"
+                            class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-red-500 transition-colors text-white"
+                            placeholder="0.00"/>
+                        @if (bajaForm.get('cantidad')?.invalid && bajaForm.get('cantidad')?.touched) {
+                            <p class="text-red-500 text-xs mt-1.5">La cantidad debe ser mayor a 0.</p>
+                        }
+                    </div>
+
+                    <!-- Input Comentarios -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Comentarios (Opcional)</label>
+                        <textarea 
+                            formControlName="comentarios"
+                            rows="2"
+                            class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-red-500 transition-colors text-white resize-none"
+                            placeholder="Ej. Se derramó durante el servicio..."></textarea>
+                    </div>
+
+                </div>
+
+                <div class="p-6 bg-gray-900/50 flex gap-3 border-t border-gray-800">
+                    <button 
+                        type="button" 
+                        (click)="cerrarModalBaja()"
+                        class="flex-1 py-2.5 rounded-lg border border-gray-700 text-sm font-semibold hover:bg-gray-800 transition-colors text-gray-300">
+                        Cancelar
+                    </button>
+                    <button 
+                        type="submit" 
+                        [disabled]="bajaForm.invalid || guardando()"
+                        class="flex-1 py-2.5 flex justify-center items-center gap-2 rounded-lg bg-red-600 text-white text-sm font-bold hover:bg-red-700 shadow-lg shadow-red-600/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                        @if (guardando()) {
+                            <mat-icon class="animate-spin text-base">refresh</mat-icon>
+                            Procesando...
+                        } @else {
+                            <mat-icon class="text-base">delete_sweep</mat-icon>
+                            Confirmar Baja
+                        }
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 }

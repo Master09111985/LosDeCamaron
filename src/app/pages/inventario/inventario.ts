@@ -7,10 +7,14 @@ import { InventarioService } from '../../services/inventario.service';
 import { AlmacenService } from '../../services/almacen.service';
 import { ProductoService } from '../../services/producto.service';
 import { ToastService } from '../../services/toast.service';
+import { BajaService } from '../../services/baja.service';
+import { MotivoBajaService } from '../../services/motivo-baja.service';
 
 import { Inventario, CrearInventarioDto, TrasladoInventarioDto } from '../../interfaces/inventario.interface';
 import { Almacen } from '../../interfaces/almacen.interface';
 import { Producto } from '../../interfaces/producto.interface';
+import { MotivoBaja } from '../../interfaces/motivo-baja.interface';
+import { CrearBajaDto } from '../../interfaces/baja.interface';
 
 
 @Component({
@@ -29,17 +33,21 @@ export class Inventarios implements OnInit {
   private inventarioService = inject(InventarioService);
   private almacenService = inject(AlmacenService);
   private productoService = inject(ProductoService);
+  private bajaService = inject(BajaService);
+  private motivoService = inject(MotivoBajaService);
   private toastService = inject(ToastService);
   private fb = inject(FormBuilder);
 
   inventarios = signal<Inventario[]>([]);
   almacenes = signal<Almacen[]>([]);
   productos = signal<Producto[]>([]);
+  motivosBaja = signal<MotivoBaja[]>([]);
 
   loading = signal<boolean>(true);
   guardando = signal<boolean>(false);
   modalAbierto = signal<boolean>(false);
   modalTrasladoAbierto = signal<boolean>(false);
+  modalBajaAbierto = signal<boolean>(false);
   inventarioEditando = signal<Inventario | null>(null);
   inventarioATrasladar = signal<Inventario | null>(null);
   terminoBusqueda = signal<string>('');
@@ -77,6 +85,14 @@ export class Inventarios implements OnInit {
     cantidad: ['', [Validators.required, Validators.min(0.01)]]
   });
 
+  bajaForm: FormGroup = this.fb.group({
+    almacenId: ['', Validators.required],
+    productoId: ['', Validators.required],
+    motivoBajaId: ['', Validators.required],
+    cantidad: ['', [Validators.required, Validators.min(0.01)]],
+    comentarios: ['', Validators.maxLength(200)]
+  });
+
   //---------------------------------//
   //    Seccion de carga Inicial     //
   //---------------------------------//
@@ -91,6 +107,7 @@ export class Inventarios implements OnInit {
     // Cargamos los catalogos para los Selects
     this.almacenService.getAlmacenesActivos().subscribe(res => this.almacenes.set(res));
     this.productoService.getProductosActivos().subscribe(res => this.productos.set(res));
+    this.motivoService.getMotivosActivos().subscribe(res => this.motivosBaja.set(res));
 
     // Cargamos la tabla principal
     this.cargarInventario();
@@ -139,6 +156,11 @@ export class Inventarios implements OnInit {
     this.modalTrasladoAbierto.set(true);
   }
 
+  abrirModalBaja(): void {
+    this.bajaForm.reset();
+    this.modalBajaAbierto.set(true);
+  }
+
   //-------------------------------//
   //   Seccion de cerrar Modales   //
   //-------------------------------//
@@ -152,6 +174,11 @@ export class Inventarios implements OnInit {
     this.modalTrasladoAbierto.set(false);
     this.inventarioATrasladar.set(null);
     this.trasladoForm.reset();
+  }
+
+  cerrarModalBaja(): void {
+    this.modalBajaAbierto.set(false);
+    this.bajaForm.reset();
   }
 
   //----------------------//
@@ -274,6 +301,39 @@ export class Inventarios implements OnInit {
     });
   }
   
+  ejecutarBaja(): void {
+    if (this.bajaForm.invalid) {
+      this.bajaForm.markAllAsTouched();
+      return;
+    }
+
+    this.guardando.set(true);
+    const formValue = this.bajaForm.value;
+
+    const dto: CrearBajaDto = {
+      almacenId: Number(formValue.almacenId),
+      productoId: Number(formValue.productoId),
+      motivoBajaId: Number(formValue.motivoBajaId),
+      cantidad: Number(formValue.cantidad),
+      comentarios: formValue.comentarios
+    };
+
+    this.bajaService.crearBaja(dto).subscribe({
+      next: () => {
+        this.toastService.showSuccess('Baja de inventario registrada con éxito');
+        this.cargarInventario(); // Recargar tabla para ver el descuento
+        this.cerrarModalBaja();
+        this.guardando.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        // Mostrar el error exacto del backend (ej. "No hay suficientes existencias")
+        const errorMsg = err.error && err.error[''] ? err.error[''][0] : (err.error || 'Ocurrió un error al registrar la baja');
+        this.toastService.showError(typeof errorMsg === 'string' ? errorMsg : 'Error al procesar la baja');
+        this.guardando.set(false);
+      }
+    });
+  }
 
   borrarInventario(inventario: Inventario): void {
     if (confirm(`¿Estás seguro de eliminar el registro de ${inventario.productoNombre} en ${inventario.almacenNombre}?`)) {
