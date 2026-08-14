@@ -1,0 +1,121 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\downloads\\losdecamaron\\backend\\flowfood\\flowfood\\controllers\\comandacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\controllers\\comandacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\downloads\\losdecamaron\\backend\\flowfood\\flowfood\\models\\comandadetalle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\models\\comandadetalle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\downloads\\losdecamaron\\backend\\flowfood\\flowfood\\models\\comanda.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\models\\comanda.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\downloads\\losdecamaron\\backend\\flowfood\\flowfood\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\downloads\\losdecamaron\\backend\\flowfood\\flowfood\\data\\datacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\data\\datacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 989,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ComandaDetalle.cs",
+              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\ComandaDetalle.cs",
+              "RelativeDocumentMoniker": "FlowFood\\Models\\ComandaDetalle.cs",
+              "ToolTip": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\ComandaDetalle.cs",
+              "RelativeToolTip": "FlowFood\\Models\\ComandaDetalle.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-14T12:52:12.818Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ComandaController.cs",
+              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Controllers\\ComandaController.cs",
+              "RelativeDocumentMoniker": "FlowFood\\Controllers\\ComandaController.cs",
+              "ToolTip": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Controllers\\ComandaController.cs",
+              "RelativeToolTip": "FlowFood\\Controllers\\ComandaController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFgAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-13T23:35:30.668Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Comanda.cs",
+              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Comanda.cs",
+              "RelativeDocumentMoniker": "FlowFood\\Models\\Comanda.cs",
+              "ToolTip": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Comanda.cs",
+              "RelativeToolTip": "FlowFood\\Models\\Comanda.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADkAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-13T23:33:21.027Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Program.cs",
+              "RelativeDocumentMoniker": "FlowFood\\Program.cs",
+              "ToolTip": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Program.cs",
+              "RelativeToolTip": "FlowFood\\Program.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAB0AAABMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-13T23:32:41.056Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "DataContext.cs",
+              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Data\\DataContext.cs",
+              "RelativeDocumentMoniker": "FlowFood\\Data\\DataContext.cs",
+              "ToolTip": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Data\\DataContext.cs",
+              "RelativeToolTip": "FlowFood\\Data\\DataContext.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAmwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-13T23:31:41.279Z"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 989,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
