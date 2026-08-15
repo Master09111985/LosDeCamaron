@@ -11,6 +11,7 @@ import { Empleados } from './pages/empleados/empleados';
 import { Productos } from './pages/productos/productos';
 import { Inventarios } from './pages/inventario/inventario';
 import { MotivosBaja } from './pages/motivos-baja/motivos-baja';
+import { Plataforma } from './pages/plataforma/plataforma';
 
 export const routes: Routes = [
     { path: '', 
@@ -51,6 +52,10 @@ export const routes: Routes = [
         {
           path: 'catalogos/motivos-salida',
           component: MotivosBaja
+        },
+        {
+          path: 'catalogos/plataformas',
+          component: Plataforma
         }
       ] 
     }

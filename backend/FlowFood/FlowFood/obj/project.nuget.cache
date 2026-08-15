@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hPdwkdiBwDg=",
+  "dgSpecHash": "/+JjCDfnieE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
+  "projectFilePath": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\PLU1AGU\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\PLU1AGU\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
@@ -96,10 +96,10 @@
     {
       "code": "NU1900",
       "level": "Warning",
-      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.",
-      "projectPath": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
+      "message": "Error al obtener los datos de vulnerabilidad del paquete: No se puede cargar el índice de servicio del origen https://api.nuget.org/v3/index.json.",
+      "projectPath": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
+      "filePath": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
       "targetGraphs": []
     }
   ]

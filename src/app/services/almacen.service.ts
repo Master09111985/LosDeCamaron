@@ -11,11 +11,11 @@ import { environment } from '../environments/environment';
 
 export class AlmacenService {
 
-    private environment: string = environment.apiUrl;
-    private http = inject(HttpClient);
-    private apiUrl = `${this.environment}almacen`;
+  private environment: string = environment.apiUrl;
+  private http = inject(HttpClient);
+  private apiUrl = `${this.environment}almacen`;
 
-    getAlmacenes(): Observable<Almacen[]> {
+  getAlmacenes(): Observable<Almacen[]> {
     return this.http.get<Almacen[]>(`${this.apiUrl}/listaralmacenes`);
   }
 

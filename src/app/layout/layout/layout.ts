@@ -17,8 +17,8 @@ import { MatIconModule } from '@angular/material/icon';
 export class Layout {
 
   isSidebarOpen = signal(true);
-  isCatalogosOpen = signal(true);
-  isPlataformasOpen = signal(true);
+  isCatalogosOpen = signal(false);
+  isPlataformasOpen = signal(false);
 
   toggleSidebar() {
     this.isSidebarOpen.update(v => !v);

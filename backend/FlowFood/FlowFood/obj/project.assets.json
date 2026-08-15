@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
     "net8.0": {
       "Azure.Core/1.25.0": {
@@ -4666,11 +4666,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
+      "projectUniqueName": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
       "projectName": "FlowFood",
-      "projectPath": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
+      "projectPath": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
       "packagesPath": "C:\\Users\\PLU1AGU\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\obj\\",
+      "outputPath": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -4690,6 +4690,7 @@
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "projectReferences": {}
         }
@@ -4704,10 +4705,11 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.300"
+      "SdkAnalysisLevel": "10.0.300"
     },
     "frameworks": {
       "net8.0": {
+        "framework": "net8.0",
         "targetAlias": "net8.0",
         "dependencies": {
           "BCrypt.Net-Next": {
@@ -4752,7 +4754,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.312/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.303/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
@@ -4761,7 +4763,7 @@
       "code": "NU1900",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json."
+      "message": "Error al obtener los datos de vulnerabilidad del paquete: No se puede cargar el índice de servicio del origen https://api.nuget.org/v3/index.json."
     }
   ]
 }

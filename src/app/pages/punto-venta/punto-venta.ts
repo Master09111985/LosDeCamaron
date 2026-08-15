@@ -10,6 +10,8 @@ import { ToastService } from '../../services/toast.service';
 import { Platillo } from '../../interfaces/platillo.interface';
 import { ItemCarrito, CrearComandaDto, CrearComandaDetalleDto } from '../../interfaces/comanda.interface';
 
+import { environment } from '../../environments/environment';
+
 @Component({
   selector: 'app-punto-venta',
   standalone: true,
@@ -17,11 +19,13 @@ import { ItemCarrito, CrearComandaDto, CrearComandaDetalleDto } from '../../inte
   templateUrl: './punto-venta.html',
   styleUrl: './punto-venta.css',
 })
-export class PuntoVenta implements OnInit {
+export class PuntoVenta /*implements OnInit*/ {/*
   private platilloService = inject(PlatilloService);
   private comandaService = inject(ComandaService);
   private toastService = inject(ToastService);
   private fb = inject(FormBuilder);
+
+  backendUrl = new URL(environment.apiUrl).origin;
 
   // Señales de datos
   platillos = signal<Platillo[]>([]);
@@ -212,5 +216,5 @@ export class PuntoVenta implements OnInit {
         this.guardando.set(false);
       }
     });
-  }
+  }*/
 }
