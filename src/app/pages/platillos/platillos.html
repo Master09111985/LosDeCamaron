@@ -62,7 +62,12 @@
                                 <!-- Columna Miniatura -->
                                 <td class="px-6 py-2">
                                     <div class="w-12 h-12 rounded-lg bg-gray-900 border border-gray-800 overflow-hidden shadow-inner">
-                                        <img [src]="backendUrl + platillo.fotoUrl" [alt]="platillo.nombre" class="w-full h-full object-cover">
+                                        <img 
+                                            [src]="obtenerRutaImagen(platillo.fotoUrl)" 
+                                            [alt]="platillo.nombre" 
+                                            class="w-full h-full object-cover"
+                                            onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNGI1NTYzIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIwIDIxdi0yYTRgNCAwIDAgMC00LTRINThhNCA0IDAgMCAwLTQgMnYyIi8+PGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ii8+PC9zdmc+'"
+                                        >
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-sm font-mono text-gray-400">{{ platillo.codigo }}</td>

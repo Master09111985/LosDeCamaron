@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { PlatilloService } from '../../services/platillo.service';
 import { ToastService } from '../../services/toast.service';
 import { Platillo } from '../../interfaces/platillo.interface';
-// NUEVO: Importamos el environment
 import { environment } from '../../environments/environment'; 
 
 @Component({
@@ -21,9 +20,7 @@ export class Platillos implements OnInit {
   private toastService = inject(ToastService);
   private fb = inject(FormBuilder);
 
-  // NUEVO: Extraemos la URL base ('https://localhost:9000') dinámicamente desde tu environment
-  // new URL(environment.apiUrl).origin nos devuelve solo el protocolo, dominio y puerto
-  backendUrl = new URL(environment.apiUrl).origin; 
+  backendUrl = 'https://localhost:9000'; 
 
   platillos = signal<Platillo[]>([]);
   loading = signal<boolean>(true);
@@ -33,7 +30,7 @@ export class Platillos implements OnInit {
 
   // Variables para la imagen
   fotoSeleccionada: File | null = null;
-  fotoPrevia = signal<string | null>(null); // Para mostrar la imagen antes de subirla
+  fotoPrevia = signal<string | null>(null); 
 
   // Buscador
   terminoBusqueda = signal<string>('');
@@ -49,7 +46,7 @@ export class Platillos implements OnInit {
   platilloForm: FormGroup = this.fb.group({
     nombre: ['', [Validators.required, Validators.maxLength(150), Validators.minLength(3)]],
     descripcion: [''],
-    precio: ['', [Validators.required, Validators.min(0.01)]],
+    precio: [null, [Validators.required, Validators.min(0.01)]],
     estado: [true]
   });
 
@@ -77,9 +74,15 @@ export class Platillos implements OnInit {
     this.terminoBusqueda.set(input.value);
   }
 
+  obtenerRutaImagen(rutaRelativa?: string | null): string {
+    if (!rutaRelativa) return '';
+    const ruta = rutaRelativa.startsWith('/') ? rutaRelativa : `/${rutaRelativa}`;
+    return `${this.backendUrl}${ruta}`;
+  }
+
   abrirModal(platillo?: Platillo): void {
     this.fotoSeleccionada = null;
-    
+
     if (platillo) {
       this.platilloEditando.set(platillo);
       this.platilloForm.patchValue({
@@ -88,14 +91,14 @@ export class Platillos implements OnInit {
         precio: platillo.precio,
         estado: platillo.estado
       });
-      // Mostramos la foto actual que viene del backend sumando nuestra URL base
-      this.fotoPrevia.set(this.backendUrl + platillo.fotoUrl);
+      // Utilizamos la nueva función segura para previsualizar la foto actual
+      this.fotoPrevia.set(this.obtenerRutaImagen(platillo.fotoUrl));
     } else {
       this.platilloEditando.set(null);
       this.platilloForm.reset({ estado: true });
       this.fotoPrevia.set(null);
     }
-    
+
     this.modalAbierto.set(true);
   }
 
@@ -111,7 +114,7 @@ export class Platillos implements OnInit {
     const file: File = event.target.files[0];
     if (file) {
       this.fotoSeleccionada = file;
-      
+
       const reader = new FileReader();
       reader.onload = e => this.fotoPrevia.set(reader.result as string);
       reader.readAsDataURL(file);
@@ -135,17 +138,19 @@ export class Platillos implements OnInit {
     const formValue = this.platilloForm.value;
 
     const formData = new FormData();
-    formData.append('Nombre', formValue.nombre);
-    formData.append('Descripcion', formValue.descripcion || '');
-    formData.append('Precio', formValue.precio.toString());
-    
+    // En minúsculas (camelCase) para alinearse 100% con C#
+    formData.append('nombre', formValue.nombre);
+    formData.append('descripcion', formValue.descripcion || '');
+    formData.append('precio', formValue.precio.toString().replace('.', ','));
+
     if (this.fotoSeleccionada) {
-      formData.append('Foto', this.fotoSeleccionada);
+      formData.append('foto', this.fotoSeleccionada);
     }
 
     if (platilloEditando) {
-      formData.append('Id', platilloEditando.id.toString());
-      formData.append('Estado', formValue.estado.toString()); 
+      // Pasamos estado a texto seguro ('true' o 'false') para el form data
+      formData.append('id', platilloEditando.id.toString());
+      formData.append('estado', formValue.estado ? 'true' : 'false'); 
 
       this.platilloService.actualizarPlatillo(platilloEditando.id, formData).subscribe({
         next: () => {

@@ -6,14 +6,11 @@ namespace FlowFood.Models.Dtos
   {
     [Required]
     public int PlatilloId { get; set; }
-
     [Required]
-    [Range(1, int.MaxValue)]
+    [Range(1, 100)]
     public int Cantidad { get; set; }
-
     [Required]
     public decimal PrecioUnitario { get; set; }
-
-    public string? Notas { get; set; } // "Sin cebolla", etc.
+    public string? Notas { get; set; }
   }
 }

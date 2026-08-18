@@ -16,7 +16,39 @@ namespace FlowFood.Controllers
       _coRepo = coRepo;
     }
 
-    [HttpPost("Guardar")]
+    // ==========================================
+    // GET: Listar Todas
+    // ==========================================
+    [HttpGet("listar")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetComandas()
+    {
+      var listaComandas = await _coRepo.GetComandasAsync();
+      var listaDto = listaComandas.Select(MapearComandaDto).ToList();
+      return Ok(listaDto);
+    }
+
+    // ==========================================
+    // GET: Buscar por ID
+    // ==========================================
+    [HttpGet("buscar/{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetComanda(int id)
+    {
+      if (!await _coRepo.ExisteComandaAsync(id))
+        return NotFound();
+
+      var comanda = await _coRepo.GetComandaAsync(id);
+      return Ok(MapearComandaDto(comanda));
+    }
+
+    // ==========================================
+    // POST: Crear Comanda (Tu lógica impecable)
+    // ==========================================
+    [HttpPost("crearcomanda")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -31,28 +63,20 @@ namespace FlowFood.Controllers
         return StatusCode(400, ModelState);
       }
 
-      // 1. Validaciones Condicionales según la lógica (1 a 5)
+      // 1. Validaciones Condicionales
       switch (crearDto.TipoPedido)
       {
-        case 1: // Local
-          if (string.IsNullOrEmpty(crearDto.NumeroMesa)) return BadRequest("Falta el número de mesa.");
-          break;
-        case 2: // Llevar
-          if (string.IsNullOrEmpty(crearDto.NombreClienteLlevar)) return BadRequest("Falta el nombre del cliente.");
-          break;
-        case 3: // Domicilio
-          if (crearDto.ClienteId == null || crearDto.ClienteId <= 0) return BadRequest("Seleccione un cliente para el domicilio.");
-          break;
-        case 4: // Agendado
+        case 1: if (string.IsNullOrEmpty(crearDto.NumeroMesa)) return BadRequest("Falta el número de mesa."); break;
+        case 2: if (string.IsNullOrEmpty(crearDto.NombreClienteLlevar)) return BadRequest("Falta el nombre del cliente."); break;
+        case 3: if (crearDto.ClienteId == null || crearDto.ClienteId <= 0) return BadRequest("Seleccione un cliente para el domicilio."); break;
+        case 4:
           if (crearDto.ClienteId == null || crearDto.ClienteId <= 0) return BadRequest("Seleccione un cliente para la entrega.");
           if (crearDto.FechaHoraAgendada == null) return BadRequest("Falta la fecha y hora agendada.");
           break;
-        case 5: // Plataforma
-          if (crearDto.PlataformaId == null || crearDto.PlataformaId <= 0) return BadRequest("Seleccione la plataforma de origen.");
-          break;
+        case 5: if (crearDto.PlataformaId == null || crearDto.PlataformaId <= 0) return BadRequest("Seleccione la plataforma de origen."); break;
       }
 
-      // 2. Calcular los totales de forma segura del lado del servidor
+      // 2. Calcular Totales Seguros
       decimal totalCalculado = 0;
       var detallesList = new List<ComandaDetalle>();
 
@@ -71,7 +95,6 @@ namespace FlowFood.Controllers
         });
       }
 
-      // 3. Estatus inicial: 0 si es Agendado, 1 (Cocinando) para los demás
       int estatusInicial = (crearDto.TipoPedido == 4) ? 0 : 1;
 
       var nuevaComanda = new Comanda
@@ -85,35 +108,92 @@ namespace FlowFood.Controllers
         MetodoPagoId = crearDto.MetodoPagoId,
         Estatus = estatusInicial,
         Subtotal = totalCalculado,
-        Total = totalCalculado, // Aquí después podriamos sumar envío si aplica
-        FechaRegistro = DateTime.UtcNow
+        Total = totalCalculado,
+        FechaRegistro = DateTime.UtcNow,
+        Detalles = detallesList
       };
 
       if (!await _coRepo.CrearComandaAsync(nuevaComanda))
       {
-        return StatusCode(500, "Ocurrió un error al guardar la comanda.");
+        ModelState.AddModelError("", "Ocurrió un error al guardar la comanda.");
+        return StatusCode(500, ModelState);
       }
 
-      return Ok(new
-      {
-        mensaje = "Comanda creada exitosamente",
-        comandaId = nuevaComanda.Id,
-        estatus = estatusInicial
-      });
+      return Ok(new { mensaje = "Comanda creada exitosamente", comandaId = nuevaComanda.Id, estatus = estatusInicial });
     }
 
-    // Endpoint extra que nos servirá después para el KDS (Kitchen Display System)
-    [HttpPatch("CambiarEstatus/{id}")]
-    public async Task<IActionResult> CambiarEstatus(int id, [FromBody] int nuevoEstatus)
+    // ==========================================
+    // PATCH: Cambiar Estatus
+    // ==========================================
+    [HttpPatch("cambiarestatus/{comandaId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CambiarEstatus(int comandaId, [FromBody] int nuevoEstatus)
     {
-      // Validamos que sea un estatus entre 0 y 3
+      if (!await _coRepo.ExisteComandaAsync(comandaId))
+        return NotFound();
+
       if (nuevoEstatus < 0 || nuevoEstatus > 3)
         return BadRequest("El estatus debe estar entre 0 y 3.");
 
-      if (!await _coRepo.ActualizarEstatusComandaAsync(id, nuevoEstatus))
-        return StatusCode(500, "Error al actualizar el estatus.");
+      if (!await _coRepo.ActualizarEstatusComandaAsync(comandaId, nuevoEstatus))
+      {
+        ModelState.AddModelError("", "Error al actualizar el estatus de la comanda.");
+        return StatusCode(500, ModelState);
+      }
 
       return Ok(new { mensaje = "Estatus actualizado correctamente." });
     }
+
+    // ==========================================
+    // METODO PRIVADO: Mapeo manual a DTO
+    // ==========================================
+    private ComandaDto MapearComandaDto(Comanda comanda)
+    {
+      return new ComandaDto
+      {
+        Id = comanda.Id,
+        TipoPedido = ObtenerNombreTipoPedido(comanda.TipoPedido),
+        NumeroMesa = comanda.NumeroMesa,
+        PlataformaNombre = comanda.Plataforma?.Nombre,
+        DireccionEntrega = comanda.Cliente?.Direccion, // Asumiendo que Cliente tiene Dirección
+        HoraEntrega = comanda.FechaHoraAgendada,
+        Subtotal = comanda.Subtotal,
+        Total = comanda.Total,
+        FechaRegistro = comanda.FechaRegistro,
+        Estado = ObtenerNombreEstatus(comanda.Estatus),
+        Detalles = comanda.Detalles?.Select(d => new ComandaDetalleDto
+        {
+          Id = d.Id,
+          PlatilloId = d.PlatilloId,
+          PlatilloNombre = d.Platillo?.Nombre, // Esto funciona gracias al .ThenInclude()
+          Cantidad = d.Cantidad,
+          PrecioUnitario = d.PrecioUnitario,
+          Subtotal = d.Subtotal,
+          Notas = d.Notas
+        }).ToList() ?? new List<ComandaDetalleDto>()
+      };
+    }
+
+    private string ObtenerNombreTipoPedido(int tipo) => tipo switch
+    {
+      1 => "Local",
+      2 => "Llevar",
+      3 => "Domicilio",
+      4 => "Agendado",
+      5 => "Plataforma",
+      _ => "Desconocido"
+    };
+
+    private string ObtenerNombreEstatus(int estatus) => estatus switch
+    {
+      0 => "Agendado",
+      1 => "Cocinando",
+      2 => "Entregado",
+      3 => "Pagado",
+      _ => "Desconocido"
+    };
   }
 }

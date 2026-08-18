@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlowFood.Controllers
 {
-  [Route("api/metodopago")]
+  [Route("flowfood/[Controller]")]
   [ApiController]
   public class MetodoPagoController : ControllerBase
   {

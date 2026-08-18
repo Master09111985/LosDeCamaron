@@ -12,22 +12,14 @@ namespace FlowFood.Models
     [Required]
     public int TipoPedido { get; set; }
 
-    // --- Campos condicionales segun el tipo de pedido
+    // --- Campos condicionales según el tipo de pedido ---
     [MaxLength(20)]
     public string? NumeroMesa { get; set; } // Para tipo 1
 
     [MaxLength(100)]
     public string? NombreClienteLlevar { get; set; } // Para tipo 2
 
-    public int? ClienteId { get; set; } // Para tipos 3 y 4 (Ctalogo de clientes)
-
     public DateTime? FechaHoraAgendada { get; set; } // Para tipo 4
-
-    public int? PlataformaId { get; set; } // Para tipo 5
-
-    // --- Datos financieros y estatus
-    [Required]
-    public int MetodoPagoId { get; set; }
 
     // 0: Agendado, 1: Cocinando, 2: Entregado, 3: Pagado
     [Required]
@@ -42,19 +34,22 @@ namespace FlowFood.Models
     [Required]
     public DateTime FechaRegistro { get; set; }
 
-    // Relacion con Cliente
-    public int? clienteId { get; set; }
-    [ForeignKey("clienteId")]
+    // --- Relaciones ---
+
+    public int? ClienteId { get; set; } // Para tipos 3 y 4 (Catálogo de clientes)
+    [ForeignKey("ClienteId")]
     public Cliente Cliente { get; set; }
 
-    // Relacion con Plataforma
-    public int? plataformaId { get; set; }
-    [ForeignKey("plataformaId")]
+    public int? PlataformaId { get; set; } // Para tipo 5
+    [ForeignKey("PlataformaId")]
     public Plataforma Plataforma { get; set; }
 
-    // Relacion con MetodoPago
-    public int metodoPagoId { get; set; }
-    [ForeignKey("metodoPagoId")]
+    [Required]
+    public int MetodoPagoId { get; set; }
+    [ForeignKey("MetodoPagoId")]
     public MetodoPago MetodoPago { get; set; }
+
+    // Relación uno a muchos con los Detalles de la comanda (Los platillos)
+    public ICollection<ComandaDetalle> Detalles { get; set; }
   }
 }

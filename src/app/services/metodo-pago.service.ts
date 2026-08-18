@@ -16,7 +16,7 @@ export class MetodoPagoService {
     private apiUrl = `${this.environment}metodopago`;
 
     getMetodoPagos(): Observable<MetodoPagos[]> {
-        return this.http.get<MetodoPagos[]>(`${this.apiUrl}/listarmetodopago`);
+        return this.http.get<MetodoPagos[]>(`${this.apiUrl}/listarmetodosdepago`);
     }
 
     getMetodosPagoActivos(): Observable<MetodoPagos[]> {

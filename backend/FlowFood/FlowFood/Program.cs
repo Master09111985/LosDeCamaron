@@ -82,6 +82,8 @@ if (!Directory.Exists(carpetaFotos))
   Directory.CreateDirectory(carpetaFotos);
 }
 
+app.UseStaticFiles();
+
 // 3. Ahora sí, inicializamos el proveedor de archivos con toda seguridad
 app.UseStaticFiles(new StaticFileOptions
 {

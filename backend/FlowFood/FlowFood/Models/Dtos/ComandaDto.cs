@@ -3,7 +3,7 @@ namespace FlowFood.Models.Dtos
   public class ComandaDto
   {
     public int Id { get; set; }
-    public string TipoPedido { get; set; }
+    public string TipoPedido { get; set; } // Ejemplo: "Local", "Plataforma"
     public string? NumeroMesa { get; set; }
     public string? PlataformaNombre { get; set; }
     public string? DireccionEntrega { get; set; }
@@ -11,7 +11,7 @@ namespace FlowFood.Models.Dtos
     public decimal Subtotal { get; set; }
     public decimal Total { get; set; }
     public DateTime FechaRegistro { get; set; }
-    public string Estado { get; set; }
+    public string Estado { get; set; } // Ejemplo: "Cocinando", "Pagado"
 
     public List<ComandaDetalleDto> Detalles { get; set; }
   }

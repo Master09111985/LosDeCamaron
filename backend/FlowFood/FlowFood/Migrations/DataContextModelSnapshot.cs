@@ -175,6 +175,12 @@ namespace FlowFood.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("MetodoPagoId");
+
+                    b.HasIndex("PlataformaId");
+
                     b.ToTable("Comandas");
                 });
 
@@ -363,6 +369,26 @@ namespace FlowFood.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Permisos");
+                });
+
+            modelBuilder.Entity("FlowFood.Models.Plataforma", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Plataformas");
                 });
 
             modelBuilder.Entity("FlowFood.Models.Platillo", b =>
@@ -777,6 +803,31 @@ namespace FlowFood.Migrations
                     b.Navigation("Inventario");
 
                     b.Navigation("MotivoBaja");
+                });
+
+            modelBuilder.Entity("FlowFood.Models.Comanda", b =>
+                {
+                    b.HasOne("FlowFood.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("FlowFood.Models.MetodoPago", "MetodoPago")
+                        .WithMany()
+                        .HasForeignKey("MetodoPagoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("FlowFood.Models.Plataforma", "Plataforma")
+                        .WithMany()
+                        .HasForeignKey("PlataformaId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("MetodoPago");
+
+                    b.Navigation("Plataforma");
                 });
 
             modelBuilder.Entity("FlowFood.Models.ComandaDetalle", b =>

@@ -1,26 +1,38 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\",
+  "WorkspaceRootPath": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\downloads\\losdecamaron\\backend\\flowfood\\flowfood\\controllers\\comandacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\controllers\\comandacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\downloads\\losdecamaron\\backend\\flowfood\\flowfood\\models\\comandadetalle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\models\\comandadetalle.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\downloads\\losdecamaron\\backend\\flowfood\\flowfood\\models\\comanda.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\models\\comanda.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\downloads\\losdecamaron\\backend\\flowfood\\flowfood\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\desktop\\trabajo\\angular\\practica\\newversion\\losdecamaron\\backend\\flowfood\\flowfood\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\downloads\\losdecamaron\\backend\\flowfood\\flowfood\\data\\datacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\data\\datacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\desktop\\trabajo\\angular\\practica\\newversion\\losdecamaron\\backend\\flowfood\\flowfood\\controllers\\platillocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\controllers\\platillocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\desktop\\trabajo\\angular\\practica\\newversion\\losdecamaron\\backend\\flowfood\\flowfood\\repositorio\\platillorepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\repositorio\\platillorepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\desktop\\trabajo\\angular\\practica\\newversion\\losdecamaron\\backend\\flowfood\\flowfood\\repositorio\\irepositorio\\iplatillorepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\repositorio\\irepositorio\\iplatillorepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\desktop\\trabajo\\angular\\practica\\newversion\\losdecamaron\\backend\\flowfood\\flowfood\\models\\dtos\\actualizarplatillodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\models\\dtos\\actualizarplatillodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\desktop\\trabajo\\angular\\practica\\newversion\\losdecamaron\\backend\\flowfood\\flowfood\\models\\dtos\\crearplatillodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\models\\dtos\\crearplatillodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\desktop\\trabajo\\angular\\practica\\newversion\\losdecamaron\\backend\\flowfood\\flowfood\\models\\dtos\\platillodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\models\\dtos\\platillodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\desktop\\trabajo\\angular\\practica\\newversion\\losdecamaron\\backend\\flowfood\\flowfood\\models\\platillo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\models\\platillo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,7 +42,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 989,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -42,66 +54,107 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ComandaDetalle.cs",
-              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\ComandaDetalle.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Models\\ComandaDetalle.cs",
-              "ToolTip": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\ComandaDetalle.cs",
-              "RelativeToolTip": "FlowFood\\Models\\ComandaDetalle.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Program.cs",
+              "RelativeDocumentMoniker": "FlowFood\\Program.cs",
+              "ToolTip": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Program.cs",
+              "RelativeToolTip": "FlowFood\\Program.cs",
+              "ViewState": "AgIAAEwAAAAAAAAAAAAcwFwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-14T12:52:12.818Z",
+              "WhenOpened": "2026-08-18T21:15:45.047Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "ComandaController.cs",
-              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Controllers\\ComandaController.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Controllers\\ComandaController.cs",
-              "ToolTip": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Controllers\\ComandaController.cs",
-              "RelativeToolTip": "FlowFood\\Controllers\\ComandaController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFgAAAAnAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "PlatilloController.cs",
+              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Controllers\\PlatilloController.cs",
+              "RelativeDocumentMoniker": "FlowFood\\Controllers\\PlatilloController.cs",
+              "ToolTip": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Controllers\\PlatilloController.cs",
+              "RelativeToolTip": "FlowFood\\Controllers\\PlatilloController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-13T23:35:30.668Z",
+              "WhenOpened": "2026-08-18T20:19:39.707Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "Comanda.cs",
-              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Comanda.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Models\\Comanda.cs",
-              "ToolTip": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Comanda.cs",
-              "RelativeToolTip": "FlowFood\\Models\\Comanda.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAADkAAAAuAAAAAAAAAA==",
+              "Title": "PlatilloRepositorio.cs",
+              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Repositorio\\PlatilloRepositorio.cs",
+              "RelativeDocumentMoniker": "FlowFood\\Repositorio\\PlatilloRepositorio.cs",
+              "ToolTip": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Repositorio\\PlatilloRepositorio.cs",
+              "RelativeToolTip": "FlowFood\\Repositorio\\PlatilloRepositorio.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEIAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-13T23:33:21.027Z",
+              "WhenOpened": "2026-08-18T20:19:16.187Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Program.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Program.cs",
-              "ToolTip": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Program.cs",
-              "RelativeToolTip": "FlowFood\\Program.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAAB0AAABMAAAAAAAAAA==",
+              "Title": "IPlatilloRepositorio.cs",
+              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Repositorio\\IRepositorio\\IPlatilloRepositorio.cs",
+              "RelativeDocumentMoniker": "FlowFood\\Repositorio\\IRepositorio\\IPlatilloRepositorio.cs",
+              "ToolTip": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Repositorio\\IRepositorio\\IPlatilloRepositorio.cs",
+              "RelativeToolTip": "FlowFood\\Repositorio\\IRepositorio\\IPlatilloRepositorio.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-13T23:32:41.056Z"
+              "WhenOpened": "2026-08-18T20:19:01.952Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "DataContext.cs",
-              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Data\\DataContext.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Data\\DataContext.cs",
-              "ToolTip": "C:\\Users\\PLU1AGU\\Downloads\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Data\\DataContext.cs",
-              "RelativeToolTip": "FlowFood\\Data\\DataContext.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAmwAAAAAAAAAAAAAAAAA==",
+              "Title": "ActualizarPlatilloDto.cs",
+              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Dtos\\ActualizarPlatilloDto.cs",
+              "RelativeDocumentMoniker": "FlowFood\\Models\\Dtos\\ActualizarPlatilloDto.cs",
+              "ToolTip": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Dtos\\ActualizarPlatilloDto.cs",
+              "RelativeToolTip": "FlowFood\\Models\\Dtos\\ActualizarPlatilloDto.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAIwBIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-13T23:31:41.279Z"
+              "WhenOpened": "2026-08-18T20:18:50.371Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CrearPlatilloDto.cs",
+              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Dtos\\CrearPlatilloDto.cs",
+              "RelativeDocumentMoniker": "FlowFood\\Models\\Dtos\\CrearPlatilloDto.cs",
+              "ToolTip": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Dtos\\CrearPlatilloDto.cs",
+              "RelativeToolTip": "FlowFood\\Models\\Dtos\\CrearPlatilloDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-18T20:18:41.893Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "PlatilloDto.cs",
+              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Dtos\\PlatilloDto.cs",
+              "RelativeDocumentMoniker": "FlowFood\\Models\\Dtos\\PlatilloDto.cs",
+              "ToolTip": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Dtos\\PlatilloDto.cs",
+              "RelativeToolTip": "FlowFood\\Models\\Dtos\\PlatilloDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-18T20:18:27.661Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Platillo.cs",
+              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Platillo.cs",
+              "RelativeDocumentMoniker": "FlowFood\\Models\\Platillo.cs",
+              "ToolTip": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Platillo.cs",
+              "RelativeToolTip": "FlowFood\\Models\\Platillo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-18T20:16:18.309Z",
+              "EditorCaption": ""
             }
           ]
         },

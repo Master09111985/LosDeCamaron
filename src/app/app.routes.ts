@@ -13,6 +13,7 @@ import { Inventarios } from './pages/inventario/inventario';
 import { MotivosBaja } from './pages/motivos-baja/motivos-baja';
 import { Plataforma } from './pages/plataforma/plataforma';
 import { MetodoPago } from './pages/metodo-pago/metodo-pago';
+import { Platillos } from './pages/platillos/platillos';
 
 export const routes: Routes = [
     { path: '', 
@@ -61,6 +62,10 @@ export const routes: Routes = [
         {
           path: 'catalogos/metodo-pago',
           component: MetodoPago
+        },
+        {
+          path: 'catalogos/platillos',
+          component: Platillos
         }
       ] 
     }
