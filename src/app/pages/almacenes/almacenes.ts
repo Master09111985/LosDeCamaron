@@ -12,7 +12,7 @@ import { AlmacenService } from '../../services/almacen.service';
     MatIconModule,
     CommonModule,
     ReactiveFormsModule
-  ],
+],
   templateUrl: './almacenes.html',
   styleUrl: './almacenes.css',
 })

@@ -7,11 +7,13 @@ import { environment } from '../../environments/environment';
 import { Platillo } from '../../interfaces/platillo.interface';
 import { CrearComandaDto, CrearComandaDetalleDto } from '../../interfaces/comanda.interface';
 import { Cliente } from '../../interfaces/cliente.interface';
+import { Plataforma } from '../../interfaces/plataforma.interface';
 
 import { ClienteService } from '../../services/cliente.service';
 import { PlatilloService } from '../../services/platillo.service';
 import { ComandaService } from '../../services/comanda.service';
 import { ToastService } from '../../services/toast.service';
+import { PlataformaService } from '../../services/plataforma.service';
 
 import { PlatilloCard } from '../../components/platillo-card/platillo-card';
 
@@ -40,6 +42,7 @@ export class Comandas implements OnInit {
   private platilloService = inject(PlatilloService);
   private comandaService = inject(ComandaService);
   private toastService = inject(ToastService);
+  private plataformaService = inject(PlataformaService);
   private fb = inject(FormBuilder);
 
   apiUrl = new URL(environment.apiUrl).origin;
@@ -48,6 +51,7 @@ export class Comandas implements OnInit {
   buscandoCliente = signal<boolean>(false);
   
   menuPlatillos = signal<Platillo[]>([]);
+  plataformas = signal<Plataforma[]>([]);
   cargando = signal<boolean>(false);
   guardando = signal<boolean>(false);
 
@@ -69,8 +73,9 @@ export class Comandas implements OnInit {
     numeroMesa: [''],
     nombreClienteLlevar: [''],
     fechaHoraAgendada: [''],
-    telefonoBusqueda: [''],
-    clienteId: [null]       // Campo oculto real que se enviará a C#
+    telefonoBusqueda: [''], 
+    clienteId: [null],       
+    plataformaId: [null]
   });
 
   ngOnInit(): void {
@@ -92,6 +97,11 @@ export class Comandas implements OnInit {
         this.cargando.set(false);
       }
     });
+
+    this.plataformaService.getPlataformasActivas().subscribe({
+      next: (data) => this.plataformas.set(data),
+      error: (err) => console.error('Error al cargar plataformas', err)
+    });
   }
 
   escucharCambiosTipoPedido(): void {
@@ -101,34 +111,41 @@ export class Comandas implements OnInit {
       const ctrlLlevar = this.comandaForm.get('nombreClienteLlevar');
       const ctrlFecha = this.comandaForm.get('fechaHoraAgendada');
       const ctrlCliente = this.comandaForm.get('clienteId');
+      const ctrlPlataforma = this.comandaForm.get('plataformaId');
 
       // Limpiamos todo primero
       ctrlMesa?.clearValidators();
       ctrlLlevar?.clearValidators();
       ctrlFecha?.clearValidators();
       ctrlCliente?.clearValidators();
+      ctrlPlataforma?.clearValidators();
 
-      // Asignamos validaciones según el tipo (Tipo 3 y 4 requieren Cliente)
+      // Asignamos validaciones
       if (tipoNum === 1) ctrlMesa?.setValidators(Validators.required);
       if (tipoNum === 2) ctrlLlevar?.setValidators(Validators.required);
       if (tipoNum === 4) ctrlFecha?.setValidators(Validators.required);
       if (tipoNum === 3 || tipoNum === 4) ctrlCliente?.setValidators(Validators.required);
+      if (tipoNum === 5) ctrlPlataforma?.setValidators(Validators.required); // NUEVO
 
-      // Actualizamos el estado del formulario
+      // Actualizamos estado
       ctrlMesa?.updateValueAndValidity();
       ctrlLlevar?.updateValueAndValidity();
       ctrlFecha?.updateValueAndValidity();
       ctrlCliente?.updateValueAndValidity();
+      ctrlPlataforma?.updateValueAndValidity();
 
-      // Si no es Domicilio(3) ni Agendado(4), limpiamos la pantalla de búsqueda
       if (tipoNum !== 3 && tipoNum !== 4) {
         this.clienteEncontrado.set(null);
         this.comandaForm.patchValue({ telefonoBusqueda: '', clienteId: null });
       }
+      
+      // Si no es plataforma, reseteamos su select
+      if (tipoNum !== 5) {
+        this.comandaForm.patchValue({ plataformaId: null });
+      }
     });
   }
 
-  // --- LÓGICA DE BÚSQUEDA DE CLIENTE ---
   buscarCliente(): void {
     const telefono = this.comandaForm.get('telefonoBusqueda')?.value;
     
@@ -217,6 +234,7 @@ export class Comandas implements OnInit {
       nombreClienteLlevar: tipoPedidoNum === 2 ? formValue.nombreClienteLlevar : undefined,
       fechaHoraAgendada: tipoPedidoNum === 4 ? formValue.fechaHoraAgendada : undefined,
       clienteId: (tipoPedidoNum === 3 || tipoPedidoNum === 4) ? formValue.clienteId : undefined,
+      plataformaId: tipoPedidoNum === 5 ? formValue.plataformaId : undefined, // NUEVO
       detalles: detallesDto
     };
 
@@ -224,7 +242,7 @@ export class Comandas implements OnInit {
       next: () => {
         this.toastService.showSuccess('Comanda enviada a cocina exitosamente');
         this.carrito.set([]);
-        this.clienteEncontrado.set(null); // Limpiamos la tarjeta visual del cliente
+        this.clienteEncontrado.set(null); 
         this.comandaForm.reset({ tipoPedido: 1 });
         this.guardando.set(false);
       },
