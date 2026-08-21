@@ -5,7 +5,6 @@ import { Home } from './pages/home/home';
 import { Almacenes } from './pages/almacenes/almacenes';
 import { Puestos } from './pages/puestos/puestos';
 import { Clientes } from './pages/clientes/clientes';
-import { UnidadMedidaService } from './services/unidadmedida.service';
 import { Unidadmedidas } from './pages/unidadmedidas/unidadmedidas';
 import { Empleados } from './pages/empleados/empleados';
 import { Productos } from './pages/productos/productos';
@@ -14,6 +13,8 @@ import { MotivosBaja } from './pages/motivos-baja/motivos-baja';
 import { Plataforma } from './pages/plataforma/plataforma';
 import { MetodoPago } from './pages/metodo-pago/metodo-pago';
 import { Platillos } from './pages/platillos/platillos';
+import { Comandas } from './pages/comandas/comandas';
+import { Cocina } from './pages/cocina/cocina';
 
 export const routes: Routes = [
     { path: '', 
@@ -66,6 +67,14 @@ export const routes: Routes = [
         {
           path: 'catalogos/platillos',
           component: Platillos
+        },
+        {
+          path: 'plataforma/comandas',
+          component: Comandas
+        },
+        {
+          path: 'plataforma/cocina',
+          component: Cocina
         }
       ] 
     }

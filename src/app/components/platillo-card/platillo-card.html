@@ -1,0 +1,24 @@
+@if (platillo().estado === true) {
+    <div class="bg-[#0f172a] border border-[#334155] rounded-xl overflow-hidden cursor-pointer hover:border-blue-500 hover:bg-[#162032] transition-colors flex flex-col active:scale-95"
+        (click)="alSeleccionarPlatillo()">
+   
+        <!-- Foto -->
+        <div class="h-32 w-full bg-gray-800 relative shrink-0">
+            <img 
+                class="w-full h-full object-cover" 
+                [src]="rutaImagen()" 
+                [alt]="platillo().nombre"
+                onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNGI1NTYzIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIwIDIxdi0yYTRgNCAwIDAgMC00LTRINThhNCA0IDAgMCAwLTQgMnYyIi8+PGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ii8+PC9zdmc+'">
+        </div>
+
+        <!-- Informacion -->
+        <div class="p-3 flex flex-col flex-1 justify-between gap-2">
+            <div>
+                <h3 class="font-bold text-sm text-white leading-tight">{{ platillo().nombre }}</h3>
+                <p class="text-[11px] text-gray-400 mt-1 line-clamp-2">{{ platillo().descripcion }}</p>
+            </div>
+            <span class="text-emerald-400 font-bold text-sm">$ {{ platillo().precio }}</span>
+        </div>
+    
+    </div>
+}

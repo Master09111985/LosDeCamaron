@@ -46,7 +46,7 @@ namespace FlowFood.Controllers
     }
 
     // ==========================================
-    // POST: Crear Comanda (Tu lógica impecable)
+    // POST: Crear Comanda
     // ==========================================
     [HttpPost("crearcomanda")]
     [ProducesResponseType(StatusCodes.Status201Created)]
@@ -105,7 +105,6 @@ namespace FlowFood.Controllers
         ClienteId = crearDto.ClienteId,
         FechaHoraAgendada = crearDto.FechaHoraAgendada,
         PlataformaId = crearDto.PlataformaId,
-        MetodoPagoId = crearDto.MetodoPagoId,
         Estatus = estatusInicial,
         Subtotal = totalCalculado,
         Total = totalCalculado,

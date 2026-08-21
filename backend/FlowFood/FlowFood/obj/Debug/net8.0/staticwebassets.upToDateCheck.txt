@@ -3,3 +3,5 @@ wwwroot\fotos-empleados\7de30bac-0294-4893-b96e-7269dbc63f61.jpg
 wwwroot\fotos-empleados\8af19559-b9ba-4099-b399-4da9d066c3c1.png
 wwwroot\fotos-empleados\d0a39eb9-b7b7-419c-a8d2-dbe58a9898b4.jpeg
 wwwroot\platillos\77bdfc2a-7668-4d14-9c9b-766953128d3b.jpg
+wwwroot\platillos\50d1d36f-d657-42af-ae19-ecbb8ff1b9d4.jpg
+wwwroot\platillos\5d7efbc0-533c-49b9-9ac6-62abe23611aa.jpg

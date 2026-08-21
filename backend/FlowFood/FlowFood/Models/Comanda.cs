@@ -44,8 +44,7 @@ namespace FlowFood.Models
     [ForeignKey("PlataformaId")]
     public Plataforma Plataforma { get; set; }
 
-    [Required]
-    public int MetodoPagoId { get; set; }
+    public int? MetodoPagoId { get; set; }
     [ForeignKey("MetodoPagoId")]
     public MetodoPago MetodoPago { get; set; }
 

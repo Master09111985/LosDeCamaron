@@ -1,35 +1,40 @@
-// ==========================================
-// DTOs PARA ENVIAR AL BACKEND
-// ==========================================
+export interface ComandaDetalleDto {
+  id: number;
+  platilloId: number;
+  platilloNombre: string;
+  cantidad: number;
+  precioUnitario: number;
+  subtotal: number;
+  notas?: string;
+}
 
-export interface CrearComandaDto {
-  tipoPedido: number; // 1: Local, 2: Llevar, 3: Domicilio, 4: Agendado, 5: Plataforma
+export interface ComandaDto {
+  id: number;
+  tipoPedido: string;
   numeroMesa?: string;
-  nombreClienteLlevar?: string;
-  clienteId?: number;
-  fechaHoraAgendada?: string; // Formato ISO de fecha (Ej. 2026-08-10T14:30:00Z)
-  plataformaId?: number;
-  metodoPagoId: number;
-  detalles: CrearComandaDetalleDto[];
+  plataformaNombre?: string;
+  direccionEntrega?: string;
+  horaEntrega?: string;
+  subtotal: number;
+  total: number;
+  fechaRegistro: string;
+  estado: string;
+  detalles: ComandaDetalleDto[];
 }
 
 export interface CrearComandaDetalleDto {
   platilloId: number;
   cantidad: number;
   precioUnitario: number;
-  notas?: string; // Las notas para el cocinero (Sin cebolla, etc.)
+  notas?: string;
 }
 
-// ==========================================
-// INTERFAZ VISUAL PARA EL CARRITO (FRONTEND)
-// ==========================================
-
-export interface ItemCarrito {
-  platilloId: number;
-  nombre: string;
-  fotoUrl: string;
-  cantidad: number;
-  precioUnitario: number;
-  subtotal: number;
-  notas: string;
+export interface CrearComandaDto {
+  tipoPedido: number;
+  numeroMesa?: string;
+  nombreClienteLlevar?: string;
+  clienteId?: number;
+  fechaHoraAgendada?: string;
+  plataformaId?: number;
+  detalles: CrearComandaDetalleDto[];
 }

@@ -22,6 +22,7 @@ builder.Services.AddScoped<IAlmacenRepositorio, AlmacenRepositorio>();
 builder.Services.AddScoped<IBajaRepositorio, BajaRepositorio>();
 builder.Services.AddScoped<ICategoriaRepositorio, CategoriaRepositorio>();
 builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
+builder.Services.AddScoped<IComandaRepositorio, ComandaRepositorio>();
 builder.Services.AddScoped<IEmpleadoRepositorio, EmpleadoRepositorio>();
 builder.Services.AddScoped<IInventarioRepositorio, InventarioRepositorio>();
 builder.Services.AddScoped<IMetodoPagoRepositorio, MetodoPagoRepositorio>();

@@ -1113,6 +1113,101 @@
         }
       }
     },
+    "/flowfood/comanda/listar": {
+      "get": {
+        "tags": [
+          "Comanda"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/flowfood/comanda/buscar/{id}": {
+      "get": {
+        "tags": [
+          "Comanda"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/flowfood/comanda/crearcomanda": {
       "post": {
         "tags": [
@@ -6119,7 +6214,6 @@
       "CrearComandaDto": {
         "required": [
           "detalles",
-          "metodoPagoId",
           "tipoPedido"
         ],
         "type": "object",
@@ -6152,10 +6246,6 @@
             "type": "integer",
             "format": "int32",
             "nullable": true
-          },
-          "metodoPagoId": {
-            "type": "integer",
-            "format": "int32"
           },
           "detalles": {
             "type": "array",

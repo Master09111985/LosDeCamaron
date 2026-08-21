@@ -14,8 +14,6 @@ namespace FlowFood.Models.Dtos
     public DateTime? FechaHoraAgendada { get; set; }
     public int? PlataformaId { get; set; }
 
-    [Required(ErrorMessage = "Debe seleccionar un método de pago")]
-    public int MetodoPagoId { get; set; }
 
     [Required(ErrorMessage = "La comanda debe contener al menos un detalle")]
     public List<CrearComandaDetalleDto> Detalles { get; set; }

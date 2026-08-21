@@ -732,6 +732,46 @@
   },
   {
     "ContainingType": "FlowFood.Controllers.ComandaController",
+    "Method": "GetComanda",
+    "RelativePath": "flowfood/comanda/buscar/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 403
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      }
+    ]
+  },
+  {
+    "ContainingType": "FlowFood.Controllers.ComandaController",
     "Method": "CambiarEstatus",
     "RelativePath": "flowfood/comanda/cambiarestatus/{comandaId}",
     "HttpMethod": "PATCH",
@@ -813,6 +853,31 @@
         "Type": "System.Void",
         "MediaTypes": [],
         "StatusCode": 500
+      }
+    ]
+  },
+  {
+    "ContainingType": "FlowFood.Controllers.ComandaController",
+    "Method": "GetComandas",
+    "RelativePath": "flowfood/comanda/listar",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 403
       }
     ]
   },

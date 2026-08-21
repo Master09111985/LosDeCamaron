@@ -1,1 +1,110 @@
-<p>cocina works!</p>
+<div class="h-[calc(100vh-5rem)] bg-[#0f172a] flex flex-col overflow-hidden">
+
+    <div class="px-6 py-4 bg-[#1e293b] border-b border-[#334155] flex justify-between items-center shrink-0 shadow-md z-10">
+        <div>
+            <h1 class="text-2xl font-black text-white flex items-center gap-3 tracking-tight">
+                <mat-icon class="text-orange-500 scale-125">local_fire_departament</mat-icon>
+                KITCHEN DISPLAY
+            </h1>
+            <p class="text-gray-400 text-sm mt-1 font-medium">Órdenes pendientes por preparar: <span class="text-white font-bold">{{ comandasCocina().length }}</span></p>
+        </div>
+
+        <div class="text-right">
+            <div class="text-emerald-400 font-mono font-bold text-xl flex items-center gap-2">
+                <mat-icon class="animate-pulse text-sm">fiber_manual-record</mat-icon>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="flex-1 overflow-x-auto overflow-y-hidden p-6 custom-scrollbar">
+
+        @if (cargando()) {
+            <div class="h-full flex flex-col items-center justify-center text-gray-500">
+                <mat-icon class="animate-spin text-5xl mb-4 text-blue-500">refresh</mat-icon>
+                <p class="text-xl font-bold">Cargando comandas...</p>
+            </div>
+        } @else if (comandasCocina().length === 0) {
+            <div class="h-full flex flex-col items-center justify-center text-gray-600 opacity-50">
+                <mat-icon class="text-8xl mb-4">check_circle_outline</mat-icon>
+                <p class="text-2xl font-bold">¡Cocina Limpia!</p>
+                <p class="text-lg mt-2">No hay órdenes pendientes en este momento.</p>
+            </div>
+        } @else {
+            <div>
+
+                @for (comanda of comandasCocina(); track comanda.id) {
+                    <div class="bg-[#1e293b] w-87.5 shrink-0 rounded-xl border-t-4 border-t-orange-500 shadow-2xl flex flex-col max-h-full border-x border-b border-[#334155] animate-slide-up">
+
+                        <div class="p-4 border-b border-gray-700 bg-gray-800/50">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="bg-orange-500/20 text-orange-400 font-black px-3 py-1 rounded text-lg">
+                                    #{{ comanda.id }}
+                                </span>
+                                <span class="text-gray-400 font-mono text-sm">
+                                    {{ comanda.fechaRegistro | date:'HH:mm' }}
+                                </span>
+                            </div>
+
+                            <h2 class="text-white font-black text-xl uppercase tracking-wider">
+                                {{ comanda.tipoPedido }}
+                            </h2>
+                            <p class="text-gray-400 font-bold text-sm mt-1">
+                                @if (comanda.tipoPedido === 'Local') {
+                                    <mat-icon class="text-[16px] align-middle mr-1">table_restaurant</mat-icon> {{ comanda.numeroMesa }}
+                                } @else {
+                                    <mat-icon class="text-[16px] align-middle mr-1">person</mat-icon> {{ comanda.direccionEntrega || 'Cliente para llevar' }}
+                                }
+                            </p>
+                        </div>
+
+                        <div class="flex-1 overflow-y-auto p-2 custom-scrollbar bg-[#0f172a]/50">
+                            <ul class="divide-y divide-gray-700/50">
+                                @for (detalle of comanda.detalles; track detalle.id) {
+                                    <li class="py-3 px-2">
+                                        <div class="flex gap-3 items-start">
+                                            <span class="text-2xl font-black text-white w-8 text-center shrink-0 mt-0.5">
+                                                {{ detalle.cantidad }}x
+                                            </span>
+                                            
+                                            <div class="flex-1">
+                                                <span class="text-lg font-bold text-gray-200 leading-tight block">
+                                                    {{ detalle.platilloNombre }}
+                                                </span>
+                                                
+                                                @if (detalle.notas) {
+                                                    <div class="mt-1.5 bg-red-500/10 border border-red-500/20 rounded p-2 flex gap-2">
+                                                        <mat-icon class="text-red-400 text-sm shrink-0 mt-0.5">warning</mat-icon>
+                                                        <span class="text-red-400 font-bold text-sm uppercase tracking-wide">
+                                                            {{ detalle.notas }}
+                                                        </span>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+
+                        <div class="p-4 border-t border-gray-700 bg-[#1e293b] shrink-0 mt-auto">
+                            <button (click)="marcarComoLista(comanda)"
+                                    [disabled]="procesandoId() === comanda.id"
+                                    class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-lg py-4 rounded-xl flex justify-center items-center gap-2 transition-all active:scale-95 shadow-lg shadow-emerald-600/20 disabled:opacity-50">
+                                @if (procesandoId() === comanda.id) {
+                                    <mat-icon class="animate-spin">refresh</mat-icon> Procesando...
+                                } @else {
+                                    <mat-icon>done_all</mat-icon> ORDEN LISTA
+                                }
+                            </button>
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+
+    </div>
+
+</div>
