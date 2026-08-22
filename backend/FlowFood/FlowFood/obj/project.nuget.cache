@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "j53w4CsgqFI=",
+  "dgSpecHash": "+vecHkfmVxE=",
   "success": true,
   "projectFilePath": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
   "expectedPackageFiles": [
@@ -96,7 +96,7 @@
     {
       "code": "NU1900",
       "level": "Warning",
-      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.",
+      "message": "Error al obtener los datos de vulnerabilidad del paquete: No se puede cargar el índice de servicio del origen https://api.nuget.org/v3/index.json.",
       "projectPath": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
       "warningLevel": 1,
       "filePath": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
