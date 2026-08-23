@@ -42,3 +42,22 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# ==========================
+# .NET 8 / C# Backend
+# ==========================
+[Bb]in/
+[Oo]bj/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Visual Studio / VS Code para .NET
+.vs/
+*.user
+*.userosscache
+*.suo
+.dotnet/
+
+# Publicaciones y respaldos
+*.[Ll][Oo][Gg]

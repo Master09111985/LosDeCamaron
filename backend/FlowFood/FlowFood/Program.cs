@@ -48,7 +48,9 @@ builder.Services.AddCors(options =>
   {
     policy.WithOrigins(
             "http://localhost:4200",   // ng serve por defecto
-            "https://localhost:4200"
+            "https://localhost:4200",
+            "https://CamaronServer:9001",
+            "https://camaronserver:9001"
           )
           .AllowAnyHeader()
           .AllowAnyMethod();
