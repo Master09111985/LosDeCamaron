@@ -147,6 +147,40 @@ namespace FlowFood.Controllers
     }
 
     // ==========================================
+    // PATCH: Pagar Comanda (Caja Registradora)
+    // ==========================================
+    [HttpPatch("pagar/{comandaId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> PagarComanda(int comandaId, [FromBody] int metodoPagoId)
+    {
+      if (!await _coRepo.ExisteComandaAsync(comandaId))
+        return NotFound();
+
+      var comanda = await _coRepo.GetComandaAsync(comandaId);
+
+      if (comanda == null)
+        return NotFound();
+
+      // Asignamos el método de pago y pasamos el estatus a 3 (Pagado)
+      comanda.MetodoPagoId = metodoPagoId;
+      comanda.Estatus = 3;
+
+      // Guardamos la comanda actualizada
+      if (!await _coRepo.ActualizarComandaAsync(comanda))
+      {
+        ModelState.AddModelError("", "Error al procesar el pago de la comanda en la base de datos.");
+        return StatusCode(500, ModelState);
+      }
+
+      return Ok(new { mensaje = "Cuenta cobrada exitosamente." });
+    }
+
+
+
+    // ==========================================
     // METODO PRIVADO: Mapeo manual a DTO
     // ==========================================
     private ComandaDto MapearComandaDto(Comanda comanda)

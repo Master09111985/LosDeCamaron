@@ -44,6 +44,13 @@ namespace FlowFood.Repositorio
       return await _context.Comandas.AnyAsync(c => c.Id == id);
     }
 
+    // --- Paga de Comanda --
+    public async Task<bool> ActualizarComandaAsync(Comanda comanda)
+    {
+      _context.Comandas.Update(comanda);
+      return await GuardarAsync();
+    }
+
     // --- CRUD y Operaciones ---
     public async Task<bool> CrearComandaAsync(Comanda comanda)
     {

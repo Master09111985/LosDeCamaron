@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. DbContext - SQL Server
 // ==============================
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("FlowFoodConnection"))
+    options.UseSqlServer(builder.Configuration.GetConnectionString("FlowFoodServer"))
            .LogTo(Console.WriteLine, LogLevel.Information)
            .EnableSensitiveDataLogging());
 

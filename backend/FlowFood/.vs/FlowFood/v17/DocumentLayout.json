@@ -1,14 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\",
+  "WorkspaceRootPath": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\desktop\\trabajo\\angular\\practica\\newversion\\losdecamaron\\backend\\flowfood\\flowfood\\controllers\\clientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\controllers\\clientecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\desktop\\trabajo\\angular\\practica\\newversion\\losdecamaron\\backend\\flowfood\\flowfood\\controllers\\comandacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\controllers\\comandacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\luis padilla\\desktop\\angular\\lastversion\\losdecamaron\\backend\\flowfood\\flowfood\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -31,27 +27,15 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ClienteController.cs",
-              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Controllers\\ClienteController.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Controllers\\ClienteController.cs",
-              "ToolTip": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Controllers\\ClienteController.cs",
-              "RelativeToolTip": "FlowFood\\Controllers\\ClienteController.cs",
-              "ViewState": "AgIAAH4AAAAAAAAAAADwv4UAAAAvAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-21T16:17:24.259Z",
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\appsettings.json",
+              "RelativeDocumentMoniker": "FlowFood\\appsettings.json",
+              "ToolTip": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\appsettings.json",
+              "RelativeToolTip": "FlowFood\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-08-23T16:21:56.694Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ComandaController.cs",
-              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Controllers\\ComandaController.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Controllers\\ComandaController.cs",
-              "ToolTip": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Controllers\\ComandaController.cs",
-              "RelativeToolTip": "FlowFood\\Controllers\\ComandaController.cs",
-              "ViewState": "AgIAAKsAAAAAAAAAAAAswLcAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-21T16:07:50.164Z"
             }
           ]
         },

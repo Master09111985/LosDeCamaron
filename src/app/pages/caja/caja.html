@@ -1,1 +1,138 @@
-<p>caja works!</p>
+<div class="flex flex-col lg:flex-row h-[calc(100vh-5rem)] p-4 gap-4 bg-[#0f172a]">
+    
+    <!-- ========================================== -->
+    <!-- LADO IZQUIERDO: Cuentas Pendientes         -->
+    <!-- ========================================== -->
+    <div class="w-full lg:w-1/3 flex flex-col bg-[#1e293b] rounded-xl shadow-lg border border-[#334155] overflow-hidden shrink-0">
+        <div class="p-4 border-b border-[#334155] bg-[#0f172a] flex justify-between items-center">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <mat-icon class="text-emerald-400">point_of_sale</mat-icon> Cuentas Pendientes
+            </h2>
+            <span class="bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded text-sm">
+                {{ comandasPorCobrar().length }}
+            </span>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar flex flex-col gap-3">
+            @if (cargando()) {
+                <div class="text-center text-gray-500 mt-10">
+                    <mat-icon class="animate-spin text-4xl mb-2">refresh</mat-icon>
+                    <p>Cargando comandas...</p>
+                </div>
+            } @else if (comandasPorCobrar().length === 0) {
+                <div class="text-center text-gray-500 mt-10 opacity-50">
+                    <mat-icon class="text-6xl mb-2">task_alt</mat-icon>
+                    <p class="font-bold text-lg">No hay cuentas pendientes</p>
+                </div>
+            }
+
+            @for (comanda of comandasPorCobrar(); track comanda.id) {
+                <div class="bg-[#0f172a] border border-[#334155] p-4 rounded-xl cursor-pointer hover:border-emerald-500 transition-colors"
+                     [ngClass]="{'border-emerald-500 bg-[#162032]': comandaSeleccionada()?.id === comanda.id}"
+                     (click)="seleccionarComanda(comanda)">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <span class="bg-blue-500/20 text-blue-400 font-black px-2 py-1 rounded text-sm">#{{ comanda.id }}</span>
+                            <span class="text-gray-300 font-bold ml-2 uppercase text-sm">{{ comanda.tipoPedido }}</span>
+                        </div>
+                        <span class="text-emerald-400 font-black text-lg">${{ comanda.total | number:'1.2-2' }}</span>
+                    </div>
+                    <p class="text-gray-400 text-sm flex items-center gap-1">
+                        <mat-icon class="text-[16px]">person</mat-icon> 
+                        {{ comanda.numeroMesa || comanda.direccionEntrega || 'Cliente' }}
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- LADO DERECHO: Panel de Cobro               -->
+    <!-- ========================================== -->
+    <div class="flex-1 flex flex-col bg-[#1e293b] rounded-xl shadow-lg border border-[#334155] overflow-hidden">
+        @if (comandaSeleccionada(); as comanda) {
+            
+            <div class="p-6 border-b border-[#334155] bg-[#0f172a]">
+                <h2 class="text-2xl font-black text-white">Cobrar Orden #{{ comanda.id }}</h2>
+                <p class="text-gray-400 mt-1">Registrando pago para pedido {{ comanda.tipoPedido }}</p>
+            </div>
+
+            <!-- Resumen de la Orden (Scrollable) -->
+            <div class="flex-1 overflow-y-auto p-6 bg-[#0f172a]/50">
+                <h3 class="text-gray-400 font-bold uppercase text-xs tracking-wider mb-4">Detalle de Consumo</h3>
+                <div class="bg-[#1e293b] rounded-xl border border-[#334155] p-4 mb-6">
+                    @for (detalle of comanda.detalles; track detalle.id) {
+                        <div class="flex justify-between items-center py-2 border-b border-gray-700/50 last:border-0">
+                            <span class="text-gray-300"><span class="font-bold text-white">{{ detalle.cantidad }}x</span> {{ detalle.platilloNombre }}</span>
+                            <span class="text-gray-400 font-mono">${{ detalle.subtotal | number:'1.2-2' }}</span>
+                        </div>
+                    }
+                </div>
+
+                <h3 class="text-gray-400 font-bold uppercase text-xs tracking-wider mb-4">Forma de Pago</h3>
+                
+                <!-- Opciones de Pago (Filtradas Dinámicamente) -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+                    @for (metodo of metodosPagoPermitidos(); track metodo.id) {
+                        <div class="bg-[#1e293b] border border-[#334155] p-4 rounded-xl cursor-pointer text-center hover:bg-gray-800 transition-colors"
+                             [ngClass]="{'border-emerald-500 bg-emerald-900/20': metodoPagoSeleccionado() === metodo.id}"
+                             (click)="metodoPagoSeleccionado.set(metodo.id)">
+                            <mat-icon class="text-gray-400 mb-1" [ngClass]="{'text-emerald-400': metodoPagoSeleccionado() === metodo.id}">
+                                {{ metodo.nombre.toLowerCase().includes('efectivo') ? 'payments' : 
+                                   metodo.nombre.toLowerCase().includes('tarjeta') ? 'credit_card' : 'account_balance' }}
+                            </mat-icon>
+                            <span class="block font-bold text-sm text-gray-300" [ngClass]="{'text-emerald-400': metodoPagoSeleccionado() === metodo.id}">
+                                {{ metodo.nombre }}
+                            </span>
+                        </div>
+                    }
+                </div>
+
+                <!-- Input de Efectivo (Aparece solo si elige Efectivo) -->
+                @if (esEfectivo()) {
+                    <div class="bg-[#1e293b] border border-blue-500/30 p-4 rounded-xl mb-6 animate-slide-up">
+                        <label class="text-sm font-bold text-blue-400 uppercase tracking-wide block mb-2">Efectivo Recibido</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-2xl text-gray-400 font-bold">$</span>
+                            <input type="number" [(ngModel)]="efectivoRecibido" class="w-full bg-[#0f172a] border border-[#334155] rounded-xl py-4 pl-10 pr-4 text-3xl font-black text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="0.00">
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Panel Inferior (Totales y Botón) -->
+            <div class="p-6 bg-[#1e293b] border-t border-[#334155] shrink-0">
+                <div class="flex justify-between items-end mb-4">
+                    <div>
+                        @if (esEfectivo()) {
+                            <span class="text-gray-400 font-bold uppercase text-xs tracking-wider block mb-1">Cambio a entregar</span>
+                            <span class="text-3xl font-black" [ngClass]="cambio() > 0 ? 'text-orange-400' : 'text-gray-600'">
+                                ${{ cambio() | number:'1.2-2' }}
+                            </span>
+                        }
+                    </div>
+                    <div class="text-right">
+                        <span class="text-gray-400 font-bold uppercase text-xs tracking-wider block mb-1">Total a Pagar</span>
+                        <span class="text-4xl font-black text-emerald-400">${{ comanda.total | number:'1.2-2' }}</span>
+                    </div>
+                </div>
+
+                <button (click)="procesarCobro()" [disabled]="!metodoPagoSeleccionado() || (esEfectivo() && ((efectivoRecibido() || 0) < comanda.total)) || procesando()"
+                        class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xl py-5 rounded-xl flex justify-center items-center gap-2 transition-all shadow-lg shadow-emerald-600/20 active:scale-95 disabled:opacity-50 disabled:active:scale-100">
+                    @if (procesando()) {
+                        <mat-icon class="animate-spin">refresh</mat-icon> PROCESANDO PAGO...
+                    } @else {
+                        <mat-icon>done_all</mat-icon> MARCAR COMO PAGADO
+                    }
+                </button>
+            </div>
+
+        } @else {
+            <div class="h-full flex flex-col items-center justify-center text-gray-500 opacity-60">
+                <mat-icon class="text-8xl mb-4">point_of_sale</mat-icon>
+                <p class="text-2xl font-bold">Caja Registradora</p>
+                <p class="text-lg mt-2">Selecciona una comanda del panel izquierdo para cobrar</p>
+            </div>
+        }
+    </div>
+</div>

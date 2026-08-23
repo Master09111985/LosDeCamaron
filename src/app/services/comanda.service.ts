@@ -27,4 +27,8 @@ export class ComandaService {
   cambiarEstatus(id: number, nuevoEstatus: number): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/cambiarestatus/${id}`, nuevoEstatus);
   }
+
+  pagarComanda(id: number, metodoPagoId: number): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/pagar/${id}`, metodoPagoId);
+  }
 }

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FlowFood")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+85e3476415e893ba0a3bb948e7a914c940a63525")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+63fe34ca3352639f7f889ff3bd8ea91614964e11")]
 [assembly: System.Reflection.AssemblyProductAttribute("FlowFood")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FlowFood")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
