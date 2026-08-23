@@ -1,5 +1,5 @@
 export const environment = {
-  production: false,
-  apiUrl: 'https://localhost:9000/flowfood/',
-  backendUrl: 'https://localhost:9000'
+  production: true,
+  apiUrl: 'http://localhost:9000/flowfood/',
+  backendUrl: 'http://localhost:9000'
 };
