@@ -1,0 +1,69 @@
+<div class="min-h-screen flex items-center justify-center bg-[#111] relative animate-fade-in p-4">
+    
+    <!-- Contenedor principal de la tarjeta -->
+    <div class="w-full max-w-md bg-[#1a1a1a] rounded-2xl border border-gray-800 shadow-2xl p-8 relative z-10 animate-slide-up">
+        
+        <!-- Header del Login -->
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-blue-600/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-500/20">
+                <mat-icon class="text-blue-500 text-3xl" style="height: 32px; width: 32px;">restaurant</mat-icon>
+            </div>
+            <h1 class="text-2xl font-bold text-white tracking-tight">LosDeCamaron</h1>
+            <p class="text-gray-400 text-sm mt-2">Ingresa tus credenciales para continuar</p>
+        </div>
+
+        <!-- Formulario -->
+        <form [formGroup]="loginForm" (ngSubmit)="iniciarSesion()" class="space-y-5">
+            
+            <!-- Input Usuario -->
+            <div class="space-y-1.5">
+                <label for="nombre" class="text-sm font-medium text-gray-300">Usuario</label>
+                <div class="relative">
+                    <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">person</mat-icon>
+                    <input 
+                        type="text" 
+                        id="nombre" 
+                        formControlName="nombre"
+                        placeholder="Ingresa tu usuario"
+                        class="w-full bg-[#111] border border-gray-700 rounded-lg py-3 pl-10 pr-3 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white"
+                        [class.border-red-500]="loginForm.get('nombre')?.invalid && loginForm.get('nombre')?.touched">
+                </div>
+                @if (loginForm.get('nombre')?.invalid && loginForm.get('nombre')?.touched) {
+                    <span class="text-xs text-red-400">El usuario es requerido</span>
+                }
+            </div>
+
+            <!-- Input Contraseña -->
+            <div class="space-y-1.5">
+                <label for="password" class="text-sm font-medium text-gray-300">Contraseña</label>
+                <div class="relative">
+                    <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">lock</mat-icon>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        formControlName="password"
+                        placeholder="••••••••"
+                        class="w-full bg-[#111] border border-gray-700 rounded-lg py-3 pl-10 pr-3 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white"
+                        [class.border-red-500]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+                </div>
+                @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+                    <span class="text-xs text-red-400">La contraseña es requerida</span>
+                }
+            </div>
+
+            <!-- Botón de Submit -->
+            <button 
+                type="submit"
+                [disabled]="loginForm.invalid || cargando()"
+                class="w-full py-3 mt-4 flex justify-center items-center gap-2 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95">
+                
+                @if (cargando()) {
+                    <mat-icon class="animate-spin text-base">refresh</mat-icon>
+                    <span>Verificando...</span>
+                } @else {
+                    <span>Iniciar Sesión</span>
+                }
+            </button>
+        </form>
+    </div>
+</div>
