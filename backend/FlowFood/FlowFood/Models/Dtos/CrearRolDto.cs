@@ -9,7 +9,7 @@ namespace FlowFood.Models.Dtos
     public string Nombre { get; set; }
 
     [Required(ErrorMessage = "El campo Categoria es obligatorio")]
-    public bool Categoria { get; set; }
+    public string Categoria { get; set; }
 
     [Required(ErrorMessage = "El campo Funcion es obligatorio")]
     public bool Funcion { get; set; }

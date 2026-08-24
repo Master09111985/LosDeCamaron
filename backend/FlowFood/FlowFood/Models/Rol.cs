@@ -9,7 +9,7 @@ namespace FlowFood.Models
     [Required]
     public string Nombre { get; set; }
     [Required]
-    public bool Categoria { get; set; }
+    public string Categoria { get; set; }
     [Required]
     public bool Funcion { get; set; }
   }
