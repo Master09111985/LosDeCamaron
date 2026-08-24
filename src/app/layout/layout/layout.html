@@ -69,7 +69,107 @@
 
                       @if (isSidebarOpen() && isCatalogosOpen()) {
                           <div class="pl-11 space-y-2 py-2">
-                              <!-- EJEMPLO DE PERMISOS INDIVIDUALES: Ajusta el texto al de tu Base de Datos -->
+
+                            <a
+                              routerLink="/catalogos/almacenes" 
+                              routerLinkActive="text-blue-500 font-semibold border-blue-600" 
+                              class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
+                              >Almacenes
+                            </a>
+
+                            <a
+                              routerLink="/catalogos/clientes" 
+                              routerLinkActive="text-blue-500 font-semibold border-blue-600" 
+                              class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
+                              >Clientes
+                            </a>
+
+                            <a
+                              routerLink="/catalogos/puestos" 
+                              routerLinkActive="text-blue-500 font-semibold border-blue-600" 
+                              class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
+                              >Puestos
+                            </a>
+
+                            <a
+                              routerLink="/catalogos/empleados" 
+                              routerLinkActive="text-blue-500 font-semibold border-blue-600" 
+                              class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
+                              >Empleados
+                            </a>
+
+                            <a
+                              routerLink="/catalogos/unidades" 
+                              routerLinkActive="text-blue-500 font-semibold border-blue-600" 
+                              class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
+                              >Unidades de Medida
+                            </a>
+
+                            <a
+                              routerLink="/catalogos/productos" 
+                              routerLinkActive="text-blue-500 font-semibold border-blue-600" 
+                              class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
+                              >Productos
+                            </a>
+
+                            <a
+                              routerLink="/catalogos/motivos-salida" 
+                              routerLinkActive="text-blue-500 font-semibold border-blue-600" 
+                              class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
+                              >Motivos Salida
+                            </a>
+
+                            <a
+                              routerLink="/catalogos/inventarios" 
+                              routerLinkActive="text-blue-500 font-semibold border-blue-600" 
+                              class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
+                              >Inventario
+                            </a>
+
+                            <a
+                              routerLink="/catalogos/plataformas" 
+                              routerLinkActive="text-blue-500 font-semibold border-blue-600" 
+                              class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
+                              >Plataformas
+                            </a>
+
+                            <a
+                              routerLink="/catalogos/permisos" 
+                              routerLinkActive="text-blue-500 font-semibold border-blue-600" 
+                              class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
+                              >Permisos
+                            </a>
+
+                            <a
+                              routerLink="/catalogos/roles" 
+                              routerLinkActive="text-blue-500 font-semibold border-blue-600" 
+                              class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
+                              >Roles
+                            </a>
+
+                            <a
+                              routerLink="/catalogos/metodo-pago" 
+                              routerLinkActive="text-blue-500 font-semibold border-blue-600" 
+                              class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
+                              >Metodo Pago
+                            </a>
+
+                            <a
+                              routerLink="/catalogos/platillos" 
+                              routerLinkActive="text-blue-500 font-semibold border-blue-600" 
+                              class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
+                              >Platillos
+                            </a>
+
+                            <a
+                              routerLink="/catalogos/usuarios" 
+                              routerLinkActive="text-blue-500 font-semibold border-blue-600" 
+                              class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
+                              >Usuarios
+                            </a>
+
+
+                              <!-- EJEMPLO DE PERMISOS INDIVIDUALES: Ajustar el texto a la Base de Datos 
                               @if (authService.tienePermiso('Puestos')) {
                                 <a routerLink="/catalogos/puestos" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Puestos</a>
                               }
@@ -82,7 +182,8 @@
                               @if (authService.tienePermiso('Roles')) {
                                 <a routerLink="/catalogos/roles" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Roles</a>
                               }
-                              <!-- Agrega los @if a los demás links como Almacenes, Clientes, etc. de la misma manera -->
+                            -->
+                    
                           </div>
                       }
                   </div>

@@ -988,3 +988,4 @@ C:\Users\Luis Padilla\Desktop\Angular\LastVersion\LosDeCamaron\backend\FlowFood\
 C:\Users\Luis Padilla\Desktop\Angular\LastVersion\LosDeCamaron\backend\FlowFood\FlowFood\obj\Debug\net8.0\FlowFood.csproj.Up2Date
 C:\Users\Luis Padilla\Desktop\Angular\LastVersion\LosDeCamaron\backend\FlowFood\FlowFood\obj\Debug\net8.0\FlowFood.genruntimeconfig.cache
 C:\Users\Luis Padilla\Desktop\Angular\LastVersion\LosDeCamaron\backend\FlowFood\FlowFood\obj\Debug\net8.0\ref\FlowFood.dll
+C:\Users\Luis Padilla\Desktop\Angular\LastVersion\LosDeCamaron\backend\FlowFood\FlowFood\obj\Debug\net8.0\FlowFood.sourcelink.json

@@ -75,7 +75,7 @@ namespace FlowFood.Controllers
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
       if (loginDto == null || string.IsNullOrEmpty(loginDto.Nombre) || string.IsNullOrEmpty(loginDto.Password))
-        return BadRequest(new { mensaje = 'Usuario y password son requeridos'});
+        return BadRequest(new { mensaje = "Usuario y password son requeridos" });
 
       var usuario = await _usuRepo.GetUsuarioXNombreAsync(loginDto.Nombre);
 
