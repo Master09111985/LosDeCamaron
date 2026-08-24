@@ -1,0 +1,139 @@
+<div class="h-full flex flex-col relative animate-fade-in">
+    <!-- Header Area -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-white tracking-tight">Usuarios</h1>
+            <p class="text-gray-400 text-sm mt-1">Gestión de accesos y cuentas del sistema.</p>
+        </div>
+        <button (click)="abrirModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-600/20 active:scale-95">
+            <mat-icon class="text-base">add</mat-icon>
+            Nuevo Usuario
+        </button>
+    </div>
+
+    <!-- Content Area -->
+    <div class="flex-1 overflow-hidden relative min-h-0 bg-[#111] rounded-xl border border-gray-800 shadow-2xl">
+        @if (cargando()) {
+            <div class="absolute inset-0 z-10 bg-[#111]/80 backdrop-blur-sm flex flex-col items-center justify-center">
+                <mat-icon class="animate-spin text-blue-600 text-base mb-4">refresh</mat-icon>
+                <span class="text-gray-400 font-medium">Cargando usuarios...</span>
+            </div>
+        }
+
+        <div class="h-full overflow-auto custom-scrollbar">
+            <table class="w-full text-left border-collapse">
+                <thead class="sticky top-0 bg-[#1a1a1a] z-10 border-b border-gray-800">
+                    <tr>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">Nombre</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">Rol</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">Empleado</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">Estado</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-800">
+                    @for (usuario of usuarios(); track usuario.id) {
+                        <tr class="hover:bg-gray-800/20 transition-colors group">
+                            <td class="px-6 py-4 text-sm font-medium text-white">{{ usuario.nombre }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-300">
+                                <span class="bg-gray-800 px-2 py-1 rounded-md text-xs">{{ usuario.rolNombre }}</span>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-400">{{ usuario.empleadoNombre || 'N/A' }}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2.5 py-1 text-xs font-medium rounded-full border"
+                                    [class.bg-emerald-500/10]="usuario.estado"
+                                    [class.text-emerald-400]="usuario.estado"
+                                    [class.border-emerald-500/20]="usuario.estado"
+                                    [class.bg-red-500/10]="!usuario.estado"
+                                    [class.text-red-400]="!usuario.estado"
+                                    [class.border-red-500/20]="!usuario.estado">
+                                    {{ usuario.estado ? 'Activo' : 'Inactivo' }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button (click)="abrirModal(usuario)" class="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition-colors" title="Editar">
+                                        <mat-icon class="text-base">edit</mat-icon>
+                                    </button>
+                                    <button (click)="borrarUsuario(usuario)" class="p-2 text-red-400 hover:bg-red-400/10 rounded-md transition-colors" title="Eliminar">
+                                        <mat-icon class="text-base">delete</mat-icon>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    } @empty {
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                                <mat-icon class="text-base mb-4 opacity-50">people</mat-icon>
+                                <p class="text-lg">No hay usuarios registrados</p>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Formulario -->
+@if (modalAbierto()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+        <div class="bg-[#1a1a1a] rounded-2xl w-full max-w-md border border-gray-800 shadow-2xl flex flex-col overflow-hidden animate-slide-up">
+            <div class="flex justify-between items-center p-6 border-b border-gray-800">
+                <h2 class="text-xl font-bold text-white">{{ usuarioEditando() ? 'Editar Usuario' : 'Nuevo Usuario' }}</h2>
+                <button (click)="cerrarModal()" class="text-gray-500 hover:text-white transition-colors"><mat-icon>close</mat-icon></button>
+            </div>
+
+            <div class="p-6 overflow-y-auto">
+                <form [formGroup]="usuarioForm" (ngSubmit)="guardarUsuario()" class="space-y-4">
+                    
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-medium text-gray-300">Nombre de Usuario</label>
+                        <input type="text" formControlName="nombre" class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm text-white focus:border-blue-600 focus:outline-none" [class.border-red-500]="usuarioForm.get('nombre')?.invalid && usuarioForm.get('nombre')?.touched">
+                    </div>
+
+                    @if (!usuarioEditando()) {
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-medium text-gray-300">Contraseña</label>
+                            <input type="password" formControlName="password" class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm text-white focus:border-blue-600 focus:outline-none" [class.border-red-500]="usuarioForm.get('password')?.invalid && usuarioForm.get('password')?.touched">
+                        </div>
+                    }
+
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-medium text-gray-300">Rol</label>
+                        <select formControlName="rolId" class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm text-white focus:border-blue-600 focus:outline-none">
+                            <option value="">Seleccione un rol...</option>
+                            @for (rol of roles(); track rol.id) {
+                                <option [value]="rol.id">{{ rol.nombre }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-medium text-gray-300">Empleado Vinculado (Opcional)</label>
+                        <select formControlName="empleadoId" class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm text-white focus:border-blue-600 focus:outline-none">
+                            <option value="">Sin empleado...</option>
+                            @for (emp of empleados(); track emp.id) {
+                                <option [value]="emp.id">{{ emp.nombre }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-3 bg-[#111] rounded-lg border border-gray-700 mt-2">
+                        <input type="checkbox" id="estado" formControlName="estado" class="w-5 h-5 accent-blue-600 bg-[#111] border-gray-700 rounded">
+                        <label for="estado" class="text-sm font-medium text-gray-300 cursor-pointer">Usuario activo</label>
+                    </div>
+
+                    <div class="pt-4 flex gap-3">
+                        <button type="button" (click)="cerrarModal()" class="flex-1 py-2.5 rounded-lg border border-gray-700 text-sm font-semibold hover:bg-gray-800 text-gray-300">Cancelar</button>
+                        <button type="submit" [disabled]="usuarioForm.invalid || guardando()" class="flex-1 py-2.5 flex justify-center items-center gap-2 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-lg disabled:opacity-50">
+                            @if (guardando()) { <mat-icon class="animate-spin text-base">refresh</mat-icon> }
+                            @else { <mat-icon class="text-base">save</mat-icon> }
+                            {{ guardando() ? 'Guardando...' : 'Guardar' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
