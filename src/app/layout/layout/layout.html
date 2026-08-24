@@ -6,16 +6,23 @@
           <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white shadow-blue-600/20 shadow-md">
             LC
           </div>
-          <h1 class="text-xl font-bold tracking-tight text-white hidden sm:block">Los De Camarón</h1>
+          <!-- Nombre Dinámico -->
+          <h1 class="text-xl font-bold tracking-tight text-white hidden sm:block">
+            Bienvenido, {{ authService.usuarioActual()?.empleadoNombre || authService.usuarioActual()?.nombre }}
+          </h1>
           
           <button (click)="toggleSidebar()" class="p-1 rounded-lg hover:bg-gray-800 text-gray-400 hover:text-white transition-colors ml-2">
             <mat-icon>{{ isSidebarOpen() ? 'chevron_left' : 'menu' }}</mat-icon>
           </button>
         </div>
         <div class="ml-auto flex items-center gap-3">
-          <div class="text-xs text-gray-400 bg-gray-800 px-3 py-1 rounded-full hidden sm:block">Entorno: Producción</div>
-          <div class="w-8 h-8 rounded-full bg-blue-700/20 border border-blue-600/30 flex items-center justify-center text-blue-500 font-bold text-xs shadow-inner">
-            AD
+          <!-- Rol Dinámico -->
+          <div class="text-xs text-gray-400 bg-gray-800 px-3 py-1 rounded-full hidden sm:block">
+            Rol: {{ authService.usuarioActual()?.rolNombre || 'Sin Rol' }}
+          </div>
+          <!-- Iniciales Dinámicas -->
+          <div class="w-8 h-8 rounded-full bg-blue-700/20 border border-blue-600/30 flex items-center justify-center text-blue-500 font-bold text-xs shadow-inner uppercase">
+            {{ getIniciales() }}
           </div>
         </div>
     </header>
@@ -28,7 +35,7 @@
             [class.w-16]="!isSidebarOpen()">
 
             <nav class="overflow-y-auto px-2 py-4 space-y-2">
-                <!-- Inicio -->
+                <!-- Inicio (Siempre visible si está logueado) -->
                 <a routerLink="/" class="flex items-center p-3 text-gray-400 hover:bg-gray-800/50 rounded-lg transition-colors cursor-pointer" [class.justify-center]="!isSidebarOpen()" [class.gap-3]="isSidebarOpen()" [title]="!isSidebarOpen() ? 'Inicio' : ''">
                     <mat-icon class="text-base">home</mat-icon>
                     @if (isSidebarOpen()) {
@@ -36,92 +43,95 @@
                     }
                 </a>
 
-                <!-- Catalogos -->
-                <div class="space-y-1">
-                    <button (click)="toggleCatalogos()" class="w-full flex items-center p-3 rounded-lg transition-colors cursor-pointer"
-                            [class.justify-between]="isSidebarOpen()"
-                            [class.justify-center]="!isSidebarOpen()"
-                            [class.bg-blue-600]="isSidebarOpen() && isCatalogosOpen()"
-                            [class.bg-opacity-10]="isSidebarOpen() && isCatalogosOpen()"
-                            [class.text-blue-500]="isSidebarOpen() && isCatalogosOpen()"
-                            [class.text-gray-400]="!(isSidebarOpen() && isCatalogosOpen())"
-                            [class.hover:bg-gray-800]="!(isSidebarOpen() && isCatalogosOpen())"
-                            [class.hover:bg-opacity-50]="!(isSidebarOpen() && isCatalogosOpen())"
-                            [title]="!isSidebarOpen() ? 'Catálogos' : ''">
-                        <div class="flex items-center" [class.gap-3]="isSidebarOpen()" [class.justify-center]="!isSidebarOpen()">
-                            <mat-icon class="text-base">folder_open</mat-icon>
-                            @if (isSidebarOpen()) {
-                                <span class="text-base font-medium tracking-wider whitespace-nowrap">Catálogos</span>
-                            }
-                        </div>
-                            @if (isSidebarOpen()) {
-                                <mat-icon class="text-base transition-transform" [class.rotate-180]="isCatalogosOpen()">expand_more</mat-icon>
-                            }
-                    </button>
+                <!-- Bloque Catálogos: Ocultar todo si no tiene un permiso general o dejarlo si maneja permisos individuales dentro -->
+                @if (authService.tienePermiso('VerCatalogos')) {
+                  <div class="space-y-1">
+                      <button (click)="toggleCatalogos()" class="w-full flex items-center p-3 rounded-lg transition-colors cursor-pointer"
+                              [class.justify-between]="isSidebarOpen()"
+                              [class.justify-center]="!isSidebarOpen()"
+                              [class.bg-blue-600]="isSidebarOpen() && isCatalogosOpen()"
+                              [class.bg-opacity-10]="isSidebarOpen() && isCatalogosOpen()"
+                              [class.text-blue-500]="isSidebarOpen() && isCatalogosOpen()"
+                              [class.text-gray-400]="!(isSidebarOpen() && isCatalogosOpen())"
+                              [class.hover:bg-gray-800]="!(isSidebarOpen() && isCatalogosOpen())"
+                              [class.hover:bg-opacity-50]="!(isSidebarOpen() && isCatalogosOpen())"
+                              [title]="!isSidebarOpen() ? 'Catálogos' : ''">
+                          <div class="flex items-center" [class.gap-3]="isSidebarOpen()" [class.justify-center]="!isSidebarOpen()">
+                              <mat-icon class="text-base">folder_open</mat-icon>
+                              @if (isSidebarOpen()) {
+                                  <span class="text-base font-medium tracking-wider whitespace-nowrap">Catálogos</span>
+                              }
+                          </div>
+                              @if (isSidebarOpen()) {
+                                  <mat-icon class="text-base transition-transform" [class.rotate-180]="isCatalogosOpen()">expand_more</mat-icon>
+                              }
+                      </button>
 
-                    @if (isSidebarOpen() && isCatalogosOpen()) {
-                        <div class="pl-11 space-y-2 py-2">
-                            <a routerLink="/catalogos/puestos" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Puestos</a>
-                            <a routerLink="/catalogos/empleados" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Empleados</a>
-                            <a routerLink="/catalogos/usuarios" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Usuarios</a>
-                            <a routerLink="/catalogos/roles" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Roles</a>
-                            <a routerLink="/catalogos/platillos" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Platillos</a>
-                            <a routerLink="/catalogos/productos" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Productos</a>
-                            <a routerLink="/catalogos/almacenes" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Almacenes</a>
-                            <a routerLink="/catalogos/clientes" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Clientes</a>
-                            <a routerLink="catalogos/plataformas" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Plataformas</a>
-                            <a routerLink="/catalogos/unidades" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Unidades De Medida</a>
-                            <a routerLink="/catalogos/metodo-pago" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Metodos de Pago</a>
-                            <a routerLink="/catalogos/inventarios" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Inventario</a>
-                            <a routerLink="catalogos/motivos-salida" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Motivos de Baja</a>
-                        </div>
-                    }
-                </div>
+                      @if (isSidebarOpen() && isCatalogosOpen()) {
+                          <div class="pl-11 space-y-2 py-2">
+                              <!-- EJEMPLO DE PERMISOS INDIVIDUALES: Ajusta el texto al de tu Base de Datos -->
+                              @if (authService.tienePermiso('Puestos')) {
+                                <a routerLink="/catalogos/puestos" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Puestos</a>
+                              }
+                              @if (authService.tienePermiso('Empleados')) {
+                                <a routerLink="/catalogos/empleados" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Empleados</a>
+                              }
+                              @if (authService.tienePermiso('Usuarios')) {
+                                <a routerLink="/catalogos/usuarios" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Usuarios</a>
+                              }
+                              @if (authService.tienePermiso('Roles')) {
+                                <a routerLink="/catalogos/roles" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Roles</a>
+                              }
+                              <!-- Agrega los @if a los demás links como Almacenes, Clientes, etc. de la misma manera -->
+                          </div>
+                      }
+                  </div>
+                }
 
                 <!-- Plataformas -->
-                <div class="space-y-1">
-                    <button (click)="togglePlataformas()" class="w-full flex items-center p-3 rounded-lg transition-colors cursor-pointer"
-                            [class.justify-between]="isSidebarOpen()"
-                            [class.justify-center]="!isSidebarOpen()"
-                            [class.bg-blue-600]="isSidebarOpen() && isPlataformasOpen()"
-                            [class.bg-opacity-10]="isSidebarOpen() && isPlataformasOpen()"
-                            [class.text-blue-500]="isSidebarOpen() && isPlataformasOpen()"
-                            [class.text-gray-400]="!(isSidebarOpen() && isPlataformasOpen())"
-                            [class.hover:bg-gray-800]="!(isSidebarOpen() && isPlataformasOpen())"
-                            [class.hover:bg-opacity-50]="!(isSidebarOpen() && isPlataformasOpen())"
-                            [title]="!isSidebarOpen() ? 'Plataformas' : ''">
-                        <div class="flex items-center" [class.gap-3]="isSidebarOpen()" [class.justify-center]="!isSidebarOpen()">
-                            <mat-icon class="text-base">devices</mat-icon>
-                            @if (isSidebarOpen()) {
-                                <span class="text-base font-medium tracking-wider whitespace-nowrap">Plataformas</span>
-                            }
-                        </div>
-                            @if (isSidebarOpen()) {
-                                <mat-icon class="text-base transition-transform" [class.rotate-180]="isPlataformasOpen()">expand_more</mat-icon>
-                            }
-                    </button>
+                @if (authService.tienePermiso('VerPlataformas')) {
+                  <div class="space-y-1">
+                      <button (click)="togglePlataformas()" class="w-full flex items-center p-3 rounded-lg transition-colors cursor-pointer"
+                              [class.justify-between]="isSidebarOpen()"
+                              [class.justify-center]="!isSidebarOpen()"
+                              [class.bg-blue-600]="isSidebarOpen() && isPlataformasOpen()"
+                              [class.bg-opacity-10]="isSidebarOpen() && isPlataformasOpen()"
+                              [class.text-blue-500]="isSidebarOpen() && isPlataformasOpen()"
+                              [class.text-gray-400]="!(isSidebarOpen() && isPlataformasOpen())"
+                              [class.hover:bg-gray-800]="!(isSidebarOpen() && isPlataformasOpen())"
+                              [class.hover:bg-opacity-50]="!(isSidebarOpen() && isPlataformasOpen())"
+                              [title]="!isSidebarOpen() ? 'Plataformas' : ''">
+                          <div class="flex items-center" [class.gap-3]="isSidebarOpen()" [class.justify-center]="!isSidebarOpen()">
+                              <mat-icon class="text-base">devices</mat-icon>
+                              @if (isSidebarOpen()) {
+                                  <span class="text-base font-medium tracking-wider whitespace-nowrap">Plataformas</span>
+                              }
+                          </div>
+                              @if (isSidebarOpen()) {
+                                  <mat-icon class="text-base transition-transform" [class.rotate-180]="isPlataformasOpen()">expand_more</mat-icon>
+                              }
+                      </button>
 
-                    @if (isSidebarOpen() && isPlataformasOpen()) {
-                        <div class="pl-11 space-y-2 py-2">
-                            <a routerLink="/plataformas/caja" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Caja</a>
-                            <a routerLink="plataforma/comandas" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Menu</a>
-                            <a routerLink="plataforma/cocina" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Cocina</a>
-                        </div>
-                    }
-                </div>
-
-                <!-- Reportes -->
-                <a routerLink="/reportes" class="flex items-center p-3 text-gray-400 hover:bg-gray-800/50 rounded-lg transition-colors cursor-pointer" [class.justify-center]="!isSidebarOpen()" [class.gap-3]="isSidebarOpen()" [title]="!isSidebarOpen() ? 'Reportes' : ''">
-                    <mat-icon class="text-base">bar_chart</mat-icon>
-                    @if (isSidebarOpen()) {
-                        <span class="text-base font-medium whitespace-nowrap">Reportes</span>
-                    }
-                </a>
+                      @if (isSidebarOpen() && isPlataformasOpen()) {
+                          <div class="pl-11 space-y-2 py-2">
+                              @if (authService.tienePermiso('Caja')) {
+                                <a routerLink="/plataformas/caja" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Caja</a>
+                              }
+                              @if (authService.tienePermiso('Menu')) {
+                                <a routerLink="plataforma/comandas" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Menu</a>
+                              }
+                              @if (authService.tienePermiso('Cocina')) {
+                                <a routerLink="plataforma/cocina" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Cocina</a>
+                              }
+                          </div>
+                      }
+                  </div>
+                }
             </nav>
 
             <!-- Cerrar Sesion -->
-            <div class="p-2 border-t border-gray-800">
-                <button class="w-full flex items-center p-3 text-red-400 hover:bg-red-500/10 rounded-lg cursor-pointer transition-colors" [class.justify-center]="!isSidebarOpen()" [class.gap-3]="isSidebarOpen()" [title]="!isSidebarOpen() ? 'Cerrar Sesión' : ''">
+            <div class="p-2 border-t border-gray-800 mt-auto">
+                <button (click)="cerrarSesion()" class="w-full flex items-center p-3 text-red-400 hover:bg-red-500/10 rounded-lg cursor-pointer transition-colors" [class.justify-center]="!isSidebarOpen()" [class.gap-3]="isSidebarOpen()" [title]="!isSidebarOpen() ? 'Cerrar Sesión' : ''">
                     <mat-icon class="text-base">logout</mat-icon>
                     @if (isSidebarOpen()) {
                         <span class="text-sm font-medium whitespace-nowrap">Cerrar Sesión</span>
@@ -133,10 +143,8 @@
 
         <!-- Area de contenido Principal -->
         <main class="flex-1 overflow-y-auto bg-[#0A0A0A] p-6 relative">
-            <!-- Aquí es donde se inyectará Home o Almacenes según la URL -->
             <router-outlet></router-outlet>
         </main>
 
     </div>
-
 </div>
