@@ -67,6 +67,39 @@ namespace FlowFood.Controllers
       return Ok(usuarioDto);
     }
 
+    // POST: flowfood/Usuario/Login
+    [HttpPost("Login")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+    {
+      if (loginDto == null || string.IsNullOrEmpty(loginDto.Nombre) || string.IsNullOrEmpty(loginDto.Password))
+        return BadRequest(new { mensaje = 'Usuario y password son requeridos'});
+
+      var usuario = await _usuRepo.GetUsuarioXNombreAsync(loginDto.Nombre);
+
+      if (usuario == null || !usuario.Estado)
+        return Unauthorized(new { mensaje = "Usuario no encontrado o inactivo" });
+
+      bool esPasswordValido = BCrypt.Net.BCrypt.Verify(loginDto.Password, usuario.Password);
+
+      if (!esPasswordValido)
+        return Unauthorized(new { mensaje = "Credenciales incorrectas" });
+
+      var usuarioLoginDto = new UsuarioDto
+      {
+        Id = usuario.Id,
+        Nombre = usuario.Nombre,
+        RolId = usuario.rolId,
+        RolNombre = usuario.Rol?.Nombre,
+        EmpleadoId = usuario.empleadoId,
+        EmpleadoNombre = usuario.Empleado?.Nombre,
+        Estado = usuario.Estado
+      };
+      return Ok(usuarioLoginDto);
+    }
+
     // POST: flowfood/Usuario/Guardar
     [HttpPost("Guardar")]
     [ProducesResponseType(StatusCodes.Status200OK)]
