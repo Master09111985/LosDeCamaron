@@ -1,138 +1,144 @@
-<div class="flex flex-col lg:flex-row h-[calc(100vh-5rem)] p-4 gap-4 bg-[#0f172a]">
-    
-    <!-- ========================================== -->
-    <!-- LADO IZQUIERDO: Cuentas Pendientes         -->
-    <!-- ========================================== -->
-    <div class="w-full lg:w-1/3 flex flex-col bg-[#1e293b] rounded-xl shadow-lg border border-[#334155] overflow-hidden shrink-0">
-        <div class="p-4 border-b border-[#334155] bg-[#0f172a] flex justify-between items-center">
-            <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                <mat-icon class="text-emerald-400">point_of_sale</mat-icon> Cuentas Pendientes
-            </h2>
-            <span class="bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded text-sm">
-                {{ comandasPorCobrar().length }}
-            </span>
+<!-- Cabecera de Botones de Auditoría -->
+@if (turnoActual()) {
+  <div class="flex justify-end gap-3 p-4 bg-[#0f172a] print:hidden">
+      <button (click)="abrirModalProveedor()" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2">
+          <mat-icon>local_shipping</mat-icon> Pagar Proveedor
+      </button>
+      <button (click)="abrirModalCorte()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2">
+          <mat-icon>lock</mat-icon> Corte de Caja
+      </button>
+  </div>
+}
+
+<!-- === Aquí va tu HTML original de la vista de caja (Cuentas Pendientes y Cobro) === -->
+<!-- Asegúrate de ponerle class="print:hidden" al contenedor principal para que no salga al imprimir -->
+<div class="flex flex-col lg:flex-row h-[calc(100vh-10rem)] p-4 gap-4 bg-[#0f172a] print:hidden">
+    <!-- TU CÓDIGO ORIGINAL AQUÍ -->
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL 1: APERTURA (Fondo Inicial)          -->
+<!-- ========================================== -->
+@if (modalApertura()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm print:hidden">
+      <div class="bg-[#1e293b] w-full max-w-sm rounded-2xl border border-gray-700 p-6 shadow-2xl">
+          <div class="text-center mb-6">
+              <mat-icon class="text-emerald-400 text-5xl mb-2">account_balance_wallet</mat-icon>
+              <h2 class="text-2xl font-black text-white">Apertura de Caja</h2>
+              <p class="text-gray-400 text-sm">Ingresa el fondo inicial en efectivo para comenzar tu turno.</p>
+          </div>
+          <form [formGroup]="fondoForm" (ngSubmit)="abrirTurno()">
+              <div class="mb-6 relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-gray-400">$</span>
+                  <input type="number" formControlName="fondoInicial" class="w-full bg-[#0f172a] border border-[#334155] rounded-xl py-3 pl-8 pr-4 text-2xl font-bold text-white focus:border-emerald-500 outline-none" placeholder="0.00">
+              </div>
+              <button type="submit" [disabled]="fondoForm.invalid || procesando()" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl disabled:opacity-50">
+                  {{ procesando() ? 'Abriendo...' : 'Abrir Caja' }}
+              </button>
+          </form>
+      </div>
+  </div>
+}
+
+<!-- ========================================== -->
+<!-- MODAL 2: PAGO A PROVEEDOR (Autorizado)     -->
+<!-- ========================================== -->
+@if (modalProveedor()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm print:hidden">
+      <div class="bg-[#1e293b] w-full max-w-md rounded-2xl border border-gray-700 shadow-2xl">
+          <div class="p-6 border-b border-[#334155] flex justify-between items-center">
+              <h3 class="text-xl font-bold text-white">Pago a Proveedor</h3>
+              <button (click)="modalProveedor.set(false)" class="text-gray-400 hover:text-white"><mat-icon>close</mat-icon></button>
+          </div>
+          <form [formGroup]="proveedorForm" (ngSubmit)="pagarProveedor()" class="p-6 space-y-4">
+              <div>
+                  <label class="text-xs font-bold text-gray-400 uppercase">Proveedor</label>
+                  <select formControlName="proveedorId" class="w-full bg-[#0f172a] border border-[#334155] rounded-lg p-3 text-white outline-none">
+                      <option value="">Seleccione...</option>
+                      @for (p of proveedoresDb(); track p.id) { <option [value]="p.id">{{ p.nombre }}</option> }
+                  </select>
+              </div>
+              <div>
+                  <label class="text-xs font-bold text-gray-400 uppercase">Monto a retirar de caja ($)</label>
+                  <input type="number" formControlName="monto" class="w-full bg-[#0f172a] border border-[#334155] rounded-lg p-3 text-white outline-none">
+              </div>
+              <div class="pt-4 border-t border-[#334155]">
+                  <p class="text-xs font-bold text-orange-400 uppercase mb-2"><mat-icon class="text-[14px]">admin_panel_settings</mat-icon> Autorización de Supervisor</p>
+                  <input type="text" formControlName="supervisorUsuario" placeholder="Usuario Supervisor" class="w-full bg-[#0f172a] border border-[#334155] rounded-lg p-3 text-white outline-none mb-2">
+                  <input type="password" formControlName="supervisorPassword" placeholder="Contraseña" class="w-full bg-[#0f172a] border border-[#334155] rounded-lg p-3 text-white outline-none">
+              </div>
+              <button type="submit" [disabled]="proveedorForm.invalid || procesando()" class="w-full mt-4 bg-orange-600 text-white font-bold py-3 rounded-xl disabled:opacity-50">
+                  {{ procesando() ? 'Procesando...' : 'Retirar y Pagar' }}
+              </button>
+          </form>
+      </div>
+  </div>
+}
+
+<!-- ========================================== -->
+<!-- MODAL 3: CORTE DE CAJA                     -->
+<!-- ========================================== -->
+@if (modalCorte()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm print:hidden">
+      <div class="bg-[#1e293b] w-full max-w-md rounded-2xl border border-gray-700 shadow-2xl">
+          <div class="p-6 border-b border-[#334155] flex justify-between items-center">
+              <h3 class="text-xl font-bold text-white">Corte de Caja (Cierre de Turno)</h3>
+              <button (click)="modalCorte.set(false)" class="text-gray-400 hover:text-white"><mat-icon>close</mat-icon></button>
+          </div>
+          <form [formGroup]="corteForm" (ngSubmit)="cerrarCaja()" class="p-6 space-y-4">
+              <div>
+                  <label class="text-xs font-bold text-gray-400 uppercase block mb-1">Efectivo Físico Contado ($)</label>
+                  <p class="text-xs text-gray-500 mb-2">Cuenta billetes y monedas del cajón y digita el total.</p>
+                  <input type="number" formControlName="efectivoReportado" class="w-full bg-[#0f172a] border border-[#334155] rounded-lg p-3 text-2xl font-bold text-white outline-none focus:border-red-500">
+              </div>
+              <div class="pt-4 border-t border-[#334155]">
+                  <p class="text-xs font-bold text-red-400 uppercase mb-2"><mat-icon class="text-[14px]">admin_panel_settings</mat-icon> Autorización de Gerencia</p>
+                  <input type="text" formControlName="supervisorUsuario" placeholder="Usuario Supervisor" class="w-full bg-[#0f172a] border border-[#334155] rounded-lg p-3 text-white outline-none mb-2">
+                  <input type="password" formControlName="supervisorPassword" placeholder="Contraseña" class="w-full bg-[#0f172a] border border-[#334155] rounded-lg p-3 text-white outline-none">
+              </div>
+              <button type="submit" [disabled]="corteForm.invalid || procesando()" class="w-full mt-4 bg-red-600 text-white font-bold py-3 rounded-xl disabled:opacity-50">
+                  {{ procesando() ? 'Calculando Cuadre...' : 'Realizar Corte' }}
+              </button>
+          </form>
+      </div>
+  </div>
+}
+
+<!-- ========================================== -->
+<!-- TICKET TÉRMICO (Solo visible en Impresión) -->
+<!-- ========================================== -->
+<div class="hidden print:block w-[58mm] bg-white text-black font-mono text-xs p-2">
+    @if (ticketGenerado(); as t) {
+        <div class="text-center font-bold mb-2">
+            <h1 class="text-lg">LOS DE CAMARON</h1>
+            <p>CORTE DE CAJA #{{ t.turnoId }}</p>
+        </div>
+        <div class="border-b border-black border-dashed mb-2 pb-2">
+            <p>Apertura: {{ t.fechaApertura | date:'short' }}</p>
+            <p>Cierre: {{ t.fechaCierre | date:'short' }}</p>
+            <p>Cajero: {{ t.nombreCajero }}</p>
+            <p>Supervisor: {{ t.nombreSupervisor }}</p>
+        </div>
+        
+        <div class="border-b border-black border-dashed mb-2 pb-2 space-y-1">
+            <div class="flex justify-between"><p>Fondo Inicial:</p><p>${{ t.fondoInicial | number:'1.2-2' }}</p></div>
+            <div class="flex justify-between"><p>Ventas Efectivo (+):</p><p>${{ t.totalVentasEfectivo | number:'1.2-2' }}</p></div>
+            <div class="flex justify-between"><p>Ventas Tarjeta:</p><p>${{ t.totalVentasTarjeta | number:'1.2-2' }}</p></div>
+            <div class="flex justify-between"><p>Pago Prov. (-):</p><p>${{ t.totalPagosProveedores | number:'1.2-2' }}</p></div>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar flex flex-col gap-3">
-            @if (cargando()) {
-                <div class="text-center text-gray-500 mt-10">
-                    <mat-icon class="animate-spin text-4xl mb-2">refresh</mat-icon>
-                    <p>Cargando comandas...</p>
-                </div>
-            } @else if (comandasPorCobrar().length === 0) {
-                <div class="text-center text-gray-500 mt-10 opacity-50">
-                    <mat-icon class="text-6xl mb-2">task_alt</mat-icon>
-                    <p class="font-bold text-lg">No hay cuentas pendientes</p>
-                </div>
-            }
-
-            @for (comanda of comandasPorCobrar(); track comanda.id) {
-                <div class="bg-[#0f172a] border border-[#334155] p-4 rounded-xl cursor-pointer hover:border-emerald-500 transition-colors"
-                     [ngClass]="{'border-emerald-500 bg-[#162032]': comandaSeleccionada()?.id === comanda.id}"
-                     (click)="seleccionarComanda(comanda)">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <span class="bg-blue-500/20 text-blue-400 font-black px-2 py-1 rounded text-sm">#{{ comanda.id }}</span>
-                            <span class="text-gray-300 font-bold ml-2 uppercase text-sm">{{ comanda.tipoPedido }}</span>
-                        </div>
-                        <span class="text-emerald-400 font-black text-lg">${{ comanda.total | number:'1.2-2' }}</span>
-                    </div>
-                    <p class="text-gray-400 text-sm flex items-center gap-1">
-                        <mat-icon class="text-[16px]">person</mat-icon> 
-                        {{ comanda.numeroMesa || comanda.direccionEntrega || 'Cliente' }}
-                    </p>
-                </div>
-            }
+        <div class="border-b border-black mb-2 pb-2 space-y-1">
+            <div class="flex justify-between font-bold"><p>Sistema Debería Tener:</p><p>${{ t.efectivoCalculadoSistema | number:'1.2-2' }}</p></div>
+            <div class="flex justify-between font-bold"><p>Ud. Entregó (Físico):</p><p>${{ t.efectivoFisicoReportado | number:'1.2-2' }}</p></div>
         </div>
-    </div>
 
-    <!-- ========================================== -->
-    <!-- LADO DERECHO: Panel de Cobro               -->
-    <!-- ========================================== -->
-    <div class="flex-1 flex flex-col bg-[#1e293b] rounded-xl shadow-lg border border-[#334155] overflow-hidden">
-        @if (comandaSeleccionada(); as comanda) {
-            
-            <div class="p-6 border-b border-[#334155] bg-[#0f172a]">
-                <h2 class="text-2xl font-black text-white">Cobrar Orden #{{ comanda.id }}</h2>
-                <p class="text-gray-400 mt-1">Registrando pago para pedido {{ comanda.tipoPedido }}</p>
-            </div>
-
-            <!-- Resumen de la Orden (Scrollable) -->
-            <div class="flex-1 overflow-y-auto p-6 bg-[#0f172a]/50">
-                <h3 class="text-gray-400 font-bold uppercase text-xs tracking-wider mb-4">Detalle de Consumo</h3>
-                <div class="bg-[#1e293b] rounded-xl border border-[#334155] p-4 mb-6">
-                    @for (detalle of comanda.detalles; track detalle.id) {
-                        <div class="flex justify-between items-center py-2 border-b border-gray-700/50 last:border-0">
-                            <span class="text-gray-300"><span class="font-bold text-white">{{ detalle.cantidad }}x</span> {{ detalle.platilloNombre }}</span>
-                            <span class="text-gray-400 font-mono">${{ detalle.subtotal | number:'1.2-2' }}</span>
-                        </div>
-                    }
-                </div>
-
-                <h3 class="text-gray-400 font-bold uppercase text-xs tracking-wider mb-4">Forma de Pago</h3>
-                
-                <!-- Opciones de Pago (Filtradas Dinámicamente) -->
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
-                    @for (metodo of metodosPagoPermitidos(); track metodo.id) {
-                        <div class="bg-[#1e293b] border border-[#334155] p-4 rounded-xl cursor-pointer text-center hover:bg-gray-800 transition-colors"
-                             [ngClass]="{'border-emerald-500 bg-emerald-900/20': metodoPagoSeleccionado() === metodo.id}"
-                             (click)="metodoPagoSeleccionado.set(metodo.id)">
-                            <mat-icon class="text-gray-400 mb-1" [ngClass]="{'text-emerald-400': metodoPagoSeleccionado() === metodo.id}">
-                                {{ metodo.nombre.toLowerCase().includes('efectivo') ? 'payments' : 
-                                   metodo.nombre.toLowerCase().includes('tarjeta') ? 'credit_card' : 'account_balance' }}
-                            </mat-icon>
-                            <span class="block font-bold text-sm text-gray-300" [ngClass]="{'text-emerald-400': metodoPagoSeleccionado() === metodo.id}">
-                                {{ metodo.nombre }}
-                            </span>
-                        </div>
-                    }
-                </div>
-
-                <!-- Input de Efectivo (Aparece solo si elige Efectivo) -->
-                @if (esEfectivo()) {
-                    <div class="bg-[#1e293b] border border-blue-500/30 p-4 rounded-xl mb-6 animate-slide-up">
-                        <label class="text-sm font-bold text-blue-400 uppercase tracking-wide block mb-2">Efectivo Recibido</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-2xl text-gray-400 font-bold">$</span>
-                            <input type="number" [(ngModel)]="efectivoRecibido" class="w-full bg-[#0f172a] border border-[#334155] rounded-xl py-4 pl-10 pr-4 text-3xl font-black text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="0.00">
-                        </div>
-                    </div>
-                }
-            </div>
-
-            <!-- Panel Inferior (Totales y Botón) -->
-            <div class="p-6 bg-[#1e293b] border-t border-[#334155] shrink-0">
-                <div class="flex justify-between items-end mb-4">
-                    <div>
-                        @if (esEfectivo()) {
-                            <span class="text-gray-400 font-bold uppercase text-xs tracking-wider block mb-1">Cambio a entregar</span>
-                            <span class="text-3xl font-black" [ngClass]="cambio() > 0 ? 'text-orange-400' : 'text-gray-600'">
-                                ${{ cambio() | number:'1.2-2' }}
-                            </span>
-                        }
-                    </div>
-                    <div class="text-right">
-                        <span class="text-gray-400 font-bold uppercase text-xs tracking-wider block mb-1">Total a Pagar</span>
-                        <span class="text-4xl font-black text-emerald-400">${{ comanda.total | number:'1.2-2' }}</span>
-                    </div>
-                </div>
-
-                <button (click)="procesarCobro()" [disabled]="!metodoPagoSeleccionado() || (esEfectivo() && ((efectivoRecibido() || 0) < comanda.total)) || procesando()"
-                        class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xl py-5 rounded-xl flex justify-center items-center gap-2 transition-all shadow-lg shadow-emerald-600/20 active:scale-95 disabled:opacity-50 disabled:active:scale-100">
-                    @if (procesando()) {
-                        <mat-icon class="animate-spin">refresh</mat-icon> PROCESANDO PAGO...
-                    } @else {
-                        <mat-icon>done_all</mat-icon> MARCAR COMO PAGADO
-                    }
-                </button>
-            </div>
-
-        } @else {
-            <div class="h-full flex flex-col items-center justify-center text-gray-500 opacity-60">
-                <mat-icon class="text-8xl mb-4">point_of_sale</mat-icon>
-                <p class="text-2xl font-bold">Caja Registradora</p>
-                <p class="text-lg mt-2">Selecciona una comanda del panel izquierdo para cobrar</p>
-            </div>
-        }
-    </div>
+        <div class="text-center font-bold text-sm mb-4">
+            <p>DIFERENCIA</p>
+            <p class="text-base">{{ t.diferencia === 0 ? '¡CAJA CUADRADA!' : (t.diferencia < 0 ? 'FALTANTE: $' + (t.diferencia * -1) : 'SOBRANTE: $' + t.diferencia) }}</p>
+        </div>
+        <div class="text-center text-[10px] mt-8 pt-4 border-t border-black">
+            <p>_______________________</p>
+            <p>Firma Supervisor</p>
+        </div>
+    }
 </div>
