@@ -1,44 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\luis padilla\\desktop\\angular\\lastversion\\losdecamaron\\backend\\flowfood\\flowfood\\controllers\\cajacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\controllers\\cajacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\luis padilla\\desktop\\angular\\lastversion\\losdecamaron\\backend\\flowfood\\flowfood\\models\\dtos\\ticketcortedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\models\\dtos\\ticketcortedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\luis padilla\\desktop\\angular\\lastversion\\losdecamaron\\backend\\flowfood\\flowfood\\models\\dtos\\cerrarturnodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\models\\dtos\\cerrarturnodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\luis padilla\\desktop\\angular\\lastversion\\losdecamaron\\backend\\flowfood\\flowfood\\models\\dtos\\pagoproveedorcajadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\models\\dtos\\pagoproveedorcajadto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\luis padilla\\desktop\\angular\\lastversion\\losdecamaron\\backend\\flowfood\\flowfood\\models\\dtos\\abrirturnodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\models\\dtos\\abrirturnodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\luis padilla\\desktop\\angular\\lastversion\\losdecamaron\\backend\\flowfood\\flowfood\\repositorio\\cajarepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\repositorio\\cajarepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\luis padilla\\desktop\\angular\\lastversion\\losdecamaron\\backend\\flowfood\\flowfood\\repositorio\\irepositorio\\icajarepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\repositorio\\irepositorio\\icajarepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\luis padilla\\desktop\\angular\\lastversion\\losdecamaron\\backend\\flowfood\\flowfood\\models\\movimientocaja.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\models\\movimientocaja.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\luis padilla\\desktop\\angular\\lastversion\\losdecamaron\\backend\\flowfood\\flowfood\\models\\cajaturno.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\models\\cajaturno.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -46,7 +9,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 989,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -55,123 +18,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "CajaController.cs",
-              "DocumentMoniker": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Controllers\\CajaController.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Controllers\\CajaController.cs",
-              "ToolTip": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Controllers\\CajaController.cs",
-              "RelativeToolTip": "FlowFood\\Controllers\\CajaController.cs",
-              "ViewState": "AgIAAJwAAAAAAAAAAAAmwLUAAAADAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-25T17:34:11.41Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "TicketCorteDto.cs",
-              "DocumentMoniker": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Dtos\\TicketCorteDto.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Models\\Dtos\\TicketCorteDto.cs",
-              "ToolTip": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Dtos\\TicketCorteDto.cs",
-              "RelativeToolTip": "FlowFood\\Models\\Dtos\\TicketCorteDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAADAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-25T17:33:26.268Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CerrarTurnoDto.cs",
-              "DocumentMoniker": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Dtos\\CerrarTurnoDto.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Models\\Dtos\\CerrarTurnoDto.cs",
-              "ToolTip": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Dtos\\CerrarTurnoDto.cs",
-              "RelativeToolTip": "FlowFood\\Models\\Dtos\\CerrarTurnoDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-25T17:32:46.262Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "PagoProveedorCajaDto.cs",
-              "DocumentMoniker": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Dtos\\PagoProveedorCajaDto.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Models\\Dtos\\PagoProveedorCajaDto.cs",
-              "ToolTip": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Dtos\\PagoProveedorCajaDto.cs",
-              "RelativeToolTip": "FlowFood\\Models\\Dtos\\PagoProveedorCajaDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAADAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-25T17:31:39.59Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AbrirTurnoDto.cs",
-              "DocumentMoniker": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Dtos\\AbrirTurnoDto.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Models\\Dtos\\AbrirTurnoDto.cs",
-              "ToolTip": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\Dtos\\AbrirTurnoDto.cs",
-              "RelativeToolTip": "FlowFood\\Models\\Dtos\\AbrirTurnoDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-25T17:30:28.674Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "CajaRepositorio.cs",
-              "DocumentMoniker": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Repositorio\\CajaRepositorio.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Repositorio\\CajaRepositorio.cs",
-              "ToolTip": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Repositorio\\CajaRepositorio.cs",
-              "RelativeToolTip": "FlowFood\\Repositorio\\CajaRepositorio.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-25T17:22:32.837Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ICajaRepositorio.cs",
-              "DocumentMoniker": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Repositorio\\IRepositorio\\ICajaRepositorio.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Repositorio\\IRepositorio\\ICajaRepositorio.cs",
-              "ToolTip": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Repositorio\\IRepositorio\\ICajaRepositorio.cs",
-              "RelativeToolTip": "FlowFood\\Repositorio\\IRepositorio\\ICajaRepositorio.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-25T17:21:58.78Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "MovimientoCaja.cs",
-              "DocumentMoniker": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\MovimientoCaja.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Models\\MovimientoCaja.cs",
-              "ToolTip": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\MovimientoCaja.cs",
-              "RelativeToolTip": "FlowFood\\Models\\MovimientoCaja.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-25T17:16:47.565Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "CajaTurno.cs",
-              "DocumentMoniker": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\CajaTurno.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Models\\CajaTurno.cs",
-              "ToolTip": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Models\\CajaTurno.cs",
-              "RelativeToolTip": "FlowFood\\Models\\CajaTurno.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAowCAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-25T17:16:01.617Z",
-              "EditorCaption": ""
             }
           ]
         },

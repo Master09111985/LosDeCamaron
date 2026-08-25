@@ -118,7 +118,6 @@ export class Caja implements OnInit {
   }
 
   cargarProveedores(): void {
-    // Asegúrate de que el método en tu ProveedorService se llame así (o ajústalo)
     this.proveedorService.getProveedores().subscribe(data => this.proveedoresDb.set(data));
   }
 

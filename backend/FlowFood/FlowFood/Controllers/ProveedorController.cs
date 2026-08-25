@@ -67,7 +67,7 @@ namespace FlowFood.Controllers
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetProveedor(int proveedorId)
     {
-      var proveedor = await _proRepo.GetProveedorAsync(int proveedorId);
+      var proveedor = await _proRepo.GetProveedorAsync(proveedorId);
 
       if (proveedor == null)
         return NotFound();
@@ -93,7 +93,7 @@ namespace FlowFood.Controllers
       if (!ModelState.IsValid)
         return BadRequest(ModelState);
 
-      if (crearAlmacenDto == null)
+      if (crearProveedorDto == null)
         return BadRequest(ModelState);
 
       if (await _proRepo.ExistenteProveedorXNombreAsync(crearProveedorDto.Nombre))
