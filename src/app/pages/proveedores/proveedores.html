@@ -1,0 +1,163 @@
+<div class="h-full flex flex-col relative animate-fade-in">
+
+    <!-- Header Area -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-white tracking-tight">Proveedores</h1>
+            <p class="text-gray-400 text-sm mt-1">Gestión de proveedores y su estado.</p>
+        </div>
+        <button
+        (click)="abrirModal()"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-600/20 active:scale-95">
+            <mat-icon class="text-base">add</mat-icon>
+            Nuevo Proveedor
+        </button>
+    </div>
+
+    <!-- Content Area -->
+    <div>
+        @if (caragando()) {
+            <div class="absolute inset-0 z-10 bg-[#111]/80 backdrop-blur-sm flex flex-col items-center justify-center">
+                <mat-icon class="animate-spin text-blue-600 text-base mb-4">refresh</mat-icon>
+                <span class="text-gray-400 font-medium">Cargando proveedores...</span>
+            </div>
+        }
+
+        <!-- Table Container -->
+         <div class="h-full overflow-auto custom-scrollbar">
+            <table class="w-full text-left border-collapse">
+                <thead class="sticky top-0 bg-[#1a1a1a] z-10 border-b border-gray-800">
+                    <tr>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">ID</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">Nombre</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Comentario</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">Estado</th>
+                        <th class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap text-right">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-800">
+                    @for (proveedor of proveedores(); track proveedor.id) {
+                        <tr class="hover:bg-gray-800/20 transition-colors group">
+                            <td class="px-6 py-4 text-sm font-mono text-blue-500">#{{ proveedor.id }}</td>
+                            <td class="px-6 py-4 text-sm font-medium text-white">{{ proveedor.nombre }}</td>
+                            <td class="px-6 py-4 text-sm max-w-xs truncate">{{ proveedor.comentario || '-' }}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2.5 py-1 text-xs font-medium rounded-full border"
+                                    [class.bg-emerald-500/10]="proveedor.estado"
+                                    [class.text-emerald-400]="proveedor.estado"
+                                    [class.border-emerald-500/20]="proveedor.estado"
+                                    [class.bg-red-500/10]="!proveedor.estado"
+                                    [class.text-red-400]="!proveedor.estado"
+                                    [class.border-red-500/20]="!proveedor.estado">
+                                        {{ proveedor.estado ? 'Activo' : 'Inactivo' }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button 
+                                        (click)="abrirModal(proveedor)"
+                                        class="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition-colors"
+                                        title="Editar">
+                                        <mat-icon class="text-base">edit</mat-icon>
+                                    </button>
+                                    <button 
+                                        (click)="borrarProveedor(proveedor)"
+                                        class="p-2 text-red-400 hover:bg-red-400/10 rounded-md transition-colors"
+                                        title="Eliminar">
+                                        <mat-icon class="text-base">delete</mat-icon>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    } @empty {
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center">
+                                <div class="flex flex-col items-center justify-center text-gray-500">
+                                    <mat-icon class="text-base mb-4 opacity-50">inventory_2</mat-icon>
+                                    <p class="text-lg">No hay proveedores registrados</p>
+                                    <p class="text-sm mt-1">Haz clic en "Nuevo Proveedor" para comenzar.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+         </div>
+    </div>
+</div>
+
+<!-- Modal Formulario -->
+@if (modalAbierto()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+        <div class="bg-[#1a1a1a] rounded-2xl w-full max-w-md border border-gray-800 shadow-2xl flex flex-col overflow-hidden animate-slide-up">
+
+            <div class="flex justify-between items-center p-6 border-b border-gray-800">
+                <h2 class="text-xl font-bold text-white">
+                    {{ proveedorEditando() ? 'Editar Proveedor' : 'Nuevo Proveedor' }}
+                </h2>
+                <button (click)="cerrarModal()" class="text-gray-500 hover:text-white transition-colors">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto">
+                <form [formGroup]="proveedorForm" (ngSubmit)="guardarProveedor()" class="space-y-5">
+
+                    <div class="space-y-1.5">
+                        <label for="nombre" class="text-sm font-medium text-gray-300">Nombre del Almacén</label>
+                        <input 
+                            type="text" 
+                            id="nombre" 
+                            formControlName="nombre"
+                            placeholder="Ej. Coca Cola"
+                            class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white"
+                            [class.border-red-500]="proveedorForm.get('nombre')?.invalid && proveedorForm.get('nombre')?.touched">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label for="comentario" class="text-sm font-medium text-gray-300">Comentario (Opcional)</label>
+                        <textarea 
+                            id="comentario" 
+                            formControlName="comentario"
+                            placeholder="Comentario para informacion reelevante"
+                            rows="3"
+                            class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white resize-none"></textarea>
+                    </div>
+
+                    <div class="flex items-center gap-3 p-3 bg-[#111] rounded-lg border border-gray-700">
+                        <input 
+                            type="checkbox" 
+                            id="estado" 
+                            formControlName="estado"
+                            class="w-5 h-5 accent-blue-600 bg-[#111] border-gray-700 rounded">
+                        <label for="estado" class="text-sm font-medium text-gray-300 select-none cursor-pointer">
+                            Almacén activo
+                        </label>
+                    </div>
+
+                    <div class="pt-4 flex gap-3">
+                        <button 
+                            type="button" 
+                            (click)="cerrarModal()"
+                            class="flex-1 py-2.5 rounded-lg border border-gray-700 text-sm font-semibold hover:bg-gray-800 transition-colors text-gray-300">
+                                Cancelar
+                        </button>
+                        <button 
+                            type="submit"
+                            [disabled]="proveedorForm.invalid || guardando()"
+                            class="flex-1 py-2.5 flex justify-center items-center gap-2 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                            @if (guardando()) {
+                                <mat-icon class="animate-spin text-base">refresh</mat-icon>
+                            } @else {
+                                <mat-icon class="text-base">save</mat-icon>
+                            }
+                            {{ guardando() ? 'Guardando...' : 'Guardar' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+}

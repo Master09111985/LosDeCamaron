@@ -21,6 +21,7 @@ import { Usuarios } from './pages/usuarios/usuarios';
 import { Roles } from './pages/roles/roles';
 import { Permisos } from './pages/permisos/permisos';
 import { Caja } from './pages/caja/caja';
+import { Proveedores } from './pages/proveedores/proveedores';
 
 export const routes: Routes = [
     // 1. Ruta pública para el Login
@@ -43,6 +44,7 @@ export const routes: Routes = [
         { path: 'catalogos/puestos', component: Puestos },
         { path: 'catalogos/unidades', component: Unidadmedidas },
         { path: 'catalogos/productos', component: Productos },
+        { path: 'catalogos/proveedores', component: Proveedores },
         { path: 'catalogos/inventarios', component: Inventarios },
         { path: 'catalogos/motivos-salida', component: MotivosBaja },
         { path: 'catalogos/plataformas', component: Plataforma },

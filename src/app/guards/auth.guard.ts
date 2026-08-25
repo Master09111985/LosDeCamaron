@@ -9,7 +9,7 @@ export const authGuard: CanActivateFn = (route, state) => {
 
     // Verificamos el signal de usuario actual
     if (authService.usuarioActual()) {
-        return true; // Tine sesion, lo dejamos pasar
+        return true; // Tiene sesion, lo dejamos pasar
     }
 
     // No tiene sesion, lo mandamos al login
