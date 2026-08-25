@@ -20,6 +20,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 // ==============================================
 builder.Services.AddScoped<IAlmacenRepositorio, AlmacenRepositorio>();
 builder.Services.AddScoped<IBajaRepositorio, BajaRepositorio>();
+builder.Services.AddScoped<ICajaRepositorio,  CajaRepositorio>();
 builder.Services.AddScoped<ICategoriaRepositorio, CategoriaRepositorio>();
 builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
 builder.Services.AddScoped<IComandaRepositorio, ComandaRepositorio>();

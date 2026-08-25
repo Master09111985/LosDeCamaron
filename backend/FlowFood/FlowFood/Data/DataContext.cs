@@ -12,6 +12,7 @@ namespace FlowFood.Data
     // Aqui van los DbSets
     public DbSet<Almacen> Almacenes { get; set; }
     public DbSet<Baja> Bajas { get; set; }
+    public DbSet<CajaTurno> CajaTurnos { get; set; }
     public DbSet<Categoria> Categorias { get; set; }
     public DbSet<Cliente> Clientes { get; set; }
     public DbSet<Comanda> Comandas { get; set; }
@@ -20,6 +21,7 @@ namespace FlowFood.Data
     public DbSet<Inventario> Inventarios { get; set; }
     public DbSet<MetodoPago> MetodosPago { get; set; }
     public DbSet<MotivoBaja> MotivosBaja { get; set; }
+    public DbSet<MovimientoCaja> MovimientosCaja { get; set; }
     public DbSet<Permiso> Permisos { get; set; }
     public DbSet<Plataforma> Plataformas { get; set; }
     public DbSet<Platillo> Platillos { get; set; }
