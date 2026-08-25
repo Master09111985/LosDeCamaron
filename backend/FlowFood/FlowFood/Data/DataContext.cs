@@ -24,6 +24,7 @@ namespace FlowFood.Data
     public DbSet<Plataforma> Plataformas { get; set; }
     public DbSet<Platillo> Platillos { get; set; }
     public DbSet<Producto> Productos { get; set; }
+    public DbSet<Proveedor> Proveedores { get; set; }
     public DbSet<Puesto> Puestos { get; set; }
     public DbSet<Rol> Roles { get; set; }
     public DbSet<RolPermiso> RolPermisos { get; set; }

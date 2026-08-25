@@ -61,7 +61,7 @@ namespace FlowFood.Repositorio
 
     public async Task<bool> ActualizarUsuarioAsync(Usuario usuario)
     {
-      var usuarioExistente = await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.Id == usuario.Id);
+      var usuarioExistente = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == usuario.Id);
       if (usuarioExistente != null)
         _context.Entry(usuarioExistente).CurrentValues.SetValues(usuario);
       else

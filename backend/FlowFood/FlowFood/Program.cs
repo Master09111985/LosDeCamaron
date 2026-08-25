@@ -31,6 +31,7 @@ builder.Services.AddScoped<IPermisoRepositorio, PermisoRepositorio>();
 builder.Services.AddScoped<IPlataformaRepositorio, PlataformaRepositorio>();
 builder.Services.AddScoped<IPlatilloRepositorio, PlatilloRepositorio>();
 builder.Services.AddScoped<IProductoRepositorio, ProductoRepositorio>();
+builder.Services.AddScoped<IProveedorRepositorio, ProveedorRepositorio>();
 builder.Services.AddScoped<IPuestoRepositorio, PuestoRepositorio>();
 builder.Services.AddScoped<IRolPermisoRepositorio, RolPermisoRepositorio>();
 builder.Services.AddScoped<IRolRepositorio, RolRepositorio>();

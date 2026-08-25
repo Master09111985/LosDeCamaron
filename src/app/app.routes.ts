@@ -20,6 +20,7 @@ import { Cocina } from './pages/cocina/cocina';
 import { Usuarios } from './pages/usuarios/usuarios';
 import { Roles } from './pages/roles/roles';
 import { Permisos } from './pages/permisos/permisos';
+import { Caja } from './pages/caja/caja';
 
 export const routes: Routes = [
     // 1. Ruta pública para el Login
@@ -49,7 +50,10 @@ export const routes: Routes = [
         { path: 'catalogos/metodo-pago', component: MetodoPago },
         { path: 'catalogos/platillos', component: Platillos },
         { path: 'catalogos/usuarios', component: Usuarios },
-        { path: 'catalogos/roles', component: Roles }
+        { path: 'catalogos/roles', component: Roles },
+        { path: 'plataformas/caja', component: Caja },
+        { path: 'plataformas/cocina', component: Cocina },
+        { path: 'plataformas/menu', component: Comandas }
       ] 
     },
     // 3. Ruta comodin por si la URL esta mal
