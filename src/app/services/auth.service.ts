@@ -24,12 +24,12 @@ export class AuthService {
 
     // 1. Enviar credenciales a la API
     login(credenciales: any): Observable<any> {
-        return this.http.post(`${this.apiUrl}/Usuario/Login`, credenciales);
+        return this.http.post(`${this.apiUrl}Usuario/Login`, credenciales);
     }
 
     // 2. Traer el diccionario de permisos segun el Rol
     getPermisosPorRol(rolId: number): Observable<any> {
-        return this.http.get(`${this.apiUrl}/RolPermiso/PorRol/${rolId}`);
+        return this.http.get(`${this.apiUrl}RolPermiso/PorRol/${rolId}`);
     }
 
     // 3. Guardar usuario y permisos en el localStorage

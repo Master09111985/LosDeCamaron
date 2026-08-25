@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FlowFood")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+76a07b33202025576617544cc7539413db4ea676")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6d98c26462dd06352a38ad320dd8dca961d3e3d7")]
 [assembly: System.Reflection.AssemblyProductAttribute("FlowFood")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FlowFood")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

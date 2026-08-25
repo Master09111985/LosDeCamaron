@@ -2,10 +2,12 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { forkJoin } from 'rxjs';
 
 import { ToastService } from '../../services/toast.service';
 import { RolService } from '../../services/rol.service';
 import { RolPermisoService } from '../../services/rol-permiso.service';
+import { PermisoService } from '../../services/permiso.service';
 
 import { Rol } from '../../interfaces/rol.interface';
 import { RolPermisoDto } from '../../interfaces/rol-permiso.interface';
@@ -24,6 +26,7 @@ import { RolPermisoDto } from '../../interfaces/rol-permiso.interface';
 export class Roles implements OnInit {
   
   private rolService = inject(RolService);
+  private permisoService = inject(PermisoService);
   private rolPermisoService = inject(RolPermisoService);
   private toastService = inject(ToastService);
   private fb = inject(FormBuilder);
@@ -153,13 +156,35 @@ export class Roles implements OnInit {
     this.modalPermisosAbierto.set(true);
     this.cargandoPermisos.set(true);
 
-    this.rolPermisoService.getPermisosDeUnRol(rol.id).subscribe({
-      next: (permisos) => {
-        this.permisosDelRol.set(permisos);
+    // Usamos forkJoin para pedir TODOS los permisos base y los que tiene el Rol actual al mismo tiempo
+    forkJoin({
+      todosLosPermisos: this.permisoService.getPermisos(),
+      permisosDelRol: this.rolPermisoService.getPermisosDeUnRol(rol.id)
+    }).subscribe({
+      next: ({ todosLosPermisos, permisosDelRol }) => {
+        
+        // Mapeamos para que siempre aparezcan todos los permisos en la lista
+        const permisosCompletos = todosLosPermisos.map(permisoBase => {
+          // Buscamos si el rol ya tiene un registro de este permiso
+          const permisoAsignado = permisosDelRol.find(p => p.permisoId === permisoBase.id);
+          
+          return {
+            id: permisoAsignado ? permisoAsignado.id : 0,
+            rolId: rol.id,
+            permisoId: permisoBase.id,
+            permisoNombre: permisoBase.nombre,
+            permisoDescripcion: permisoBase.descripcion,
+            // Si lo tiene, respetamos su estado. Si es un permiso nuevo, aparece apagado por defecto.
+            habilitado: permisoAsignado ? permisoAsignado.habilitado : false 
+          };
+        });
+
+        // Guardamos la lista completa en la signal para mostrarla en el modal
+        this.permisosDelRol.set(permisosCompletos);
         this.cargandoPermisos.set(false);
       },
       error: () => {
-        this.toastService.showError('Error al cargar los permisos del rol');
+        this.toastService.showError('Error al cargar la lista de permisos');
         this.cargandoPermisos.set(false);
       }
     });

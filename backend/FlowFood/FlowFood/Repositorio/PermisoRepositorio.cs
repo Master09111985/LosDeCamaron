@@ -45,13 +45,17 @@ namespace FlowFood.Repositorio
     }
     public async Task<bool> ActualizarPermisoAsync(Permiso permiso)
     {
-      var permisoExistente = await _context.Permisos.AsNoTracking().FirstOrDefaultAsync(p => p.Id == permiso.Id);
+      var permisoExistente = await _context.Permisos.FindAsync(permiso.Id);
+
       if (permisoExistente != null)
+      {
         _context.Entry(permisoExistente).CurrentValues.SetValues(permiso);
-      else
-        _context.Permisos.Update(permiso);
-      return await GuardarAsync();
+        return await GuardarAsync();
+      }
+
+      return false;
     }
+
     public async Task<bool> BorrarPermisoAsync(Permiso permiso)
     {
       _context.Permisos.Remove(permiso);

@@ -31,7 +31,7 @@ export const routes: Routes = [
   { 
     path: '', 
     component: Layout,
-    //canActivate: [authGuard], // <--- Protegemos el Layout completo
+    canActivate: [authGuard], // <--- Protegemos el Layout completo
     children: [
         { path: '', component: Home },
         { path: 'catalogos/almacenes', component: Almacenes },
