@@ -30,6 +30,7 @@ export class Caja implements OnInit {
   private fb = inject(FormBuilder);
 
   // Estados Base
+  comandaParaImprimir = signal<ComandaDto | null>(null); 
   comandasPorCobrar = signal<ComandaDto[]>([]);
   metodosPagoDb = signal<MetodoPagos[]>([]);
   proveedoresDb = signal<any[]>([]); 
@@ -158,6 +159,20 @@ export class Caja implements OnInit {
     this.comandaSeleccionada.set(comanda);
     this.metodoPagoSeleccionado.set(null); 
     this.efectivoRecibido.set(null);
+  }
+
+  imprimirTicketComanda(comanda: ComandaDto, event: Event): void {
+    // Evitamos que al dar clic en la impresora, también se seleccione la comanda para cobrar
+    event.stopPropagation();
+    
+    // Limpiamos el ticket de corte por si había uno, y preparamos el de la comanda
+    this.ticketGenerado.set(null); 
+    this.comandaParaImprimir.set(comanda);
+    
+    // Damos medio segundo a Angular para dibujar el ticket oculto y abrimos la ventana de impresión
+    setTimeout(() => {
+      window.print();
+    }, 500);
   }
 
   procesarCobro(): void {

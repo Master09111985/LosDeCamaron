@@ -1,0 +1,26 @@
+/* Ocultamos el ticket en la pantalla normal */
+.ticket-impresion {
+    display: none;
+}
+
+/* Reglas exclusivas para cuando se abre la ventana de imprimir */
+@media print {
+    /* Forzamos el tamaño del papel a 58mm para impresoras térmicas */
+    @page {
+        margin: 0;
+        size: 58mm auto;
+    }
+
+    /* Mostramos el ticket, lo posicionamos arriba a la izquierda y con fondo blanco */
+    .ticket-impresion {
+        display: block !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 58mm;
+        background-color: white;
+        color: black;
+        margin: 0;
+        padding: 8px;
+    }
+}
