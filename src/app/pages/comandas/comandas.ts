@@ -199,10 +199,9 @@ export class Comandas implements OnInit {
     });
   }
 
-  obtenerRutaImagen(rutaRelativa?: string | null): string {
+  obtenerRutaImagen(rutaRelativa?: string): string {
     if (!rutaRelativa) return '';
-    const ruta = rutaRelativa.startsWith('/') ? rutaRelativa : `/${rutaRelativa}`;
-    return `${this.apiUrl}${ruta}`;
+    return `https://camaronserver:9000${rutaRelativa}`; 
   }
 
   enviarComanda(): void {
