@@ -20,8 +20,6 @@ export class Platillos implements OnInit {
   private toastService = inject(ToastService);
   private fb = inject(FormBuilder);
 
-  backendUrl = 'https://localhost:9000'; 
-
   platillos = signal<Platillo[]>([]);
   loading = signal<boolean>(true);
   guardando = signal<boolean>(false);
@@ -74,10 +72,9 @@ export class Platillos implements OnInit {
     this.terminoBusqueda.set(input.value);
   }
 
-  obtenerRutaImagen(rutaRelativa?: string | null): string {
+  obtenerRutaImagen(rutaRelativa?: string): string {
     if (!rutaRelativa) return '';
-    const ruta = rutaRelativa.startsWith('/') ? rutaRelativa : `/${rutaRelativa}`;
-    return `${this.backendUrl}${ruta}`;
+    return `https://camaronserver:9000${rutaRelativa}`; 
   }
 
   abrirModal(platillo?: Platillo): void {
