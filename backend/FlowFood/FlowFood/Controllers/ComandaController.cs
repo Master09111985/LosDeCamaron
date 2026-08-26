@@ -17,7 +17,7 @@ namespace FlowFood.Controllers
     }
 
     // ==========================================
-    // GET: Listar Todas
+    // GET: Listar Todas (CON DESPERTADOR DE AGENDADOS)
     // ==========================================
     [HttpGet("listar")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -25,6 +25,36 @@ namespace FlowFood.Controllers
     public async Task<IActionResult> GetComandas()
     {
       var listaComandas = await _coRepo.GetComandasAsync();
+      bool huboCambios = false;
+
+      // Fijamos la hora exacta de Aguascalientes (UTC-6) de forma permanente
+      var horaActual = DateTime.UtcNow.AddHours(-6); //DateTime.Now
+
+      // 1. REVISAMOS EL RELOJ PARA LOS PEDIDOS AGENDADOS
+      foreach (var c in listaComandas)
+      {
+        // Si está en Estatus 0 (Agendado) y tiene hora programada
+        if (c.Estatus == 0 && c.FechaHoraAgendada.HasValue)
+        {
+          // Calculamos la diferencia de tiempo entre la entrega y la hora fijada
+          var tiempoFaltante = c.FechaHoraAgendada.Value - horaActual;
+
+          // Si faltan 60 minutos o menos, o si la hora ya pasó (tiempoFaltante negativo)
+          if (tiempoFaltante.TotalMinutes <= 60)
+          {
+            c.Estatus = 1; // ¡Lo mandamos a Cocinando!
+            await _coRepo.ActualizarComandaAsync(c);
+            huboCambios = true;
+          }
+        }
+      }
+
+      // 2. Si despertamos algún pedido, volvemos a consultar la DB para tener la lista fresca
+      if (huboCambios)
+      {
+        listaComandas = await _coRepo.GetComandasAsync();
+      }
+
       var listaDto = listaComandas.Select(MapearComandaDto).ToList();
       return Ok(listaDto);
     }
