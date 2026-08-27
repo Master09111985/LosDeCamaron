@@ -1,6 +1,7 @@
 export interface ComandaDetalleDto {
   id: number;
   platilloId: number;
+  numeroPlato: number;
   platilloNombre: string;
   cantidad: number;
   precioUnitario: number;
@@ -24,6 +25,7 @@ export interface ComandaDto {
 
 export interface CrearComandaDetalleDto {
   platilloId: number;
+  numeroPlato: number;
   cantidad: number;
   precioUnitario: number;
   notas?: string;

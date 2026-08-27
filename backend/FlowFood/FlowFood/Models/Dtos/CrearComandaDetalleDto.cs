@@ -6,6 +6,7 @@ namespace FlowFood.Models.Dtos
   {
     [Required]
     public int PlatilloId { get; set; }
+    public int NumeroPlato { get; set; }
     [Required]
     [Range(1, 100)]
     public int Cantidad { get; set; }

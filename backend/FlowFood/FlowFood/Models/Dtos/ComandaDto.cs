@@ -5,6 +5,7 @@ namespace FlowFood.Models.Dtos
     public int Id { get; set; }
     public string TipoPedido { get; set; } // Ejemplo: "Local", "Plataforma"
     public string? NumeroMesa { get; set; }
+    public int NumeroPlato { get; set; } = 1;
     public string? PlataformaNombre { get; set; }
     public string? DireccionEntrega { get; set; }
     public DateTime? HoraEntrega { get; set; }
@@ -19,6 +20,7 @@ namespace FlowFood.Models.Dtos
   public class ComandaDetalleDto
   {
     public int Id { get; set; }
+    public int NumeroPlato { get; set; } = 1;
     public int PlatilloId { get; set; }
     public string PlatilloNombre { get; set; }
     public int Cantidad { get; set; }

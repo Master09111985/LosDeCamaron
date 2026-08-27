@@ -22,6 +22,7 @@ export interface ItemCarrito {
   cantidad: number;
   notas: string;
   subtotal: number;
+  numeroPlato: number;
 }
 
 @Component({
@@ -55,6 +56,10 @@ export class Comandas implements OnInit {
   cargando = signal<boolean>(false);
   guardando = signal<boolean>(false);
 
+  // SELECCIÓN DE PLATOS
+  platosDisponibles = signal<number[]>([1, 2, 3, 4, 5, 6]); // Soporta hasta 6 platos a la vez
+  platoActivo = signal<number>(1);
+
   tiposPedido = [
     { label: 'Local', value: 1 },
     { label: 'Para Llevar', value: 2 },
@@ -83,6 +88,17 @@ export class Comandas implements OnInit {
     this.escucharCambiosTipoPedido();
   }
 
+  // --- LÓGICA DE PLATOS ---
+  seleccionarPlato(numero: number): void {
+    this.platoActivo.set(numero);
+  }
+
+  // Obtenemos los items del carrito filtrados por el plato actual para mostrarlos ordenados
+  getItemsPorPlato(platoNum: number) {
+    return this.carrito().filter(item => item.numeroPlato === platoNum);
+  }
+
+  // --- LOGICA ORIGINAL DE CATÁLOGOS ---
   cargarCatalogos(): void {
     this.cargando.set(true);
 
@@ -113,21 +129,18 @@ export class Comandas implements OnInit {
       const ctrlCliente = this.comandaForm.get('clienteId');
       const ctrlPlataforma = this.comandaForm.get('plataformaId');
 
-      // Limpiamos todo primero
       ctrlMesa?.clearValidators();
       ctrlLlevar?.clearValidators();
       ctrlFecha?.clearValidators();
       ctrlCliente?.clearValidators();
       ctrlPlataforma?.clearValidators();
 
-      // Asignamos validaciones
       if (tipoNum === 1) ctrlMesa?.setValidators(Validators.required);
       if (tipoNum === 2) ctrlLlevar?.setValidators(Validators.required);
       if (tipoNum === 4) ctrlFecha?.setValidators(Validators.required);
       if (tipoNum === 3 || tipoNum === 4) ctrlCliente?.setValidators(Validators.required);
-      if (tipoNum === 5) ctrlPlataforma?.setValidators(Validators.required); // NUEVO
+      if (tipoNum === 5) ctrlPlataforma?.setValidators(Validators.required);
 
-      // Actualizamos estado
       ctrlMesa?.updateValueAndValidity();
       ctrlLlevar?.updateValueAndValidity();
       ctrlFecha?.updateValueAndValidity();
@@ -139,7 +152,6 @@ export class Comandas implements OnInit {
         this.comandaForm.patchValue({ telefonoBusqueda: '', clienteId: null });
       }
       
-      // Si no es plataforma, reseteamos su select
       if (tipoNum !== 5) {
         this.comandaForm.patchValue({ plataformaId: null });
       }
@@ -173,15 +185,21 @@ export class Comandas implements OnInit {
     });
   }
 
+  // --- CARRITO ACTUALIZADO PARA RECIBIR PLATOS ---
   agregarAlCarrito(platillo: Platillo): void {
+    const platoActual = this.platoActivo();
+    
     this.carrito.update(items => {
-      const existe = items.find(i => i.platillo.id === platillo.id && i.notas === '');
+      // Ahora verificamos que sea el mismo platillo Y EN EL MISMO PLATO
+      const existe = items.find(i => i.platillo.id === platillo.id && i.notas === '' && i.numeroPlato === platoActual);
+      
       if (existe) {
         existe.cantidad += 1;
         existe.subtotal = existe.cantidad * platillo.precio;
         return [...items];
       }
-      return [...items, { platillo, cantidad: 1, notas: '', subtotal: platillo.precio }];
+      
+      return [...items, { platillo, cantidad: 1, notas: '', subtotal: platillo.precio, numeroPlato: platoActual }];
     });
   }
 
@@ -195,6 +213,14 @@ export class Comandas implements OnInit {
       } else {
         item.subtotal = item.cantidad * item.platillo.precio;
       }
+      return [...items];
+    });
+  }
+
+  actualizarNotas(index: number, event: any): void {
+    const notas = event.target.value;
+    this.carrito.update(items => {
+      items[index].notas = notas;
       return [...items];
     });
   }
@@ -224,7 +250,8 @@ export class Comandas implements OnInit {
       platilloId: item.platillo.id,
       cantidad: item.cantidad,
       precioUnitario: item.platillo.precio,
-      notas: item.notas || undefined
+      notas: item.notas || undefined,
+      numeroPlato: item.numeroPlato
     }));
 
     const nuevaComanda: CrearComandaDto = {
@@ -233,7 +260,7 @@ export class Comandas implements OnInit {
       nombreClienteLlevar: tipoPedidoNum === 2 ? formValue.nombreClienteLlevar : undefined,
       fechaHoraAgendada: tipoPedidoNum === 4 ? formValue.fechaHoraAgendada : undefined,
       clienteId: (tipoPedidoNum === 3 || tipoPedidoNum === 4) ? formValue.clienteId : undefined,
-      plataformaId: tipoPedidoNum === 5 ? formValue.plataformaId : undefined, // NUEVO
+      plataformaId: tipoPedidoNum === 5 ? formValue.plataformaId : undefined,
       detalles: detallesDto
     };
 
@@ -241,6 +268,7 @@ export class Comandas implements OnInit {
       next: () => {
         this.toastService.showSuccess('Comanda enviada a cocina exitosamente');
         this.carrito.set([]);
+        this.platoActivo.set(1); // Reseteamos al Plato 1
         this.clienteEncontrado.set(null); 
         this.comandaForm.reset({ tipoPedido: 1 });
         this.guardando.set(false);
@@ -250,14 +278,6 @@ export class Comandas implements OnInit {
         this.toastService.showError('Error al guardar la comanda');
         this.guardando.set(false);
       }
-    });
-  }
-
-  actualizarNotas(index: number, event: any): void {
-    const notas = event.target.value;
-    this.carrito.update(items => {
-      items[index].notas = notas;
-      return [...items];
     });
   }
 }

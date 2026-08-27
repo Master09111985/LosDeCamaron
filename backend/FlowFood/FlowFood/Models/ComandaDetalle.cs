@@ -8,6 +8,8 @@ namespace FlowFood.Models
     [Key]
     public int Id { get; set; }
 
+    public int NumeroPlato { get; set; } = 1;
+
     [Required]
     public int ComandaId { get; set; }
     [ForeignKey("ComandaId")]

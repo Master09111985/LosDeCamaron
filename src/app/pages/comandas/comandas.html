@@ -20,6 +20,7 @@
     <!-- LADO DERECHO: Formulario y Detalle -->
     <div class="w-full lg:w-100 flex flex-col bg-[#1e293b] rounded-xl shadow-lg border border-[#334155] overflow-hidden shrink-0">
         
+        <!-- Formulario de Datos de Comanda -->
         <form [formGroup]="comandaForm" class="p-4 border-b border-[#334155] bg-[#0f172a] flex flex-col gap-3 shrink-0">
             <h2 class="text-lg font-bold text-blue-400">Datos de la comanda</h2>
             
@@ -88,7 +89,6 @@
                 </div>
             }
 
-            <!-- NUEVO: PLATAFORMAS (TIPO 5) -->
             @if (comandaForm.get('tipoPedido')?.value === 5 || comandaForm.get('tipoPedido')?.value === '5') {
                 <div class="flex flex-col gap-1 animate-fade-in mt-1">
                     <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Plataforma Delivery <span class="text-red-500">*</span></label>
@@ -104,41 +104,73 @@
             }
         </form>
 
+        <!-- SECCIÓN DEL CARRITO (Con selector de platos integrado) -->
         <div class="flex-1 flex flex-col min-h-0 bg-[#0f172a]">
-            <div class="p-3 border-b border-[#334155] bg-[#1e293b] shrink-0 flex justify-between items-center">
-                <h3 class="text-sm font-bold text-gray-300 uppercase tracking-wide">Platillos Seleccionados</h3>
-                <span class="text-xs bg-blue-600/20 text-blue-400 px-2 py-0.5 rounded">{{ carrito().length }}</span>
+            
+            <!-- Selector de Platos -->
+            <div class="p-3 border-b border-[#334155] bg-[#1e293b] shrink-0">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-sm font-bold text-gray-300 uppercase tracking-wide">Armando Plato</h3>
+                    <span class="text-xs bg-blue-600/20 text-blue-400 px-2 py-0.5 rounded">{{ carrito().length }} items</span>
+                </div>
+                
+                <div class="flex gap-2 overflow-x-auto custom-scrollbar pb-1">
+                    @for (plato of platosDisponibles(); track plato) {
+                        <button type="button" (click)="seleccionarPlato(plato)"
+                                class="px-3 py-1.5 text-xs rounded-lg font-bold transition-all border shrink-0 focus:outline-none"
+                                [ngClass]="platoActivo() === plato ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-500/30' : 'bg-[#0f172a] text-gray-400 border-[#334155] hover:border-gray-400'">
+                            Plato {{ plato }}
+                        </button>
+                    }
+                </div>
             </div>
 
+            <!-- Lista de Productos Agrupados -->
             <div class="flex-1 overflow-y-auto p-3 flex flex-col gap-3 custom-scrollbar">
                 @if (carrito().length === 0) {
                     <div class="h-full flex flex-col items-center justify-center text-gray-500 opacity-60">
                         <mat-icon class="text-4xl mb-2">receipt_long</mat-icon>
                         <span class="text-sm font-medium">Comanda vacía</span>
                     </div>
-                }
-
-                @for (item of carrito(); track $index) {
-                    <div class="bg-[#1e293b] border border-[#334155] p-3 rounded-lg flex flex-col gap-2">
-                        <div class="flex justify-between items-start">
-                            <span class="font-bold text-sm text-white">{{ item.platillo.nombre }}</span>
-                            <span class="text-emerald-400 font-bold text-sm">${{ item.subtotal | number:'1.2-2' }}</span>
-                        </div>
-
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-1 bg-[#0f172a] rounded-lg border border-[#334155]">
-                                <button type="button" (click)="actualizarCantidad($index, -1)" class="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-l-lg"><mat-icon class="text-sm">remove</mat-icon></button>
-                                <span class="text-sm font-bold w-6 text-center text-white">{{ item.cantidad }}</span>
-                                <button type="button" (click)="actualizarCantidad($index, 1)" class="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-r-lg"><mat-icon class="text-sm">add</mat-icon></button>
-                            </div>
-                            <span class="text-xs text-gray-500">(${{ item.platillo.precio | number:'1.2-2' }} c/u)</span>
-                        </div>
-
-                        <input type="text" [value]="item.notas" (input)="actualizarNotas($index, $event)" class="w-full bg-transparent border-b border-[#334155] text-xs text-gray-300 placeholder-gray-600 p-1 mt-1 outline-none focus:border-blue-500 transition-colors" placeholder="Notas a cocina (Ej. Sin cebolla)">
+                } @else {
+                    <div class="space-y-4">
+                        @for (plato of platosDisponibles(); track plato) {
+                            @if (getItemsPorPlato(plato).length > 0) {
+                                <div class="bg-[#1e293b] border border-[#334155] rounded-lg overflow-hidden">
+                                    <div class="bg-[#162032] px-3 py-1.5 border-b border-[#334155]">
+                                        <h4 class="text-blue-400 font-bold uppercase text-[10px] tracking-wider">Plato {{ plato }}</h4>
+                                    </div>
+                                    <div class="p-2 space-y-2">
+                                        @for (item of getItemsPorPlato(plato); track item.platillo.id) {
+                                            <div class="flex flex-col gap-1.5 border-b border-gray-700/50 pb-2 last:border-0 last:pb-0">
+                                                
+                                                <div class="flex justify-between items-start">
+                                                    <div class="flex-1 leading-tight pr-2">
+                                                        <span class="font-bold text-sm text-white">{{ item.platillo.nombre }}</span>
+                                                        <span class="block text-emerald-400 font-bold text-xs">${{ item.subtotal | number:'1.2-2' }}</span>
+                                                    </div>
+                                                    
+                                                    <!-- Controles de Cantidad -->
+                                                    <div class="flex items-center gap-1 bg-[#0f172a] rounded-lg border border-[#334155] shrink-0">
+                                                        <button type="button" (click)="actualizarCantidad(carrito().indexOf(item), -1)" class="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-l-lg"><mat-icon class="text-[16px]">remove</mat-icon></button>
+                                                        <span class="text-xs font-bold w-4 text-center text-white">{{ item.cantidad }}</span>
+                                                        <button type="button" (click)="actualizarCantidad(carrito().indexOf(item), 1)" class="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-r-lg"><mat-icon class="text-[16px]">add</mat-icon></button>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Notas del Platillo -->
+                                                <input type="text" [value]="item.notas" (input)="actualizarNotas(carrito().indexOf(item), $event)" class="w-full bg-transparent border-b border-[#334155] text-[11px] text-gray-300 placeholder-gray-600 p-1 outline-none focus:border-blue-500 transition-colors" placeholder="Notas (Ej. Sin cebolla)">
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
                     </div>
                 }
             </div>
 
+            <!-- Panel de Envío -->
             <div class="p-4 bg-[#1e293b] border-t border-[#334155] shrink-0">
                 <div class="flex justify-between items-center mb-4">
                     <span class="font-bold text-gray-400 uppercase text-sm">Total</span>

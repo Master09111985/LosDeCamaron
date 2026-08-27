@@ -8,6 +8,9 @@ namespace FlowFood.Models
     [Key]
     public int Id { get; set; }
 
+    // ---Campo para la prioridad de la comanda
+    public int Prioridad { get; set; } = 0;
+
     // 1: Local, 2: Llevar, 3: Domicilio, 4: Agendado, 5: Plataforma
     [Required]
     public int TipoPedido { get; set; }

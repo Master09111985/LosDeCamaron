@@ -55,7 +55,10 @@ namespace FlowFood.Controllers
         listaComandas = await _coRepo.GetComandasAsync();
       }
 
-      var listaDto = listaComandas.Select(MapearComandaDto).ToList();
+      var listaDto = listaComandas
+        .OrderByDescending(c => c.Prioridad)
+        .ThenBy(c => c.FechaRegistro)
+        .Select(MapearComandaDto).ToList();
       return Ok(listaDto);
     }
 
@@ -174,6 +177,50 @@ namespace FlowFood.Controllers
       }
 
       return Ok(new { mensaje = "Estatus actualizado correctamente." });
+    }
+
+    // ==========================================
+    // POST: Agregar platillos a comanda existente
+    // ==========================================
+    [HttpPost("{comandaId:int}/agregar-platillos")]
+    public async Task<IActionResult> AgregarPlatillos(int comandaId, [FromBody] List<CrearComandaDetalleDto> nuevosDetalles)
+    {
+      var comanda = await _coRepo.GetComandaAsync(comandaId);
+      if (comanda == null) return NotFound("Comanda no encontrada.");
+
+      // AJUSTE CRÍTICO: Solo bloqueamos si ya está pagada (Estatus 3). Si está Entregada (2), sí podemos agregar.
+      if (comanda.Estatus == 3)
+        return BadRequest("No se pueden agregar platillos a una cuenta que ya fue cobrada.");
+
+      decimal totalNuevos = 0;
+
+      foreach (var item in nuevosDetalles)
+      {
+        var subtotalItem = item.Cantidad * item.PrecioUnitario;
+        totalNuevos += subtotalItem;
+
+        comanda.Detalles.Add(new ComandaDetalle
+        {
+          PlatilloId = item.PlatilloId,
+          Cantidad = item.Cantidad,
+          PrecioUnitario = item.PrecioUnitario,
+          Subtotal = subtotalItem,
+          Notas = item.Notas,
+          NumeroPlato = item.NumeroPlato // El plato que eligió el mesero (1, 2, 3...)
+        });
+      }
+
+      comanda.Subtotal += totalNuevos;
+      comanda.Total += totalNuevos;
+
+      // MAGIA KDS: Regresamos la comanda a "Cocinando" (1) y le subimos la prioridad a 1.
+      comanda.Estatus = 1;
+      comanda.Prioridad = 1;
+
+      if (!await _coRepo.ActualizarComandaAsync(comanda))
+        return StatusCode(500, "Error al agregar los platillos.");
+
+      return Ok(new { mensaje = "Platillos agregados, comanda enviada a cocina con prioridad." });
     }
 
     // ==========================================
