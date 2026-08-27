@@ -11,6 +11,7 @@ namespace FlowFood.Data
 
     // Aqui van los DbSets
     public DbSet<Almacen> Almacenes { get; set; }
+    public DbSet<Asistencia> Asistencias { get; set; }
     public DbSet<Baja> Bajas { get; set; }
     public DbSet<CajaTurno> CajaTurnos { get; set; }
     public DbSet<Categoria> Categorias { get; set; }

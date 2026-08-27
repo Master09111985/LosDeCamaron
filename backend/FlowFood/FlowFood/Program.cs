@@ -19,6 +19,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 // 2. Inyeccion de dependencias - Repositorio
 // ==============================================
 builder.Services.AddScoped<IAlmacenRepositorio, AlmacenRepositorio>();
+builder.Services.AddScoped<IAsistenciaRepositorio, AsistenciaRepositorio>();
 builder.Services.AddScoped<IBajaRepositorio, BajaRepositorio>();
 builder.Services.AddScoped<ICajaRepositorio,  CajaRepositorio>();
 builder.Services.AddScoped<ICategoriaRepositorio, CategoriaRepositorio>();
