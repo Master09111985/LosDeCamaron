@@ -3,7 +3,7 @@
     <div class="px-6 py-4 bg-[#1e293b] border-b border-[#334155] flex justify-between items-center shrink-0 shadow-md z-10">
         <div>
             <h1 class="text-2xl font-black text-white flex items-center gap-3 tracking-tight">
-                <mat-icon class="text-orange-500 scale-125">local_fire_departament</mat-icon>
+                <mat-icon class="text-orange-500 scale-125">local_fire_department</mat-icon>
                 KITCHEN DISPLAY
             </h1>
             <p class="text-gray-400 text-sm mt-1 font-medium">Órdenes pendientes por preparar: <span class="text-white font-bold">{{ comandasCocina().length }}</span></p>
@@ -11,10 +11,9 @@
 
         <div class="text-right">
             <div class="text-emerald-400 font-mono font-bold text-xl flex items-center gap-2">
-                <mat-icon class="animate-pulse text-sm">fiber_manual-record</mat-icon>
+                <mat-icon class="animate-pulse text-sm">fiber_manual_record</mat-icon>
             </div>
         </div>
-
     </div>
 
     <!-- Riel de Tickets -->
@@ -73,34 +72,47 @@
                             </p>
                         </div>
 
-                        <!-- Lista de Platillos -->
-                        <div class="flex-1 overflow-y-auto p-2 custom-scrollbar bg-[#0f172a]/50 max-h-75">
-                            <ul class="divide-y divide-gray-700/50">
-                                @for (detalle of comanda.detalles; track detalle.id) {
-                                    <li class="py-3 px-2">
-                                        <div class="flex gap-3 items-start">
-                                            <span class="text-2xl font-black text-white w-8 text-center shrink-0 mt-0.5">
-                                                {{ detalle.cantidad }}x
-                                            </span>
-                                            
-                                            <div class="flex-1">
-                                                <span class="text-lg font-bold text-gray-200 leading-tight block">
-                                                    {{ detalle.platilloNombre }}
-                                                </span>
-                                                
-                                                @if (detalle.notas) {
-                                                    <div class="mt-1.5 bg-red-500/10 border border-red-500/20 rounded p-2 flex gap-2">
-                                                        <mat-icon class="text-red-400 text-sm shrink-0 mt-0.5">warning</mat-icon>
-                                                        <span class="text-red-400 font-bold text-sm uppercase tracking-wide">
-                                                            {{ detalle.notas }}
-                                                        </span>
-                                                    </div>
-                                                }
-                                            </div>
+                        <!-- Lista de Platillos AGRUPADA POR PLATOS -->
+                        <div class="flex-1 overflow-y-auto p-3 custom-scrollbar bg-[#0f172a]/50 max-h-75">
+                            <div class="space-y-3">
+                                @for (plato of getPlatosUnicos(comanda); track plato) {
+                                    
+                                    <div class="bg-gray-800/80 rounded-lg border border-gray-700 overflow-hidden">
+                                        <!-- Título del Plato -->
+                                        <div class="bg-blue-900/30 px-3 py-1.5 border-b border-gray-700">
+                                            <h4 class="text-blue-400 font-bold uppercase text-[11px] tracking-wider">Plato {{ plato }}</h4>
                                         </div>
-                                    </li>
+                                        
+                                        <!-- Contenido del Plato -->
+                                        <ul class="divide-y divide-gray-700/50">
+                                            @for (detalle of getDetallesPorPlato(comanda, plato); track detalle.id) {
+                                                <li class="py-2.5 px-3">
+                                                    <div class="flex gap-3 items-start">
+                                                        <span class="text-xl font-black text-white w-6 text-center shrink-0 mt-0.5">
+                                                            {{ detalle.cantidad }}x
+                                                        </span>
+                                                        
+                                                        <div class="flex-1">
+                                                            <span class="text-base font-bold text-gray-200 leading-tight block">
+                                                                {{ detalle.platilloNombre }}
+                                                            </span>
+                                                            
+                                                            @if (detalle.notas) {
+                                                                <div class="mt-1.5 bg-red-500/10 border border-red-500/20 rounded p-1.5 flex gap-1.5">
+                                                                    <mat-icon class="text-red-400 text-sm shrink-0 mt-0.5">warning</mat-icon>
+                                                                    <span class="text-red-400 font-bold text-[11px] uppercase tracking-wide">
+                                                                        {{ detalle.notas }}
+                                                                    </span>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
                                 }
-                            </ul>
+                            </div>
                         </div>
 
                         <!-- Botón de Acción -->
@@ -121,5 +133,4 @@
             </div>
         }
     </div>
-
 </div>

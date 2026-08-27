@@ -8,6 +8,7 @@ import { ComandaDto } from '../../interfaces/comanda.interface';
 
 @Component({
   selector: 'app-cocina',
+  standalone: true,
   imports: [
     CommonModule,
     MatIconModule
@@ -15,7 +16,6 @@ import { ComandaDto } from '../../interfaces/comanda.interface';
   templateUrl: './cocina.html',
   styleUrl: './cocina.css',
 })
-
 export class Cocina implements OnInit, OnDestroy {
   
   private comandaService = inject(ComandaService);
@@ -23,7 +23,6 @@ export class Cocina implements OnInit, OnDestroy {
 
   comandasCocina = signal<ComandaDto[]>([]);
   cargando = signal<boolean>(false);
-  //Para mostrar spinner en el boton de el ticket
   procesandoId = signal<number | null>(null);
 
   private intervalId: any;
@@ -31,7 +30,6 @@ export class Cocina implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.cargarComandasActivas(true);
 
-    // Auto-recarga silenciosa cada 10 segundos para ver nuevos pedidos
     this.intervalId = setInterval(() => {
       this.cargarComandasActivas(false);
     }, 10000);
@@ -48,7 +46,6 @@ export class Cocina implements OnInit, OnDestroy {
 
     this.comandaService.getComandas().subscribe({
       next: (comandas) => {
-        // El estatus 1 se definio como "Cocinando"
         const enCocina = comandas.filter(c => c.estado === 'Cocinando');
         const ordenadas = enCocina.sort((a, b) =>
           new Date(a.fechaRegistro).getTime() - new Date(b.fechaRegistro).getTime()
@@ -67,11 +64,9 @@ export class Cocina implements OnInit, OnDestroy {
   marcarComoLista(comanda: ComandaDto): void {
     this.procesandoId.set(comanda.id);
 
-    //El estatus 2 significa "Entregado / Listo para llevar a mesa"
     this.comandaService.cambiarEstatus(comanda.id, 2).subscribe({
       next: () => {
         this.toastService.showSuccess(`¡Orden #${comanda.id} terminada!`);
-        // Actualizamos la lista inmediatamente sacando la comanda terminada
         this.comandasCocina.update(lista => lista.filter(c => c.id !== comanda.id));
         this.procesandoId.set(null);
       },
@@ -83,4 +78,20 @@ export class Cocina implements OnInit, OnDestroy {
     });
   }
 
+  // ==========================================
+  // NUEVAS FUNCIONES PARA AGRUPAR POR PLATOS
+  // ==========================================
+  
+  // Obtiene una lista de los platos que existen en esta orden (ej. [1, 2])
+  getPlatosUnicos(comanda: ComandaDto): number[] {
+    if (!comanda.detalles) return [];
+    const platos = comanda.detalles.map(d => d.numeroPlato || 1);
+    return [...new Set(platos)].sort((a, b) => a - b);
+  }
+
+  // Filtra los detalles para mostrar solo los que pertenecen a un plato específico
+  getDetallesPorPlato(comanda: ComandaDto, numeroPlato: number): any[] {
+    if (!comanda.detalles) return [];
+    return comanda.detalles.filter(d => (d.numeroPlato || 1) === numeroPlato);
+  }
 }

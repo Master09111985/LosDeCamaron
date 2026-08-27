@@ -124,7 +124,8 @@ namespace FlowFood.Controllers
           Cantidad = item.Cantidad,
           PrecioUnitario = item.PrecioUnitario,
           Subtotal = subtotalItem,
-          Notas = item.Notas
+          Notas = item.Notas,
+          NumeroPlato = item.NumeroPlato // <--- INYECTADO AL GUARDAR EN BD
         });
       }
 
@@ -255,8 +256,6 @@ namespace FlowFood.Controllers
       return Ok(new { mensaje = "Cuenta cobrada exitosamente." });
     }
 
-
-
     // ==========================================
     // METODO PRIVADO: Mapeo manual a DTO
     // ==========================================
@@ -274,6 +273,7 @@ namespace FlowFood.Controllers
         Total = comanda.Total,
         FechaRegistro = comanda.FechaRegistro,
         Estado = ObtenerNombreEstatus(comanda.Estatus),
+        Prioridad = comanda.Prioridad,
         Detalles = comanda.Detalles?.Select(d => new ComandaDetalleDto
         {
           Id = d.Id,
@@ -282,7 +282,8 @@ namespace FlowFood.Controllers
           Cantidad = d.Cantidad,
           PrecioUnitario = d.PrecioUnitario,
           Subtotal = d.Subtotal,
-          Notas = d.Notas
+          Notas = d.Notas,
+          NumeroPlato = d.NumeroPlato // <--- INYECTADO AL RESPONDER A ANGULAR
         }).ToList() ?? new List<ComandaDetalleDto>()
       };
     }
