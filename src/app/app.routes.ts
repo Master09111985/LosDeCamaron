@@ -22,6 +22,7 @@ import { Roles } from './pages/roles/roles';
 import { Permisos } from './pages/permisos/permisos';
 import { Caja } from './pages/caja/caja';
 import { Proveedores } from './pages/proveedores/proveedores';
+import { Asistencia } from './pages/asistencia/asistencia';
 
 export const routes: Routes = [
     // 1. Ruta pública para el Login
@@ -37,6 +38,7 @@ export const routes: Routes = [
     children: [
         { path: '', component: Home },
         { path: 'catalogos/almacenes', component: Almacenes },
+        { path: 'catalogos/asistencias', component: Asistencia },
         { path: 'catalogos/clientes', component: Clientes },
         { path: 'plataforma/cocina', component: Cocina },
         { path: 'plataforma/comandas', component: Comandas },

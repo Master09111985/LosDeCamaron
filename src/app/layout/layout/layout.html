@@ -78,6 +78,14 @@
                                 >Almacenes
                               </a>
                             }
+
+                            @if (authService.tienePermiso('Checador')) {
+                              <a
+                                routerLink="/catalogos/asistencias"
+                                routerLinkActive="text-blue-500 font-semibold border-blue-600"
+                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
+                              >Checador</a>
+                            }
                             
                             @if (authService.tienePermiso('Clientes')) {
                               <a
