@@ -23,6 +23,7 @@ export class Layout {
   isSidebarOpen = signal(true);
   isCatalogosOpen = signal(false);
   isPlataformasOpen = signal(false);
+  isReportesOpen = signal(false);
 
   toggleSidebar() {
     this.isSidebarOpen.update(v => !v);
@@ -43,6 +44,15 @@ export class Layout {
       this.isPlataformasOpen.set(true);
     } else {
       this.isPlataformasOpen.update(v => !v);
+    }
+  }
+
+  toggleReportes() {
+    if (!this.isSidebarOpen()) {
+      this.isSidebarOpen.set(true);
+      this.isReportesOpen.set(true);
+    } else {
+      this.isReportesOpen.update(v => !v);
     }
   }
 

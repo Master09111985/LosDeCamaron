@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. DbContext - SQL Server
 // ==============================
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("FlowFoodServer"))
+    options.UseSqlServer(builder.Configuration.GetConnectionString("FlowFoodLocal"))
            .LogTo(Console.WriteLine, LogLevel.Information)
            .EnableSensitiveDataLogging());
 
@@ -29,6 +29,7 @@ builder.Services.AddScoped<IEmpleadoRepositorio, EmpleadoRepositorio>();
 builder.Services.AddScoped<IInventarioRepositorio, InventarioRepositorio>();
 builder.Services.AddScoped<IMetodoPagoRepositorio, MetodoPagoRepositorio>();
 builder.Services.AddScoped<IMotivoBajaRepositorio, MotivoBajaRepositorio>();
+builder.Services.AddScoped<INominaRepositorio, NominaRepositorio>();
 builder.Services.AddScoped<IPermisoRepositorio, PermisoRepositorio>();
 builder.Services.AddScoped<IPlataformaRepositorio, PlataformaRepositorio>();
 builder.Services.AddScoped<IPlatilloRepositorio, PlatilloRepositorio>();

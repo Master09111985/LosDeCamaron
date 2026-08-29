@@ -257,6 +257,41 @@
                       }
                   </div>
                 }
+
+                @if (authService.tienePermiso('VerReportes')) {
+                  <div class="space-y-1">
+                    <button (click)="toggleReportes()" class="w-full flex items-center p-3 rounded-lg transition-colors cursor-pointer"
+                              [class.justify-between]="isSidebarOpen()"
+                              [class.justify-center]="!isSidebarOpen()"
+                              [class.bg-blue-600]="isSidebarOpen() && isPlataformasOpen()"
+                              [class.bg-opacity-10]="isSidebarOpen() && isPlataformasOpen()"
+                              [class.text-blue-500]="isSidebarOpen() && isPlataformasOpen()"
+                              [class.text-gray-400]="!(isSidebarOpen() && isPlataformasOpen())"
+                              [class.hover:bg-gray-800]="!(isSidebarOpen() && isReportesOpen())"
+                              [class.hover:bg-opacity-50]="!(isSidebarOpen() && isReportesOpen())"
+                              [title]="!isSidebarOpen() ? 'Plataformas' : ''">
+                          <div class="flex items-center" [class.gap-3]="isSidebarOpen()" [class.justify-center]="!isSidebarOpen()">
+                              <mat-icon class="text-base">devices</mat-icon>
+                              @if (isSidebarOpen()) {
+                                  <span class="text-base font-medium tracking-wider whitespace-nowrap">Reportes</span>
+                              }
+                          </div>
+                              @if (isSidebarOpen()) {
+                                  <mat-icon class="text-base transition-transform" [class.rotate-180]="isReportesOpen()">expand_more</mat-icon>
+                              }
+                      </button>
+                      @if (isSidebarOpen() && isPlataformasOpen()) {
+                          <div class="pl-11 space-y-2 py-2">
+                              @if (authService.tienePermiso('Dashboard')) {
+                                <a routerLink="/plataformas/caja" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Dashboard</a>
+                              }
+                              @if (authService.tienePermiso('Nomina')) {
+                                <a routerLink="plataforma/comandas" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Nomina</a>
+                              }
+                          </div>
+                      }
+                  </div>
+                }
             </nav>
 
             <!-- Cerrar Sesion -->
