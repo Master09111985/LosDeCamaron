@@ -91,7 +91,6 @@ export class Caja implements OnInit {
       },
       error: (err) => {
         if (err.status === 404 || err.status === 400) {
-          // No hay turno abierto para este usuario, mostramos modal obligatorio
           this.modalApertura.set(true);
           this.cargando.set(false);
         }
@@ -103,7 +102,6 @@ export class Caja implements OnInit {
     this.cargando.set(true);
     this.comandaService.getComandas().subscribe({
       next: (comandas) => {
-        // Filtramos solo las que ya se entregaron (estatus 'Entregado')
         this.comandasPorCobrar.set(comandas.filter(c => c.estado === 'Entregado'));
         this.cargando.set(false);
       },
@@ -153,7 +151,7 @@ export class Caja implements OnInit {
   });
 
   // ==========================================
-  // ACCIONES DE COBRO
+  // ACCIONES DE COBRO Y PREVIEW
   // ==========================================
   seleccionarComanda(comanda: ComandaDto): void {
     this.comandaSeleccionada.set(comanda);
@@ -162,17 +160,19 @@ export class Caja implements OnInit {
   }
 
   imprimirTicketComanda(comanda: ComandaDto, event: Event): void {
-    // Evitamos que al dar clic en la impresora, también se seleccione la comanda para cobrar
     event.stopPropagation();
-    
-    // Limpiamos el ticket de corte por si había uno, y preparamos el de la comanda
     this.ticketGenerado.set(null); 
     this.comandaParaImprimir.set(comanda);
-    
-    // Damos medio segundo a Angular para dibujar el ticket oculto y abrimos la ventana de impresión
-    setTimeout(() => {
-      window.print();
-    }, 500);
+    // Ya no hacemos window.print() aquí; esperamos a que el usuario confirme en el modal
+  }
+
+  cerrarModalImpresion() {
+    this.comandaParaImprimir.set(null);
+    this.ticketGenerado.set(null);
+  }
+
+  ejecutarImpresion() {
+    window.print();
   }
 
   procesarCobro(): void {
@@ -292,13 +292,11 @@ export class Caja implements OnInit {
     this.cajaService.cerrarTurno(payload).subscribe({
       next: (ticket) => {
         this.toastService.showSuccess('Caja cuadrada y cerrada exitosamente');
-        this.ticketGenerado.set(ticket); 
         this.modalCorte.set(false);
-        this.turnoActual.set(null); // Oculta la vista de cobros al cerrar el turno
+        this.turnoActual.set(null);
         
-        // Damos tiempo a Angular de renderizar el div del ticket antes de lanzar la impresión
-        setTimeout(() => window.print(), 500); 
-        
+        // Esto automáticamente abrirá el modal de Preview en el HTML
+        this.ticketGenerado.set(ticket); 
         this.procesando.set(false);
       },
       error: (err) => {
