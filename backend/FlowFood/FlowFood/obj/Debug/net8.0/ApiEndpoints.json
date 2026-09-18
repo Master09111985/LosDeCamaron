@@ -233,6 +233,37 @@
     ]
   },
   {
+    "ContainingType": "FlowFood.Controllers.AsistenciaController",
+    "Method": "RegistrarChecada",
+    "RelativePath": "flowfood/asistencia/registrar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FlowFood.Models.Dtos.RegistrarChecadaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      }
+    ]
+  },
+  {
     "ContainingType": "FlowFood.Controllers.BajaController",
     "Method": "GetBaja",
     "RelativePath": "flowfood/Baja/Buscar/{id}",
@@ -323,6 +354,86 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "FlowFood.Controllers.CajaController",
+    "Method": "AbrirTurno",
+    "RelativePath": "flowfood/Caja/abrir",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FlowFood.Models.Dtos.AbrirTurnoDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FlowFood.Controllers.CajaController",
+    "Method": "CerrarTurno",
+    "RelativePath": "flowfood/Caja/cerrar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FlowFood.Models.Dtos.CerrarTurnoDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FlowFood.Controllers.CajaController",
+    "Method": "CobrarComanda",
+    "RelativePath": "flowfood/Caja/cobrar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FlowFood.Controllers.CobrarComandaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FlowFood.Controllers.CajaController",
+    "Method": "PagoProveedor",
+    "RelativePath": "flowfood/Caja/pago-proveedor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FlowFood.Models.Dtos.PagoProveedorCajaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FlowFood.Controllers.CajaController",
+    "Method": "GetTurnoAbierto",
+    "RelativePath": "flowfood/Caja/turno-abierto/{cajeroId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "cajeroId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "FlowFood.Controllers.CategoriaController",
@@ -729,6 +840,27 @@
         "StatusCode": 403
       }
     ]
+  },
+  {
+    "ContainingType": "FlowFood.Controllers.ComandaController",
+    "Method": "AgregarPlatillos",
+    "RelativePath": "flowfood/comanda/{comandaId}/agregar-platillos",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "comandaId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "nuevosDetalles",
+        "Type": "System.Collections.Generic.List\u00601[[FlowFood.Models.Dtos.CrearComandaDetalleDto, FlowFood, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   },
   {
     "ContainingType": "FlowFood.Controllers.ComandaController",
@@ -1987,6 +2119,37 @@
     ]
   },
   {
+    "ContainingType": "FlowFood.Controllers.NominaController",
+    "Method": "GenerarNomina",
+    "RelativePath": "flowfood/Nomina/Generar",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "fechas",
+        "Type": "FlowFood.Models.Dtos.RangoFechaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      }
+    ]
+  },
+  {
     "ContainingType": "FlowFood.Controllers.PermisoController",
     "Method": "ActualizarPermiso",
     "RelativePath": "flowfood/Permiso/Actualizar/{id}",
@@ -2980,6 +3143,239 @@
     ]
   },
   {
+    "ContainingType": "FlowFood.Controllers.ProveedorController",
+    "Method": "GetProveedor",
+    "RelativePath": "flowfood/proveedor/{proveedorId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "proveedorId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      }
+    ],
+    "EndpointName": "GetProveedor"
+  },
+  {
+    "ContainingType": "FlowFood.Controllers.ProveedorController",
+    "Method": "ActualizarPatchProveedor",
+    "RelativePath": "flowfood/proveedor/{proveedorId}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "proveedorId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "proveedorDto",
+        "Type": "FlowFood.Models.Dtos.ProveedorDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      }
+    ],
+    "EndpointName": "ActualizarPatchProveedor"
+  },
+  {
+    "ContainingType": "FlowFood.Controllers.ProveedorController",
+    "Method": "BorrarProveedor",
+    "RelativePath": "flowfood/proveedor/{proveedorId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "proveedorId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      }
+    ],
+    "EndpointName": "BorrarProveedor"
+  },
+  {
+    "ContainingType": "FlowFood.Controllers.ProveedorController",
+    "Method": "CrearProveedor",
+    "RelativePath": "flowfood/proveedor/crearproveedor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "crearProveedorDto",
+        "Type": "FlowFood.Models.Dtos.CrearProveedorDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 201
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 500
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "FlowFood.Controllers.ProveedorController",
+    "Method": "GetProveedores",
+    "RelativePath": "flowfood/proveedor/listarproveedores",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 403
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "FlowFood.Controllers.ProveedorController",
+    "Method": "GetProveedoresActivosAsync",
+    "RelativePath": "flowfood/proveedor/listarproveedoresactivos",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 403
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "FlowFood.Controllers.PuestoController",
     "Method": "BorrarPuesto",
     "RelativePath": "flowfood/puesto/{puestoId}",
@@ -3947,6 +4343,46 @@
           "text/json"
         ],
         "StatusCode": 403
+      }
+    ]
+  },
+  {
+    "ContainingType": "FlowFood.Controllers.UsuarioController",
+    "Method": "Login",
+    "RelativePath": "flowfood/Usuario/Login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "loginDto",
+        "Type": "FlowFood.Models.Dtos.LoginDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 401
+      },
+      {
+        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
       }
     ]
   }
