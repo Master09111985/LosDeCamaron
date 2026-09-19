@@ -54,7 +54,9 @@ builder.Services.AddCors(options =>
             "http://localhost:4200",   // ng serve por defecto
             "https://localhost:4200",
             "https://CamaronServer:9001",
-            "https://camaronserver:9001"
+            "https://camaronserver:9001",
+            "http://camaronserver:9001",  // <-- Permite acceso local en el servidor por HTTP
+            "http://192.168.1.68:9001"    // <-- Permite acceso a iPads y PCs en la red por IP
           )
           .AllowAnyHeader()
           .AllowAnyMethod();
