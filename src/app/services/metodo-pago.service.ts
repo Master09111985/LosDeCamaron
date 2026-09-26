@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MetodoPagos, CrearMetodoPagoDto, ActualizarMetodoPagoDto } from '../interfaces/metodo-pago.interface';
-import { environment } from './../../environments/environment';
+import { environment } from '../../../src/environments/environment';
 import { MetodoPago } from '../pages/metodo-pago/metodo-pago';
 
 @Injectable({

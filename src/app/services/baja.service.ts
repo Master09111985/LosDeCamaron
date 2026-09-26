@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from './../../environments/environment';
+import { environment } from '../../../src/environments/environment';
 
 // Asegúrate de tener estas interfaces exportadas en un archivo baja.interface.ts
 import { BajaDto, CrearBajaDto } from '../interfaces/baja.interface'; 
