@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { PlatilloService } from '../../services/platillo.service';
 import { ToastService } from '../../services/toast.service';
 import { Platillo } from '../../interfaces/platillo.interface';
-import { environment } from '../../environments/environment'; 
+import { environment } from '../../../environments/environment'; 
 
 @Component({
   selector: 'app-platillos',

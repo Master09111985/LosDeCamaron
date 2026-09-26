@@ -10,7 +10,7 @@ import { Permiso, CrearPermisoDto } from '../interfaces/permiso.interface';
 
 export class PermisoService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl + 'Permiso';
+  private apiUrl = environment.someeUrl + 'Permiso';
 
   getPermisos(): Observable<Permiso[]> {
     return this.http.get<Permiso[]>(`${this.apiUrl}/Listar`);

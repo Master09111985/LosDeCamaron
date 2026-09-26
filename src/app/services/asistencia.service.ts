@@ -10,7 +10,7 @@ import { RegistrarChecadaDto, RespuestaChecadaDto } from '../interfaces/asistenc
 export class AsistenciaService {
 
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}asistencia`;
+  private apiUrl = `${environment.someeUrl}asistencia`;
 
   registrarChecada(datos: RegistrarChecadaDto): Observable<RespuestaChecadaDto> {
     return this.http.post<RespuestaChecadaDto>(`${this.apiUrl}/registrar`, datos)

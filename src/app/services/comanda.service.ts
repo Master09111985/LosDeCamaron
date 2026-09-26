@@ -8,7 +8,7 @@ import { ComandaDto, CrearComandaDetalleDto, CrearComandaDto } from '../interfac
   providedIn: 'root'
 })
 export class ComandaService {
-  private env: string = environment.apiUrl; 
+  private env: string = environment.someeUrl; 
   private http = inject(HttpClient);
   private apiUrl = `${this.env}comanda`;
 

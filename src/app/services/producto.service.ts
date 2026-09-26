@@ -10,7 +10,7 @@ import { Producto, CrearProductoDto, ActualizarProductoDto } from '../interfaces
 
 export class ProductoService {
 
-    private environment: string = environment.apiUrl;
+    private environment: string = environment.someeUrl;
     private http = inject(HttpClient);
     private apiUrl = `${this.environment}Producto`;
 

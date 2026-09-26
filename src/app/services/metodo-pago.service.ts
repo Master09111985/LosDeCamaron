@@ -11,7 +11,7 @@ import { MetodoPago } from '../pages/metodo-pago/metodo-pago';
 
 export class MetodoPagoService {
 
-    private environment: string = environment.apiUrl;
+    private environment: string = environment.someeUrl;
     private http = inject(HttpClient);
     private apiUrl = `${this.environment}metodopago`;
 

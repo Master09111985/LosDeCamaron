@@ -8,7 +8,7 @@ import { Platillo } from '../interfaces/platillo.interface';
   providedIn: 'root'
 })
 export class PlatilloService {
-  private env: string = environment.apiUrl;
+  private env: string = environment.someeUrl;
   private http = inject(HttpClient);
   private apiUrl = `${this.env}Platillo`;
 

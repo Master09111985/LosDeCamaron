@@ -11,7 +11,7 @@ import { environment } from '../../../src/environments/environment';
 
 export class AlmacenService {
 
-  private environment: string = environment.apiUrl;
+  private environment: string = environment.someeUrl;
   private http = inject(HttpClient);
   private apiUrl = `${this.environment}almacen`;
 

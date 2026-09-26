@@ -10,7 +10,7 @@ import { RolPermisoDto, ActualizarPermisosRolDto } from '../interfaces/rol-permi
 })
 export class RolPermisoService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl + 'RolPermiso';
+  private apiUrl = environment.someeUrl + 'RolPermiso';
 
   // Obtenemos todos y filtramos por el rol en Angular
   getPermisosDeUnRol(rolId: number): Observable<RolPermisoDto[]> {

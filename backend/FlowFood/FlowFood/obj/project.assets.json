@@ -4660,23 +4660,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\PLU1AGU\\.nuget\\packages\\": {},
+    "C:\\Users\\Luis Padilla\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
+      "projectUniqueName": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
       "projectName": "FlowFood",
-      "projectPath": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
-      "packagesPath": "C:\\Users\\PLU1AGU\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\obj\\",
+      "projectPath": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\FlowFood.csproj",
+      "packagesPath": "C:\\Users\\Luis Padilla\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\PLU1AGU\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Luis Padilla\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

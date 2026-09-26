@@ -12,7 +12,7 @@ import { LoginDto, MapaPermisosDto, UsuarioDto } from "../interfaces/auth.interf
 
 export class AuthService {
 
-    private apiUrl = environment.apiUrl;
+    private apiUrl = environment.someeUrl;
     private http = inject(HttpClient);
 
     usuarioActual = signal<UsuarioDto | null>(null);

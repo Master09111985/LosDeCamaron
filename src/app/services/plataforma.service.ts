@@ -10,7 +10,7 @@ import { environment } from '../../../src/environments/environment';
 
 export class PlataformaService {
 
-    private environment: string = environment.apiUrl;
+    private environment: string = environment.someeUrl;
     private http = inject(HttpClient);
     private apiUrl = `${this.environment}plataforma`;
 

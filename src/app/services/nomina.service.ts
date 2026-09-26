@@ -10,7 +10,7 @@ import { RangoFechasDto, ReporteNominaDto } from '../interfaces/nomina.interface
 export class NominaService {
   private http = inject(HttpClient);
   // Ajusta la ruta base según cómo nombraste el Controller (ej. 'Nomina')
-  private apiUrl = environment.apiUrl + 'Nomina';
+  private apiUrl = environment.someeUrl + 'Nomina';
 
   generarReporte(fechas: RangoFechasDto): Observable<ReporteNominaDto[]> {
     return this.http.post<ReporteNominaDto[]>(`${this.apiUrl}/Generar`, fechas);

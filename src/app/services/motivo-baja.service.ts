@@ -10,7 +10,7 @@ import { MotivoBaja, CrearMotivoBajaDto } from '../interfaces/motivo-baja.interf
 
 export class MotivoBajaService {
     
-    private env: string = environment.apiUrl;
+    private env: string = environment.someeUrl;
     private http = inject(HttpClient);
     private apiUrl = `${this.env}MotivoBaja`;
 

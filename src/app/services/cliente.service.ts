@@ -9,7 +9,7 @@ import { Cliente, CrearClienteDto } from '../interfaces/cliente.interface';
 })
 export class ClienteService {
   // Tomamos baseUrl como prioridad según nuestra arquitectura
-  private env: string = environment.apiUrl; 
+  private env: string = environment.someeUrl; 
   private http = inject(HttpClient);
   
   private apiUrl = `${this.env}Cliente`;

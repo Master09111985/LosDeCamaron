@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { Platillo } from '../../interfaces/platillo.interface';
 import { CrearComandaDto, CrearComandaDetalleDto } from '../../interfaces/comanda.interface';
 import { Cliente } from '../../interfaces/cliente.interface';

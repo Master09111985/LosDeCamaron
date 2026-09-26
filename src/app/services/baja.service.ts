@@ -11,7 +11,7 @@ import { BajaDto, CrearBajaDto } from '../interfaces/baja.interface';
 })
 
 export class BajaService {
-  private env: string = environment.apiUrl;
+  private env: string = environment.someeUrl;
   private http = inject(HttpClient);
   private apiUrl = `${this.env}Baja`;
 

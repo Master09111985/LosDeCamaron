@@ -10,7 +10,7 @@ import { Rol, CrearRolDto } from '../interfaces/rol.interface';
 })
 export class RolService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl + 'Rol';
+  private apiUrl = environment.someeUrl + 'Rol';
 
   getRoles(): Observable<Rol[]> {
     return this.http.get<Rol[]>(`${this.apiUrl}/Listar`);

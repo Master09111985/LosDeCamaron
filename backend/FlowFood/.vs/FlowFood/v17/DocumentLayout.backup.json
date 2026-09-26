@@ -1,18 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\",
+  "WorkspaceRootPath": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\desktop\\trabajo\\angular\\practica\\newversion\\losdecamaron\\backend\\flowfood\\flowfood\\controllers\\empleadocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\controllers\\empleadocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\desktop\\trabajo\\angular\\practica\\newversion\\losdecamaron\\backend\\flowfood\\flowfood\\repositorio\\irepositorio\\iempleadorepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\repositorio\\irepositorio\\iempleadorepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\plu1agu\\desktop\\trabajo\\angular\\practica\\newversion\\losdecamaron\\backend\\flowfood\\flowfood\\repositorio\\empleadorepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\repositorio\\empleadorepositorio.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|c:\\users\\luis padilla\\desktop\\angular\\lastversion\\losdecamaron\\backend\\flowfood\\flowfood\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{F7C4D135-59CA-4961-A4F5-3D323E8903CA}|FlowFood\\FlowFood.csproj|solutionrelative:flowfood\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +14,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 989,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -34,41 +26,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "IEmpleadoRepositorio.cs",
-              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Repositorio\\IRepositorio\\IEmpleadoRepositorio.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Repositorio\\IRepositorio\\IEmpleadoRepositorio.cs",
-              "ToolTip": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Repositorio\\IRepositorio\\IEmpleadoRepositorio.cs",
-              "RelativeToolTip": "FlowFood\\Repositorio\\IRepositorio\\IEmpleadoRepositorio.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-25T22:11:36.754Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "EmpleadoRepositorio.cs",
-              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Repositorio\\EmpleadoRepositorio.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Repositorio\\EmpleadoRepositorio.cs",
-              "ToolTip": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Repositorio\\EmpleadoRepositorio.cs",
-              "RelativeToolTip": "FlowFood\\Repositorio\\EmpleadoRepositorio.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-25T22:10:38.073Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "EmpleadoController.cs",
-              "DocumentMoniker": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Controllers\\EmpleadoController.cs",
-              "RelativeDocumentMoniker": "FlowFood\\Controllers\\EmpleadoController.cs",
-              "ToolTip": "C:\\Users\\PLU1AGU\\Desktop\\Trabajo\\Angular\\Practica\\NewVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\Controllers\\EmpleadoController.cs",
-              "RelativeToolTip": "FlowFood\\Controllers\\EmpleadoController.cs",
-              "ViewState": "AgIAABcBAAAAAAAAAAA1wLIAAABKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-25T21:47:34.035Z",
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\appsettings.json",
+              "RelativeDocumentMoniker": "FlowFood\\appsettings.json",
+              "ToolTip": "C:\\Users\\Luis Padilla\\Desktop\\Angular\\LastVersion\\LosDeCamaron\\backend\\FlowFood\\FlowFood\\appsettings.json",
+              "RelativeToolTip": "FlowFood\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAACdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-09-26T17:43:46.44Z",
               "EditorCaption": ""
             }
           ]

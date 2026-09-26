@@ -10,7 +10,7 @@ import { Inventario, CrearInventarioDto, TrasladoInventarioDto } from "../interf
 
 export class InventarioService {
 
-    private env: string = environment.apiUrl;
+    private env: string = environment.someeUrl;
     private http = inject(HttpClient);
 
     private apiUrl = `${this.env}Inventario`;

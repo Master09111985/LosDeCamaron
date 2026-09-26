@@ -7,7 +7,7 @@ import { CajaTurno, TicketCorteDto } from '../interfaces/caja.interface';
 @Injectable({ providedIn: 'root' })
 export class CajaService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}caja`;
+  private apiUrl = `${environment.someeUrl}caja`;
 
   getTurnoAbierto(cajeroId: number): Observable<CajaTurno> {
     return this.http.get<CajaTurno>(`${this.apiUrl}/turno-abierto/${cajeroId}`);

@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 export class EmpleadoService {
 
     private http = inject(HttpClient);
-    private apiUrl = `${environment.apiUrl}Empleado`;
+    private apiUrl = `${environment.someeUrl}Empleado`;
 
     getEmpleados(): Observable<Empleado[]> {
         return this.http.get<Empleado[]>(`${this.apiUrl}/Listar`);

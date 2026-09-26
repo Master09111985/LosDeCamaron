@@ -1,6 +1,6 @@
 import { Component, input, computed, output } from '@angular/core';
 
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { Platillo } from '../../interfaces/platillo.interface';
 
 @Component({
