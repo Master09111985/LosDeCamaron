@@ -289,6 +289,6 @@ export class Empleados implements OnInit {
 
   obtenerRutaImagen(rutaRelativa?: string): string {
     if (!rutaRelativa) return '';
-    return `https://camaronserver:9000${rutaRelativa}`; 
+    return `http://192.168.1.68:9000${rutaRelativa}`;
   }
 }

@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Almacen, CrearAlmacenDto, ActualizarAlmacenDto } from '../interfaces/almacen.interface';
-import { environment } from '../environments/environment';
+import { environment } from './../../environments/environment';
 
 
 @Injectable({
