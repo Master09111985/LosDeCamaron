@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { PlatilloService } from '../../services/platillo.service';
 import { ToastService } from '../../services/toast.service';
 import { Platillo } from '../../interfaces/platillo.interface';
-import { environment } from '../../../environments/environment'; 
 
 @Component({
   selector: 'app-platillos',
@@ -72,9 +71,8 @@ export class Platillos implements OnInit {
     this.terminoBusqueda.set(input.value);
   }
 
-  obtenerRutaImagen(rutaRelativa?: string): string {
-    if (!rutaRelativa) return '';
-    return `https://camaronserver:9000${rutaRelativa}`; 
+  obtenerRutaImagen(url?: string): string {
+    return url || 'assets/placeholder-food.png';
   }
 
   abrirModal(platillo?: Platillo): void {
@@ -88,7 +86,6 @@ export class Platillos implements OnInit {
         precio: platillo.precio,
         estado: platillo.estado
       });
-      // Utilizamos la nueva función segura para previsualizar la foto actual
       this.fotoPrevia.set(this.obtenerRutaImagen(platillo.fotoUrl));
     } else {
       this.platilloEditando.set(null);
@@ -135,7 +132,6 @@ export class Platillos implements OnInit {
     const formValue = this.platilloForm.value;
 
     const formData = new FormData();
-    // En minúsculas (camelCase) para alinearse 100% con C#
     formData.append('nombre', formValue.nombre);
     formData.append('descripcion', formValue.descripcion || '');
     formData.append('precio', formValue.precio.toString().replace('.', ','));
@@ -145,7 +141,6 @@ export class Platillos implements OnInit {
     }
 
     if (platilloEditando) {
-      // Pasamos estado a texto seguro ('true' o 'false') para el form data
       formData.append('id', platilloEditando.id.toString());
       formData.append('estado', formValue.estado ? 'true' : 'false'); 
 

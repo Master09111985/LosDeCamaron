@@ -1,24 +1,21 @@
 import { Component, input, computed, output } from '@angular/core';
-
-import { environment } from '../../../environments/environment';
 import { Platillo } from '../../interfaces/platillo.interface';
 
 @Component({
   selector: 'app-platillo-card',
+  standalone: true,
   imports: [],
   templateUrl: './platillo-card.html',
   styleUrl: './platillo-card.css',
 })
-
 export class PlatilloCard {
 
   platillo = input.required<Platillo>();
   seleccion = output<number>();
 
+  // Devuelve la URL directa de Cloudinary o un placeholder de respaldo
   rutaImagen = computed(() => {
-    if (!this.platillo().fotoUrl) return '';
-    const ruta = this.platillo().fotoUrl.startsWith('/') ? this.platillo().fotoUrl : `/${this.platillo().fotoUrl}`;
-    return `${environment.backendUrl}` + `${ruta}`;
+    return this.platillo().fotoUrl || 'assets/placeholder-food.png';
   });
 
   alSeleccionarPlatillo() {
