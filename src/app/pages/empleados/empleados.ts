@@ -19,7 +19,6 @@ import { Puesto } from '../../interfaces/puesto.interface';
   templateUrl: './empleados.html',
   styleUrl: './empleados.css',
 })
-
 export class Empleados implements OnInit {
 
   private empleadoService = inject(EmpleadoService);
@@ -56,7 +55,6 @@ export class Empleados implements OnInit {
       if (emp) {
         setTimeout(() => {
           try {
-            // Render preview barcode
             JsBarcode('#badge-barcode', emp.codigo, {
               format: 'CODE128',
               lineColor: '#000',
@@ -66,7 +64,7 @@ export class Empleados implements OnInit {
               fontSize: 12,
               margin: 0
             });
-            // Render print barcode
+
             JsBarcode('#print-badge-barcode', emp.codigo, {
               format: 'CODE128',
               lineColor: '#000',
@@ -79,7 +77,7 @@ export class Empleados implements OnInit {
           } catch (e) {
             console.error('Error rendering barcode', e);
           }
-        }, 50); // slight delay to ensure DOM is ready
+        }, 50);
       }
     });
   }
@@ -91,7 +89,6 @@ export class Empleados implements OnInit {
   cargarDatos(): void {
     this.loading.set(true);
 
-    // Cargar puestos activos para el select
     this.puestoService.getPuestosActivos().subscribe({
       next: (puestos) => {
         this.puestosActivos.set(puestos);
@@ -138,7 +135,6 @@ export class Empleados implements OnInit {
       puestoId: ''
     });
     
-    // Validacion de foto obligatoria en creación
     this.empleadoForm.get('foto')?.setValidators([Validators.required]);
     this.empleadoForm.get('foto')?.updateValueAndValidity();
 
@@ -149,14 +145,12 @@ export class Empleados implements OnInit {
     this.empleadoEditando.set(empleado);
     this.archivoSeleccionado = null;
 
-    // Convertir fecha al formato YYYY-MM-DD para el input[type=date]
     let fechaContratoFormat = '';
     if (empleado.fechaContrato) {
       const date = new Date(empleado.fechaContrato);
       fechaContratoFormat = date.toISOString().split('T')[0];
     }
 
-    // Validacion de foto NO obligatoria de edicion
     this.empleadoForm.get('foto')?.clearValidators();
     this.empleadoForm.get('foto')?.updateValueAndValidity();
 
@@ -211,21 +205,21 @@ export class Empleados implements OnInit {
 
       this.empleadoService.actualizarEmpleado(empleadoActual.id, dto).subscribe({
         next: () => {
-          this.toastService.showSuccess('El registro se guardo satisfactoriamente');
+          this.toastService.showSuccess('El registro se guardó satisfactoriamente');
           this.cargarEmpleados();
           this.cerrarModal();
           this.guardando.set(false);
         },
         error: (err) => {
           console.error(err);
-          this.toastService.showError('Ocurrio un error al actualizar el empleado.');
+          this.toastService.showError('Ocurrió un error al actualizar el empleado.');
           this.guardando.set(false);
         }
       });
     } else {
       // Crear
       if (!this.archivoSeleccionado) {
-        this.toastService.showError('Debe ajuntar una foto');
+        this.toastService.showError('Debe adjuntar una foto');
         this.guardando.set(false);
         return;
       }
@@ -243,14 +237,14 @@ export class Empleados implements OnInit {
 
       this.empleadoService.crearEmpleado(dto).subscribe({
         next: () => {
-          this.toastService.showSuccess('El registro se guardo satisfactoriamente');
+          this.toastService.showSuccess('El registro se guardó satisfactoriamente');
           this.cargarEmpleados();
           this.cerrarModal();
           this.guardando.set(false);
         },
         error: (err) => {
           console.error(err);
-          const errorMsg = err.error && err.error[''] ? err.error[''][0] : 'Ocurrio un error al crear el empleado';
+          const errorMsg = err.error && err.error[''] ? err.error[''][0] : 'Ocurrió un error al crear el empleado';
           this.toastService.showError(errorMsg);
           this.guardando.set(false);
         }
@@ -259,7 +253,7 @@ export class Empleados implements OnInit {
   }
 
   borrarEmpleado(empleado: Empleado) {
-    if (confirm(`Estas seguro de eliminar al empleado "${empleado.nombre}"?`)) {
+    if (confirm(`¿Estás seguro de eliminar al empleado "${empleado.nombre}"?`)) {
       this.loading.set(true);
       this.empleadoService.borrarEmpleado(empleado.id).subscribe({
         next: () => {
@@ -268,7 +262,7 @@ export class Empleados implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          this.toastService.showError('Ocurrio un error al eliminar el empleado');
+          this.toastService.showError('Ocurrió un error al eliminar el empleado');
           this.loading.set(false);
         }
       });
@@ -287,8 +281,8 @@ export class Empleados implements OnInit {
     window.print();
   }
 
-  obtenerRutaImagen(rutaRelativa?: string): string {
-    if (!rutaRelativa) return '';
-    return `http://192.168.1.68:9000${rutaRelativa}`;
+  // La URL desde Cloudinary almacenada en la BD
+  obtenerRutaImagen(url?: string): string {
+    return url || 'assets/placeholder-avatar.png';
   }
 }
