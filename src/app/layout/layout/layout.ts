@@ -71,6 +71,24 @@ export class Layout {
     return nombre.substring(0, 2).toUpperCase();
   }
 
+  tienePermiso(nombrePermiso: string): boolean {
+    const usuario: any = this.authService.usuarioActual();
+    if (!usuario) return false;
+
+    // Si es Desarrollador o Administrador tiene acceso a todo el menú
+    const rol = (usuario.rolNombre || '').toLowerCase();
+    if (rol === 'desarrollador' || rol === 'administrador') {
+      return true;
+    }
+
+    // Validamos en el arreglo de permisos del usuario (soporta array de strings o array de objetos { nombre })
+    const permisos: any[] = usuario.permisos || [];
+    return permisos.some(p => {
+      const nombre = typeof p === 'string' ? p : p?.nombre || p?.permisoNombre || '';
+      return nombre.toLowerCase() === nombrePermiso.toLowerCase();
+    });
+  }
+
   cerrarSesion() {
     this.authService.cerrarSesion();
     this.router.navigate(['/login']);

@@ -3,18 +3,16 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
-    // DESACTIVADO PARA PRUEBAS LOCALES - Siempre permite el acceso
-    return true; 
-    
-    /* Código original comentado:
-    const authService = inject(AuthService);
-    const router = inject(Router);
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-    if (authService.usuarioActual()) {
-        return true; 
-    }
+  const usuario = authService.usuarioActual();
 
+  // 1. Si no ha iniciado sesión, lo mandamos al Login
+  if (!usuario) {
     router.navigate(['/login']);
     return false;
-    */
+  }
+
+  return true;
 };
