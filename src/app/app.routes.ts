@@ -35,39 +35,38 @@ export const routes: Routes = [
   { 
     path: '', 
     component: Layout,
-    canActivate: [authGuard], // <--- Protegemos el Layout completo
+    canActivate: [authGuard], // <--- CANDADO PRINCIPAL ACTIVO
+    canActivateChild: [authGuard], // <--- PROTEGE TODAS LAS RUTAS HIJAS POR PERMISO
     children: [
       { path: '', component: Home },
-      { path: 'catalogos/almacenes', component: Almacenes },
-      { path: 'catalogos/asistencias', component: Asistencia },
-      { path: 'catalogos/clientes', component: Clientes },
-      { path: 'catalogos/empleados', component: Empleados },
-      { path: 'catalogos/puestos', component: Puestos },
-      { path: 'catalogos/unidades', component: Unidadmedidas },
-      { path: 'catalogos/productos', component: Productos },
-      { path: 'catalogos/proveedores', component: Proveedores },
-      { path: 'catalogos/inventarios', component: Inventarios },
-      { path: 'catalogos/motivos-salida', component: MotivosBaja },
-      { path: 'catalogos/plataformas', component: Plataforma },
-      { path: 'catalogos/permisos', component: Permisos },
-      { path: 'catalogos/metodo-pago', component: MetodoPago },
-      { path: 'catalogos/platillos', component: Platillos },
-      { path: 'catalogos/usuarios', component: Usuarios },
-      { path: 'catalogos/roles', component: Roles },
+      { path: 'catalogos/almacenes', component: Almacenes, data: { permiso: 'Almacenes' } },
+      { path: 'catalogos/asistencias', component: Asistencia, data: { permiso: 'Checador' } },
+      { path: 'catalogos/clientes', component: Clientes, data: { permiso: 'Clientes' } },
+      { path: 'catalogos/empleados', component: Empleados, data: { permiso: 'Empleados' } },
+      { path: 'catalogos/puestos', component: Puestos, data: { permiso: 'Puestos' } },
+      { path: 'catalogos/unidades', component: Unidadmedidas, data: { permiso: 'Unidades' } },
+      { path: 'catalogos/productos', component: Productos, data: { permiso: 'Productos' } },
+      { path: 'catalogos/proveedores', component: Proveedores, data: { permiso: 'Proveedores' } },
+      { path: 'catalogos/inventarios', component: Inventarios, data: { permiso: 'Inventarios' } },
+      { path: 'catalogos/motivos-salida', component: MotivosBaja, data: { permiso: 'MotivosSalida' } },
+      { path: 'catalogos/plataformas', component: Plataforma, data: { permiso: 'Plataformas' } },
+      { path: 'catalogos/permisos', component: Permisos, data: { permiso: 'Permisos' } },
+      { path: 'catalogos/metodo-pago', component: MetodoPago, data: { permiso: 'MetodosDePago' } },
+      { path: 'catalogos/platillos', component: Platillos, data: { permiso: 'Platillos' } },
+      { path: 'catalogos/usuarios', component: Usuarios, data: { permiso: 'Usuarios' } },
+      { path: 'catalogos/roles', component: Roles, data: { permiso: 'Roles' } },
       
-      // Rutas de Plataformas (Soportando singular y plural)
-      { path: 'plataformas/caja', component: Caja },
-      { path: 'plataformas/comandas', component: Comandas },
-      { path: 'plataformas/menu', component: Comandas },
-      { path: 'plataforma/comandas', component: Comandas },
-      { path: 'plataformas/cocina', component: Cocina },
-      { path: 'plataforma/cocina', component: Cocina },
+      // Plataformas
+      { path: 'plataformas/caja', component: Caja, data: { permiso: 'Caja' } },
+      { path: 'plataformas/comandas', component: Comandas, data: { permiso: 'Menu' } },
+      { path: 'plataformas/menu', component: Comandas, data: { permiso: 'Menu' } },
+      { path: 'plataformas/cocina', component: Cocina, data: { permiso: 'Cocina' } },
 
-      // Rutas de Reportes
-      { path: 'reportes/dashboard', component: Home },
-      { path: 'reportes/nomina', component: Nomina }
+      // Reportes
+      { path: 'reportes/dashboard', component: Home, data: { permiso: 'Dashboard' } },
+      { path: 'reportes/nomina', component: Nomina, data: { permiso: 'Nomina' } }
     ] 
   },
-  // 3. Ruta comodín por si la URL está mal
-  { path: '**', redirectTo: '' }
+  // 3. Ruta comodín redirige a login si no hay sesión
+  { path: '**', redirectTo: 'login' }
 ];

@@ -8,14 +8,17 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   const usuario = authService.usuarioActual();
 
-  // Verificamos que exista un usuario real con id válido y que NO sea un usuario de prueba
-  if (usuario && usuario.id && usuario.nombre !== 'Tester Local') {
-    return true;
+  // 1. Verificamos que exista un usuario real logueado
+  if (!usuario || !usuario.id || usuario.nombre === 'Tester Local') {
+    authService.cerrarSesion();
+    return router.createUrlTree(['/login']);
   }
 
-  // Si no hay credenciales válidas, limpiamos cualquier rastro y mandamos a /login
-  localStorage.clear();
-  sessionStorage.clear();
-  router.navigate(['/login']);
-  return false;
+  // 2. Si la ruta exige un permiso específico en data.permiso, lo validamos contra su Rol
+  const permisoRequerido = route.data?.['permiso'] as string | undefined;
+  if (permisoRequerido && !authService.tienePermiso(permisoRequerido)) {
+    return router.createUrlTree(['/']);
+  }
+
+  return true;
 };

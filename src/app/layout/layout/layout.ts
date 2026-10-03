@@ -59,34 +59,24 @@ export class Layout {
   // Método para obtener iniciales del usuario (ej: 'Juan Perez' -> 'JP')
   getIniciales(): string {
     const usuario = this.authService.usuarioActual();
-    if (!usuario) return 'US';
+    if (!usuario) return '';
     
-    // Si tiene empleadoNombre lo usamos, si no, su nombre de usuario
-    const nombre = usuario.empleadoNombre || usuario.nombre;
+    const nombre = usuario.empleadoNombre || usuario.nombre || '';
+    if (!nombre) return '';
+
     const partes = nombre.trim().split(' ');
-    
     if (partes.length >= 2) {
       return (partes[0][0] + partes[1][0]).toUpperCase();
     }
     return nombre.substring(0, 2).toUpperCase();
   }
 
+  // Evalúa ÚNICAMENTE los permisos asignados al rol en AuthService
   tienePermiso(nombrePermiso: string): boolean {
-    const usuario: any = this.authService.usuarioActual();
+    const usuario = this.authService.usuarioActual();
     if (!usuario || !usuario.id) return false;
 
-    // Si es Desarrollador o Administrador tiene acceso a todo el menú
-    const rol = (usuario.rolNombre || '').toLowerCase();
-    if (rol === 'desarrollador' || rol === 'administrador') {
-      return true;
-    }
-
-    // Validamos en el arreglo de permisos del usuario (soporta array de strings o array de objetos { nombre })
-    const permisos: any[] = usuario.permisos || [];
-    return permisos.some(p => {
-      const nombre = typeof p === 'string' ? p : p?.nombre || p?.permisoNombre || '';
-      return nombre.toLowerCase() === nombrePermiso.toLowerCase();
-    });
+    return this.authService.tienePermiso(nombrePermiso);
   }
 
   cerrarSesion() {
