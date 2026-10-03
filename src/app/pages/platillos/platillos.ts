@@ -134,7 +134,7 @@ export class Platillos implements OnInit {
     const formData = new FormData();
     formData.append('nombre', formValue.nombre);
     formData.append('descripcion', formValue.descripcion || '');
-    formData.append('precio', formValue.precio.toString().replace('.', ','));
+    formData.append('precio', formValue.precio.toString());
 
     if (this.fotoSeleccionada) {
       formData.append('foto', this.fotoSeleccionada);
@@ -183,7 +183,8 @@ export class Platillos implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          this.toastService.showError('Error al eliminar el platillo');
+          const msj = err.error && err.error[''] ? err.error[''][0] : 'Error al eliminar el platillo';
+          this.toastService.showError(msj);
           this.loading.set(false);
         }
       });

@@ -171,6 +171,7 @@ export class Empleados implements OnInit {
 
   cerrarModal() {
     this.modalAbierto.set(false);
+    this.empleadoEditando.set(null);
     this.empleadoForm.reset();
     this.archivoSeleccionado = null;
   }
