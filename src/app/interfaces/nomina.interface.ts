@@ -9,6 +9,8 @@ export interface ReporteNominaDto {
   salarioSemanal: number;
   pagoPorMinuto: number;
   totalMinutosTrabajados: number;
+  minutosRetardo: number;
+  descuentoRetardos: number;
   totalAPagar: number;
   totalAsistencias: number;
 }
