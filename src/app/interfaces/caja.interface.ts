@@ -15,6 +15,8 @@ export interface TicketCorteDto {
   fondoInicial: number;
   totalVentasEfectivo: number;
   totalVentasTarjeta: number;
+  totalVentasTransferencia: number;
+  totalVentasGeneral: number;
   totalPagosProveedores: number;
   efectivoCalculadoSistema: number;
   efectivoFisicoReportado: number;

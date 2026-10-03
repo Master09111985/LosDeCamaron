@@ -47,10 +47,15 @@ export class Caja implements OnInit {
   modalProveedor = signal<boolean>(false);
   modalCorte = signal<boolean>(false);
 
-  // Estados de Selección (Cobro)
+  // Estados de Selección (Cobro Simple y Mixto)
   comandaSeleccionada = signal<ComandaDto | null>(null);
   metodoPagoSeleccionado = signal<number | null>(null);
   efectivoRecibido = signal<number | null>(null);
+
+  esCobroMixto = signal<boolean>(false);
+  combinacionMixta = signal<'tarjeta-efectivo' | 'tarjeta-transferencia' | 'transferencia-efectivo' | null>(null);
+  montoMixto1 = signal<number | null>(null); // Monto del primer método (Tarjeta o Transferencia)
+  montoMixto2 = signal<number | null>(null); // Monto del segundo método (Efectivo o Transferencia)
 
   // ==========================================
   // FORMULARIOS REACTIVOS
@@ -140,16 +145,49 @@ export class Caja implements OnInit {
     });
   });
 
+  // Helper para buscar el ID real en BD de Efectivo, Tarjeta o Transferencia
+  private obtenerIdMetodoPorNombre(palabraClave: string): number | null {
+    const metodo = this.metodosPagoDb().find(m => m.nombre.toLowerCase().includes(palabraClave.toLowerCase()));
+    return metodo ? metodo.id : null;
+  }
+
   esEfectivo = computed(() => {
+    if (this.esCobroMixto()) {
+      const comb = this.combinacionMixta();
+      return comb === 'tarjeta-efectivo' || comb === 'transferencia-efectivo';
+    }
     const metodoId = this.metodoPagoSeleccionado();
     const metodo = this.metodosPagoDb().find(m => m.id === metodoId);
     return metodo ? metodo.nombre.toLowerCase().includes('efectivo') : false;
   });
 
   cambio = computed(() => {
-    const total = this.comandaSeleccionada()?.total || 0;
     const recibido = this.efectivoRecibido() || 0;
+    if (this.esCobroMixto()) {
+      const montoEfectivoACobrar = this.montoMixto2() || 0;
+      return recibido > montoEfectivoACobrar ? recibido - montoEfectivoACobrar : 0;
+    }
+    const total = this.comandaSeleccionada()?.total || 0;
     return recibido > total ? recibido - total : 0;
+  });
+
+  cobroValido = computed(() => {
+    const comanda = this.comandaSeleccionada();
+    if (!comanda) return false;
+
+    if (!this.esCobroMixto()) {
+      if (!this.metodoPagoSeleccionado()) return false;
+      if (this.esEfectivo() && (this.efectivoRecibido() || 0) < comanda.total) return false;
+      return true;
+    } else {
+      if (!this.combinacionMixta()) return false;
+      const m1 = Number(this.montoMixto1() || 0);
+      const m2 = Number(this.montoMixto2() || 0);
+      const sumaExacta = Math.abs((m1 + m2) - comanda.total) < 0.01;
+      if (!sumaExacta || m1 <= 0 || m2 <= 0) return false;
+      if (this.esEfectivo() && (this.efectivoRecibido() || 0) < m2) return false;
+      return true;
+    }
   });
 
   // ==========================================
@@ -159,6 +197,42 @@ export class Caja implements OnInit {
     this.comandaSeleccionada.set(comanda);
     this.metodoPagoSeleccionado.set(null); 
     this.efectivoRecibido.set(null);
+    this.esCobroMixto.set(false);
+    this.combinacionMixta.set(null);
+    this.montoMixto1.set(null);
+    this.montoMixto2.set(null);
+  }
+
+  activarModoCobro(mixto: boolean): void {
+    this.esCobroMixto.set(mixto);
+    this.metodoPagoSeleccionado.set(null);
+    this.combinacionMixta.set(null);
+    this.montoMixto1.set(null);
+    this.montoMixto2.set(null);
+    this.efectivoRecibido.set(null);
+  }
+
+  seleccionarCombinacionMixta(comb: 'tarjeta-efectivo' | 'tarjeta-transferencia' | 'transferencia-efectivo'): void {
+    this.combinacionMixta.set(comb);
+    const total = this.comandaSeleccionada()?.total || 0;
+    const mitad = Number((total / 2).toFixed(2));
+    this.montoMixto1.set(mitad);
+    this.montoMixto2.set(Number((total - mitad).toFixed(2)));
+    this.efectivoRecibido.set(null);
+  }
+
+  actualizarMontoMixto1(valor: number): void {
+    const total = this.comandaSeleccionada()?.total || 0;
+    const m1 = Math.max(0, Math.min(Number(valor || 0), total));
+    this.montoMixto1.set(m1);
+    this.montoMixto2.set(Number((total - m1).toFixed(2)));
+  }
+
+  actualizarMontoMixto2(valor: number): void {
+    const total = this.comandaSeleccionada()?.total || 0;
+    const m2 = Math.max(0, Math.min(Number(valor || 0), total));
+    this.montoMixto2.set(m2);
+    this.montoMixto1.set(Number((total - m2).toFixed(2)));
   }
 
   imprimirTicketComanda(comanda: ComandaDto, event: Event): void {
@@ -177,25 +251,51 @@ export class Caja implements OnInit {
 
   procesarCobro(): void {
     const comanda = this.comandaSeleccionada();
-    const metodoId = this.metodoPagoSeleccionado();
-
-    if (!comanda || !metodoId || !this.turnoActual()) {
-      this.toastService.showError('Seleccione un método de pago y asegúrese de tener turno abierto');
+    if (!comanda || !this.turnoActual() || !this.cobroValido()) {
+      this.toastService.showError('Verifique los montos y el método de pago seleccionado');
       return;
     }
 
-    if (this.esEfectivo() && (this.efectivoRecibido() || 0) < comanda.total) {
-      this.toastService.showError('El monto recibido es menor al total de la cuenta');
-      return;
+    let payload: any;
+
+    if (!this.esCobroMixto()) {
+      payload = { 
+        comandaId: comanda.id, 
+        metodoPagoId: this.metodoPagoSeleccionado(), 
+        usuarioCajeroId: this.usuarioIdActual 
+      };
+    } else {
+      const comb = this.combinacionMixta();
+      const idEfectivo = this.obtenerIdMetodoPorNombre('efectivo') || 1;
+      const idTarjeta = this.obtenerIdMetodoPorNombre('tarjeta') || 2;
+      const idTransferencia = this.obtenerIdMetodoPorNombre('transferencia') || 3;
+
+      let metodo1Id = idTarjeta;
+      let metodo2Id = idEfectivo;
+
+      if (comb === 'tarjeta-efectivo') {
+        metodo1Id = idTarjeta;
+        metodo2Id = idEfectivo;
+      } else if (comb === 'tarjeta-transferencia') {
+        metodo1Id = idTarjeta;
+        metodo2Id = idTransferencia;
+      } else if (comb === 'transferencia-efectivo') {
+        metodo1Id = idTransferencia;
+        metodo2Id = idEfectivo;
+      }
+
+      payload = {
+        comandaId: comanda.id,
+        metodoPagoId: metodo1Id,
+        usuarioCajeroId: this.usuarioIdActual,
+        pagos: [
+          { metodoPagoId: metodo1Id, monto: Number(this.montoMixto1()) },
+          { metodoPagoId: metodo2Id, monto: Number(this.montoMixto2()) }
+        ]
+      };
     }
 
     this.procesando.set(true);
-    
-    const payload = { 
-      comandaId: comanda.id, 
-      metodoPagoId: metodoId, 
-      usuarioCajeroId: this.usuarioIdActual 
-    };
 
     this.cajaService.cobrarComanda(payload).subscribe({
       next: () => {
