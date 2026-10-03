@@ -8,11 +8,14 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   const usuario = authService.usuarioActual();
 
-  // 1. Si no ha iniciado sesión, lo mandamos al Login
-  if (!usuario) {
-    router.navigate(['/login']);
-    return false;
+  // Verificamos que exista un usuario real con id válido y que NO sea un usuario de prueba
+  if (usuario && usuario.id && usuario.nombre !== 'Tester Local') {
+    return true;
   }
 
-  return true;
+  // Si no hay credenciales válidas, limpiamos cualquier rastro y mandamos a /login
+  localStorage.clear();
+  sessionStorage.clear();
+  router.navigate(['/login']);
+  return false;
 };

@@ -73,7 +73,7 @@ export class Layout {
 
   tienePermiso(nombrePermiso: string): boolean {
     const usuario: any = this.authService.usuarioActual();
-    if (!usuario) return false;
+    if (!usuario || !usuario.id) return false;
 
     // Si es Desarrollador o Administrador tiene acceso a todo el menú
     const rol = (usuario.rolNombre || '').toLowerCase();
