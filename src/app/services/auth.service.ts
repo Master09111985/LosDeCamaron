@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 
 import { environment } from '../../../src/environments/environment';
-import { LoginDto, MapaPermisosDto, UsuarioDto } from "../interfaces/auth.interface";
+import { LoginDto, UsuarioDto } from "../interfaces/auth.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -25,20 +25,68 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}Usuario/Login`, credenciales);
   }
 
-  // 2. Traer el diccionario de permisos según el Rol
+  // 2. Traer los permisos según el Rol
   getPermisosPorRol(rolId: number): Observable<any> {
     return this.http.get(`${this.apiUrl}RolPermiso/PorRol/${rolId}`);
   }
 
-  // 3. Guardar usuario y permisos en el sessionStorage
-  guardarSesion(usuario: UsuarioDto, mapa: MapaPermisosDto): void {
-    localStorage.clear(); // Limpiamos cualquier sesión vieja que haya quedado en localStorage
-    const dicPermisos = mapa?.permisos || {};
-    sessionStorage.setItem('usuario', JSON.stringify(usuario));
+  // 3. Guardar usuario y permisos normalizados en el sessionStorage
+  guardarSesion(usuario: any, respuestaPermisos: any): void {
+    localStorage.clear();
+
+    // Aseguramos que el usuario tenga su propiedad id normalizada
+    const usuarioNormalizado: UsuarioDto = {
+      ...usuario,
+      id: usuario.id ?? usuario.Id ?? usuario.usuarioId ?? 1,
+      nombre: usuario.nombre ?? usuario.Nombre ?? '',
+      rolId: usuario.rolId ?? usuario.RolId,
+      rolNombre: usuario.rolNombre ?? usuario.RolNombre ?? ''
+    };
+
+    const dicPermisos = this.normalizarPermisos(respuestaPermisos);
+
+    sessionStorage.setItem('usuario', JSON.stringify(usuarioNormalizado));
     sessionStorage.setItem('permisos', JSON.stringify(dicPermisos));
-    
-    this.usuarioActual.set(usuario);
+
+    this.usuarioActual.set(usuarioNormalizado);
     this.permisosActuales.set(dicPermisos);
+  }
+
+  // Convierte cualquier formato de respuesta de RolPermiso en Record<string, boolean>
+  private normalizarPermisos(data: any): Record<string, boolean> {
+    const mapa: Record<string, boolean> = {};
+    if (!data) return mapa;
+
+    // Caso 1: Viene como { permisos: { "Almacenes": true, ... } } o { Permisos: ... }
+    const fuente = data.permisos ?? data.Permisos ?? data;
+
+    // Caso 2: Si la fuente es un Arreglo (colección de permisos desde .NET)
+    if (Array.isArray(fuente)) {
+      for (const item of fuente) {
+        if (typeof item === 'string') {
+          mapa[item] = true;
+        } else if (item && typeof item === 'object') {
+          const nombre = item.permisoNombre || item.nombrePermiso || item.nombre || item.PermisoNombre || item.Nombre;
+          // Si tiene propiedad activo/asignado/estado la respetamos, si solo devuelve los asignados es true
+          const activo = item.asignado ?? item.activo ?? item.estado ?? item.tienePermiso ?? true;
+          if (nombre) {
+            mapa[nombre] = Boolean(activo);
+          }
+        }
+      }
+      return mapa;
+    }
+
+    // Caso 3: Si ya es un objeto diccionario { "VerCatalogos": true, "Almacenes": true }
+    if (typeof fuente === 'object') {
+      for (const key of Object.keys(fuente)) {
+        if (key !== 'rolId' && key !== 'rolNombre' && key !== 'RolId' && key !== 'RolNombre') {
+          mapa[key] = Boolean(fuente[key]);
+        }
+      }
+    }
+
+    return mapa;
   }
 
   // 4. Limpiar la sesión al salir
@@ -56,10 +104,8 @@ export class AuthService {
     const mapa = this.permisosActuales();
     if (!mapa) return false;
 
-    // Verificación directa
     if (mapa[nombrePermiso] === true) return true;
 
-    // Verificación insensible a mayúsculas/minúsculas por seguridad
     const claveEncontrada = Object.keys(mapa).find(
       k => k.toLowerCase() === nombrePermiso.toLowerCase()
     );
@@ -68,7 +114,7 @@ export class AuthService {
 
   // 6. Obtener los datos del usuario logueado al recargar con F5
   private cargarSesionInicial(): void {
-    localStorage.clear(); // Evita que cargue sesiones viejas de pruebas
+    localStorage.clear();
     const usuarioStr = sessionStorage.getItem('usuario');
     const permisosStr = sessionStorage.getItem('permisos');
   

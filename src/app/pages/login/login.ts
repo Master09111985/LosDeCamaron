@@ -40,22 +40,35 @@ export class LoginComponent {
     const credenciales = this.loginForm.value;
 
     this.authService.login(credenciales).subscribe({
-      next: (usuario) => {
+      next: (respuestaLogin) => {
+        // Soportamos si el backend devuelve el usuario directo o dentro de { usuario: ... }
+        const usuario = respuestaLogin?.usuario || respuestaLogin;
+        const rolId = usuario?.rolId ?? usuario?.RolId;
+
+        if (!usuario || !rolId) {
+          this.toastService.showError('Respuesta de usuario inválida.');
+          this.cargando.set(false);
+          return;
+        }
+
         // Pedimos los permisos basados en su rol
-        this.authService.getPermisosPorRol(usuario.rolId).subscribe({
+        this.authService.getPermisosPorRol(rolId).subscribe({
           next: (mapaPermisos) => {
             this.authService.guardarSesion(usuario, mapaPermisos);
-            this.toastService.showSuccess(`¡Bienvenido, ${usuario.nombre}!`);
-            this.router.navigate(['/inicio']); // Redirigir al dashboard
+            this.cargando.set(false);
+            this.toastService.showSuccess(`¡Bienvenido, ${usuario.empleadoNombre || usuario.nombre}!`);
+            this.router.navigate(['/']); // <--- Redirigir a la raíz del Layout (Home)
           },
-          error: () => {
+          error: (err) => {
+            console.error('Error al obtener permisos:', err);
             this.toastService.showError('Error al cargar los permisos del usuario.');
             this.cargando.set(false);
           }
         });
       },
       error: (err) => {
-        const mensaje = err.error?.mensaje || 'Error al intentar iniciar sesión';
+        console.error('Error en login:', err);
+        const mensaje = err.error?.mensaje || err.error?.message || 'Usuario o contraseña incorrectos';
         this.toastService.showError(mensaje);
         this.cargando.set(false);
       }
