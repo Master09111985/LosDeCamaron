@@ -26,7 +26,7 @@ import { Asistencia } from './pages/asistencia/asistencia';
 import { Nomina } from './pages/nomina/nomina';
 
 export const routes: Routes = [
-    // 1. Ruta pública para el Login
+  // 1. Ruta pública para el Login
   { 
     path: 'login', 
     component: LoginComponent 
@@ -37,31 +37,37 @@ export const routes: Routes = [
     component: Layout,
     //canActivate: [authGuard], // <--- Protegemos el Layout completo
     children: [
-        { path: '', component: Home },
-        { path: 'catalogos/almacenes', component: Almacenes },
-        { path: 'catalogos/asistencias', component: Asistencia },
-        { path: 'catalogos/clientes', component: Clientes },
-        { path: 'plataforma/cocina', component: Cocina },
-        { path: 'plataforma/comandas', component: Comandas },
-        { path: 'catalogos/empleados', component: Empleados },
-        { path: 'catalogos/puestos', component: Puestos },
-        { path: 'catalogos/unidades', component: Unidadmedidas },
-        { path: 'catalogos/productos', component: Productos },
-        { path: 'catalogos/proveedores', component: Proveedores },
-        { path: 'catalogos/inventarios', component: Inventarios },
-        { path: 'catalogos/motivos-salida', component: MotivosBaja },
-        { path: 'catalogos/plataformas', component: Plataforma },
-        { path: 'catalogos/permisos', component: Permisos },
-        { path: 'catalogos/metodo-pago', component: MetodoPago },
-        { path: 'catalogos/platillos', component: Platillos },
-        { path: 'catalogos/usuarios', component: Usuarios },
-        { path: 'catalogos/roles', component: Roles },
-        { path: 'plataformas/caja', component: Caja },
-        { path: 'plataformas/cocina', component: Cocina },
-        { path: 'plataformas/menu', component: Comandas },
-        { path: 'reportes/nomina', component: Nomina }
-      ] 
-    },
-    // 3. Ruta comodin por si la URL esta mal
-    { path: '**', redirectTo:'' }
+      { path: '', component: Home },
+      { path: 'catalogos/almacenes', component: Almacenes },
+      { path: 'catalogos/asistencias', component: Asistencia },
+      { path: 'catalogos/clientes', component: Clientes },
+      { path: 'catalogos/empleados', component: Empleados },
+      { path: 'catalogos/puestos', component: Puestos },
+      { path: 'catalogos/unidades', component: Unidadmedidas },
+      { path: 'catalogos/productos', component: Productos },
+      { path: 'catalogos/proveedores', component: Proveedores },
+      { path: 'catalogos/inventarios', component: Inventarios },
+      { path: 'catalogos/motivos-salida', component: MotivosBaja },
+      { path: 'catalogos/plataformas', component: Plataforma },
+      { path: 'catalogos/permisos', component: Permisos },
+      { path: 'catalogos/metodo-pago', component: MetodoPago },
+      { path: 'catalogos/platillos', component: Platillos },
+      { path: 'catalogos/usuarios', component: Usuarios },
+      { path: 'catalogos/roles', component: Roles },
+      
+      // Rutas de Plataformas (Soportando singular y plural)
+      { path: 'plataformas/caja', component: Caja },
+      { path: 'plataformas/comandas', component: Comandas },
+      { path: 'plataformas/menu', component: Comandas },
+      { path: 'plataforma/comandas', component: Comandas },
+      { path: 'plataformas/cocina', component: Cocina },
+      { path: 'plataforma/cocina', component: Cocina },
+
+      // Rutas de Reportes
+      { path: 'reportes/dashboard', component: Home },
+      { path: 'reportes/nomina', component: Nomina }
+    ] 
+  },
+  // 3. Ruta comodín por si la URL está mal
+  { path: '**', redirectTo: '' }
 ];

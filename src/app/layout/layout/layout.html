@@ -4,7 +4,7 @@
     <header class="h-16 bg-[#1a1a1a] border-b border-gray-800 flex items-center px-6 shrink-0 shadow-lg justify-between z-20">
         <div class="flex items-center gap-4">
           <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white shadow-blue-600/20 shadow-md">
-            <img src="/assets/images/Logo.jpg" alt="Logo" class="w-full h-full object-cover rounded-lg">
+            <img src="assets/images/Logo.jpg" alt="Logo" class="w-full h-full object-cover rounded-lg">
           </div>
           <!-- Nombre Dinámico con fallback para pruebas -->
           <h1 class="text-xl font-bold tracking-tight text-white hidden sm:block">
@@ -36,7 +36,7 @@
 
             <nav class="overflow-y-auto px-2 py-4 space-y-2">
                 <!-- Inicio -->
-                <a routerLink="/" class="flex items-center p-3 text-gray-400 hover:bg-gray-800/50 rounded-lg transition-colors cursor-pointer" [class.justify-center]="!isSidebarOpen()" [class.gap-3]="isSidebarOpen()" [title]="!isSidebarOpen() ? 'Inicio' : ''">
+                <a routerLink="/" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="text-blue-500 bg-gray-800/50" class="flex items-center p-3 text-gray-400 hover:bg-gray-800/50 rounded-lg transition-colors cursor-pointer" [class.justify-center]="!isSidebarOpen()" [class.gap-3]="isSidebarOpen()" [title]="!isSidebarOpen() ? 'Inicio' : ''">
                     <mat-icon class="text-base">home</mat-icon>
                     @if (isSidebarOpen()) {
                         <span class="text-sm font-medium whitespace-nowrap">Inicio</span>
@@ -114,8 +114,8 @@
                     @if (isSidebarOpen() && isPlataformasOpen()) {
                         <div class="pl-11 space-y-2 py-2">
                             <a routerLink="/plataformas/caja" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Caja</a>
-                            <a routerLink="plataforma/comandas" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Menu</a>
-                            <a routerLink="plataforma/cocina" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Cocina</a>
+                            <a routerLink="/plataformas/comandas" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Menu</a>
+                            <a routerLink="/plataformas/cocina" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Cocina</a>
                         </div>
                     }
                 </div>
@@ -160,7 +160,7 @@
                         <span class="text-sm font-medium whitespace-nowrap">Cerrar Sesión</span>
                     }
                 </button>
-          </div>
+           </div>
 
         </aside>
 
