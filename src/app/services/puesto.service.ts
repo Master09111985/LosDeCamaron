@@ -25,7 +25,7 @@ export class PuestoService {
     }
 
     actualizarPuesto(id: number, puesto: Puesto): Observable<void> {
-        return this.http.patch<void>(`${this.apiUrl}/${id}`, puesto);
+    return this.http.put<void>(`${this.apiUrl}/Actualizar/${id}`, puesto);
     }
 
     borrarPuesto(id: number): Observable<void> {
