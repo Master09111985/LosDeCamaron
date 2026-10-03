@@ -32,11 +32,11 @@ export class AuthService {
         return this.http.get(`${this.apiUrl}RolPermiso/PorRol/${rolId}`);
     }
 
-    // 3. Guardar usuario y permisos en el localStorage
+    // 3. Guardar usuario y permisos en el sessionStorage
     guardarSesion(usuario: UsuarioDto, mapa: MapaPermisosDto): void {
-        localStorage.setItem('usuario', JSON.stringify(usuario));
+        sessionStorage.setItem('usuario', JSON.stringify(usuario));
         // Guardamos solo el diccionario de permisos {"Ventas": true, ...}
-        localStorage.setItem('permisos', JSON.stringify(mapa.permisos));
+        sessionStorage.setItem('permisos', JSON.stringify(mapa.permisos));
         // Actualizamos las signals
         this.usuarioActual.set(usuario);
         this.permisosActuales.set(mapa.permisos);
@@ -44,8 +44,8 @@ export class AuthService {
 
     // 4. Limpiar la sesion al salir
     cerrarSesion(): void {
-        localStorage.removeItem('usuario');
-        localStorage.removeItem('permisos');
+        sessionStorage.removeItem('usuario');
+        sessionStorage.removeItem('permisos');
         this.usuarioActual.set(null);
         this.permisosActuales.set({});
     }
@@ -57,8 +57,8 @@ export class AuthService {
 
     // 6. Obtener los datos del usuario logueado
     private cargarSesionInicial(): void {
-        const usuarioStr = localStorage.getItem('usuario');
-        const permisosStr = localStorage.getItem('permisos');
+        const usuarioStr = sessionStorage.getItem('usuario');
+        const permisosStr = sessionStorage.getItem('permisos');
     
         if (usuarioStr && permisosStr) {
         this.usuarioActual.set(JSON.parse(usuarioStr));
