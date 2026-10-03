@@ -23,6 +23,7 @@ import { Permisos } from './pages/permisos/permisos';
 import { Caja } from './pages/caja/caja';
 import { Proveedores } from './pages/proveedores/proveedores';
 import { Asistencia } from './pages/asistencia/asistencia';
+import { Nomina } from './pages/nomina/nomina';
 
 export const routes: Routes = [
     // 1. Ruta pública para el Login
@@ -57,7 +58,8 @@ export const routes: Routes = [
         { path: 'catalogos/roles', component: Roles },
         { path: 'plataformas/caja', component: Caja },
         { path: 'plataformas/cocina', component: Cocina },
-        { path: 'plataformas/menu', component: Comandas }
+        { path: 'plataformas/menu', component: Comandas },
+        { path: 'reportes/nomina', component: Nomina }
       ] 
     },
     // 3. Ruta comodin por si la URL esta mal
