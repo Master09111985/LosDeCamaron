@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { ComandaService } from '../../services/comanda.service';
 import { MetodoPagoService } from '../../services/metodo-pago.service';
@@ -27,6 +28,7 @@ export class Caja implements OnInit {
   private cajaService = inject(CajaService);
   private proveedorService = inject(ProveedorService);
   private toastService = inject(ToastService);
+  private router = inject(Router);
   private fb = inject(FormBuilder);
 
   // Estados Base
@@ -370,6 +372,12 @@ export class Caja implements OnInit {
         this.procesando.set(false);
       }
     });
+  }
+
+  cancelarApertura(): void {
+    this.modalApertura.set(false);
+    this.fondoForm.reset();
+    this.router.navigate(['/']);  //----> Este lo agregue para poder cerrar la apertura de la caja.
   }
 
   abrirModalCorte() { 
