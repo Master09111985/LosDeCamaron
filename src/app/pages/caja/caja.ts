@@ -9,6 +9,7 @@ import { MetodoPagoService } from '../../services/metodo-pago.service';
 import { ToastService } from '../../services/toast.service';
 import { CajaService } from '../../services/caja.service';
 import { ProveedorService } from '../../services/proveedor.service';
+import { AuthService } from '../../services/auth.service';
 
 import { ComandaDto } from '../../interfaces/comanda.interface';
 import { MetodoPagos } from '../../interfaces/metodo-pago.interface';
@@ -28,6 +29,7 @@ export class Caja implements OnInit {
   private cajaService = inject(CajaService);
   private proveedorService = inject(ProveedorService);
   private toastService = inject(ToastService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
@@ -40,7 +42,10 @@ export class Caja implements OnInit {
   procesando = signal<boolean>(false);
 
   // Estados de Caja (Turnos)
-  usuarioIdActual = 1; // TODO: Cambiar por el ID real que saques de tu LocalStorage/AuthService
+  get usuarioIdActual(): number {
+    const usuario = this.authService.usuarioActual();
+    return usuario ? usuario.id : 0;
+  }
   turnoActual = signal<any | null>(null);
   ticketGenerado = signal<any | null>(null);
   
