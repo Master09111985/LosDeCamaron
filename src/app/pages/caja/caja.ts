@@ -29,7 +29,6 @@ export class Caja implements OnInit {
   private cajaService = inject(CajaService);
   private proveedorService = inject(ProveedorService);
   private toastService = inject(ToastService);
-  private cdr = inject(ChangeDetectorRef);
   private authService = inject(AuthService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
