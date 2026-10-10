@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -97,6 +97,25 @@ export class Caja implements OnInit {
     supervisorUsuario: ['', Validators.required],
     supervisorPassword: ['', Validators.required]
   });
+
+  constructor() {
+    // Escucha automáticamente cuando quieres imprimir una cuenta
+    effect(() => {
+      const comanda = this.comandaParaImprimir();
+      if (comanda) {
+        // Aquí Angular GARANTIZA que el HTML ya tiene los precios y platillos
+        setTimeout(() => window.print(), 100);
+      }
+    });
+
+    // Escucha automáticamente cuando haces el corte de caja
+    effect(() => {
+      const ticket = this.ticketGenerado();
+      if (ticket) {
+        setTimeout(() => window.print(), 100);
+      }
+    });
+  }
 
   // ==========================================
   // INICIALIZACIÓN Y CARGA DE DATOS
@@ -300,19 +319,11 @@ verificarTurno(): void {
   }
 
   imprimirTicketComanda(comanda: ComandaDto, event: Event): void {
-    // Evitamos que al dar clic en la impresora, también se seleccione la comanda para cobrar
     event.stopPropagation();
-    
-    // Limpiamos el ticket de corte por si había uno, y preparamos el de la comanda
     this.ticketGenerado.set(null); 
-    this.comandaParaImprimir.set(comanda);
-
-    this.cdr.detectChanges();
     
-    // Damos medio segundo a Angular para dibujar el ticket oculto y abrimos la ventana de impresión
-    setTimeout(() => {
-      window.print();
-    }, 500);
+    // Asignamos una copia fresca para forzar al 'effect' a ejecutarse
+    this.comandaParaImprimir.set({ ...comanda }); 
   }
 
   procesarCobro(): void {
@@ -464,23 +475,22 @@ verificarTurno(): void {
       return; 
     }
   
-  this.procesando.set(true);
-  const payload = { 
-    turnoId: this.turnoActual().id, 
-    ...this.corteForm.value,
-    // Asegurar que viajen como números
-    efectivoReportado: Number(this.corteForm.value.efectivoReportado)
-  };
+    this.procesando.set(true);
+    const payload = { 
+      turnoId: this.turnoActual().id, 
+      ...this.corteForm.value,
+      efectivoReportado: Number(this.corteForm.value.efectivoReportado)
+    };
   
-  this.cajaService.cerrarTurno(payload).subscribe({
+    this.cajaService.cerrarTurno(payload).subscribe({
       next: (ticket) => {
         this.toastService.showSuccess('Caja cuadrada y cerrada exitosamente');
-        this.ticketGenerado.set(ticket); 
-        this.modalCorte.set(false);
-        this.turnoActual.set(null); // Oculta la vista de cobros al cerrar el turno
         
-        this.cdr.detectChanges();
-        setTimeout(() => window.print(), 50);        
+        this.comandaParaImprimir.set(null); // Limpiamos si había comandas
+        this.ticketGenerado.set({ ...ticket }); // Despierta al effect para imprimir
+        
+        this.modalCorte.set(false);
+        this.turnoActual.set(null);
         this.procesando.set(false);
       },
       error: (err) => {
