@@ -106,6 +106,7 @@ export class Caja implements OnInit {
     this.cargarProveedores();
   }
 
+  /*
   verificarTurno(): void {
     this.cargando.set(true);
     this.cajaService.getTurnoAbierto(this.usuarioIdActual).subscribe({
@@ -123,6 +124,48 @@ export class Caja implements OnInit {
       }
     });
   }
+*/
+
+verificarTurno(): void {
+  const cajeroId = this.usuarioIdActual;
+  
+  // Barrera para esperar a que el usuario termine de cargarse en memoria
+  if (cajeroId === 0) {
+    console.warn('ID de cajero es 0. Retrasando verificación...');
+    setTimeout(() => this.verificarTurno(), 300); // Reintenta en 300ms
+    return;
+  }
+
+  this.cargando.set(true);
+  console.log(`Buscando turno en SOMEE para el cajero ID: ${cajeroId}`);
+
+  this.cajaService.getTurnoAbierto(cajeroId).subscribe({
+    next: (turno) => {
+      console.log('Turno encontrado en BD:', turno);
+      
+      // Validamos que sea un objeto de turno real
+      if (turno && turno.id) {
+        this.turnoActual.set(turno);
+        this.cargarComandas();
+        this.modalApertura.set(false); // Ocultamos el modal forzadamente
+      } else {
+        this.modalApertura.set(true);
+      }
+      this.cargando.set(false);
+    },
+    error: (err) => {
+      console.error('Error devuelto por C#:', err);
+      
+      if (err.status === 404 || err.status === 400) {
+        this.modalApertura.set(true);
+      } else {
+        this.toastService.showError('Error al contactar con la base de datos de caja.');
+      }
+      this.cargando.set(false);
+    }
+  });
+}
+
 
   cargarComandas(): void {
     this.cargando.set(true);
@@ -262,6 +305,7 @@ export class Caja implements OnInit {
     // Limpiamos el ticket de corte por si había uno, y preparamos el de la comanda
     this.ticketGenerado.set(null); 
     this.comandaParaImprimir.set(comanda);
+    setTimeout(() => window.print(), 500);
     
     // Damos medio segundo a Angular para dibujar el ticket oculto y abrimos la ventana de impresión
     setTimeout(() => {

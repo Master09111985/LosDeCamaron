@@ -9,8 +9,10 @@ export class CajaService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.someeUrl}caja`;
 
-  getTurnoAbierto(cajeroId: number): Observable<CajaTurno> {
-    return this.http.get<CajaTurno>(`${this.apiUrl}/turno-abierto/${cajeroId}`);
+  getTurnoAbierto(cajeroId: number): Observable<CajaTurno> {  // Este codigo lo cambie para ver si me deja entrar a una sesion abierta
+    const timestamp = new Date().getTime();
+    return this.http.get<CajaTurno>(`${this.apiUrl}/turno-abierto/${cajeroId}?t=${timestamp}`);
+    //return this.http.get<CajaTurno>(`${this.apiUrl}/turno-abierto/${cajeroId}`);
   }
 
   abrirTurno(data: any): Observable<CajaTurno> {
