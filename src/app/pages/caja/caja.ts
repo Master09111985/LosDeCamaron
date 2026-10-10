@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -29,6 +29,7 @@ export class Caja implements OnInit {
   private cajaService = inject(CajaService);
   private proveedorService = inject(ProveedorService);
   private toastService = inject(ToastService);
+  private cdr = inject(ChangeDetectorRef);
   private authService = inject(AuthService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
@@ -305,7 +306,8 @@ verificarTurno(): void {
     // Limpiamos el ticket de corte por si había uno, y preparamos el de la comanda
     this.ticketGenerado.set(null); 
     this.comandaParaImprimir.set(comanda);
-    setTimeout(() => window.print(), 500);
+
+    this.cdr.detectChanges();
     
     // Damos medio segundo a Angular para dibujar el ticket oculto y abrimos la ventana de impresión
     setTimeout(() => {
@@ -477,9 +479,8 @@ verificarTurno(): void {
         this.modalCorte.set(false);
         this.turnoActual.set(null); // Oculta la vista de cobros al cerrar el turno
         
-        // Damos tiempo a Angular de renderizar el div del ticket antes de lanzar la impresión
-        setTimeout(() => window.print(), 500); 
-        
+        this.cdr.detectChanges();
+        setTimeout(() => window.print(), 50);        
         this.procesando.set(false);
       },
       error: (err) => {
