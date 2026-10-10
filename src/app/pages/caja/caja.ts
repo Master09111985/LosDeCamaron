@@ -432,7 +432,14 @@ export class Caja implements OnInit {
         this.procesando.set(false);
       },
       error: (err) => {
-        this.toastService.showError(err.error || 'Credenciales inválidas o error de servidor');
+        console.error(err);
+        
+        if (err.status === 401) {
+          this.toastService.showWarning('Credenciales no autorizadas para pagar a proveedores.');
+        } else {
+          this.toastService.showError(err.error || 'Ocurrió un error al procesar el pago.');
+        }
+        
         this.procesando.set(false);
       }
     });
@@ -467,14 +474,28 @@ export class Caja implements OnInit {
         this.toastService.showSuccess('Caja cuadrada y cerrada exitosamente');
         
         this.comandaParaImprimir.set(null); 
-        this.ticketGenerado.set(ticket); // Esto abrirá el modal de vista previa del corte
+        this.ticketGenerado.set(ticket); 
         
         this.modalCorte.set(false);
         this.turnoActual.set(null);
         this.procesando.set(false);
       },
       error: (err) => {
-        this.toastService.showError(err.error || 'Credenciales inválidas');
+        console.error(err);
+        
+        // Si el backend responde 401 (Unauthorized)
+        if (err.status === 401) {
+          this.toastService.showWarning('Credenciales no autorizadas para el corte de caja.');
+        } 
+        // Si el backend responde 400 (Bad Request - Ej. comandas pendientes en cocina)
+        else if (err.status === 400) {
+          this.toastService.showWarning(err.error || 'No se puede realizar el corte de caja.');
+        } 
+        // Cualquier otro error
+        else {
+          this.toastService.showError('Ocurrió un error inesperado al procesar el corte.');
+        }
+        
         this.procesando.set(false);
       }
     });

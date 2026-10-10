@@ -49,23 +49,34 @@ export class Inventarios implements OnInit {
   inventarioEditando = signal<Inventario | null>(null);
   inventarioATrasladar = signal<Inventario | null>(null);
   terminoBusqueda = signal<string>('');
+  filtroAlmacenId = signal<number | ''>('');
 
   inventariosFiltrados = computed(() => {
     const termino = this.terminoBusqueda().toLowerCase();
-    const lista = this.inventarios();
+    const almacenId = this.filtroAlmacenId();
+    let lista = this.inventarios();
 
-    // Si el buscador esta vacio, regresamos toda la lista
-    if (!termino) return lista;
+    // 1. Filtrar primero por Almacén (si hay uno seleccionado)
+    if (almacenId !== '') {
+      lista = lista.filter(inv => inv.almacenId === almacenId);
+    }
 
-    // Si hay texto, filtramos buscando coincidencias en el nombre del producto
-    return lista.filter(inv =>
-      inv.productoNombre.toLowerCase().includes(termino)
-    );
+    // 2. Luego filtrar por la búsqueda de texto (si hay algo escrito)
+    if (termino) {
+      lista = lista.filter(inv => inv.productoNombre.toLowerCase().includes(termino));
+    }
+
+    return lista;
   });
 
   actualizarBusqueda(event: Event) {
     const input = event.target as HTMLInputElement;
     this.terminoBusqueda.set(input.value);
+  }
+
+  actualizarFiltroAlmacen(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    this.filtroAlmacenId.set(select.value === '' ? '' : Number(select.value));
   }
 
   //-----------------------------------//
