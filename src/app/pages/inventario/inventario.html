@@ -1,31 +1,29 @@
 <div class="space-y-6">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+    <div class="flex flex-col xl:flex-row xl:items-center justify-between mb-8 gap-4">
         <div>
             <h2 class="text-3xl font-bold text-white">Inventario</h2>
             <p class="text-gray-500 text-sm">Administración de existencias por almacén</p>
         </div>
 
-    <!-- Contenedor: Buscador -> Baja -> Entrada -->
-        <!-- Contenedor: Buscador -> Baja -> Entrada -->
-        <div class="flex items-center gap-3">
+        <!-- Contenedor: Filtro -> Buscador -> Baja -> Entrada -->
+        <div class="flex flex-wrap items-center gap-3">
             
-            <!-- NUEVO: Filtro por Almacén -->
+            <!-- 0. Filtro por Almacén -->
             <div class="relative">
-                <!-- El select en sí -->
                 <select 
                     (change)="actualizarFiltroAlmacen($event)"
-                    class="bg-[#111] border border-gray-800 rounded-lg pl-4 pr-10 py-2.5 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white w-48 lg:w-56 appearance-none cursor-pointer">
+                    class="bg-[#111] border border-gray-800 rounded-lg pl-4 pr-10 py-2.5 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white w-48 lg:w-56 appearance-none cursor-pointer shadow-inner">
                     <option value="">Todos los almacenes</option>
                     @for (almacen of almacenes(); track almacen.id) {
                         <option [value]="almacen.id">{{ almacen.nombre }}</option>
                     }
                 </select>
-                <!-- Ícono personalizado para la flecha -->
+                <!-- Flecha desplegable personalizada -->
                 <mat-icon class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-base pointer-events-none">expand_more</mat-icon>
             </div>
 
-            <!-- 1. Buscador (Tu código original) -->
+            <!-- 1. Buscador -->
             <div class="relative">
                 <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-base">search</mat-icon>
                 <input 
@@ -35,7 +33,7 @@
                     class="bg-[#111] border border-gray-800 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white w-56 lg:w-72 placeholder:text-gray-600 shadow-inner">
             </div>
 
-            <!-- 2. Botón Baja -->
+            <!-- 2. Botón Baja (Rojo para indicar salida) -->
             <button 
                 (click)="abrirModalBaja()"
                 class="bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white border border-red-600/20 px-5 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition-all shadow-lg active:scale-95 shrink-0">
@@ -43,7 +41,7 @@
                 Registrar Baja
             </button>
 
-            <!-- 3. Botón Entrada -->
+            <!-- 3. Botón Entrada (Azul original) -->
             <button 
                 (click)="abrirModal()"
                 class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-600/20 active:scale-95 shrink-0">
@@ -81,7 +79,7 @@
                                         <mat-icon class="text-base mb-4 opacity-50">search_off</mat-icon>
                                         <!-- Mensaje dinámico dependiendo de si hay una búsqueda activa -->
                                         <p class="text-lg">
-                                            {{ terminoBusqueda() ? 'No se encontraron productos con ese nombre' : 'No hay existencias registradas' }}
+                                            {{ terminoBusqueda() || filtroAlmacenId() !== '' ? 'No se encontraron productos con estos filtros' : 'No hay existencias registradas' }}
                                         </p>
                                     </div>
                                 </td>

@@ -48,6 +48,8 @@ export class Inventarios implements OnInit {
   modalBajaAbierto = signal<boolean>(false);
   inventarioEditando = signal<Inventario | null>(null);
   inventarioATrasladar = signal<Inventario | null>(null);
+  
+  // Señales de filtrado
   terminoBusqueda = signal<string>('');
   filtroAlmacenId = signal<number | ''>('');
 
@@ -56,12 +58,12 @@ export class Inventarios implements OnInit {
     const almacenId = this.filtroAlmacenId();
     let lista = this.inventarios();
 
-    // 1. Filtrar primero por Almacén (si hay uno seleccionado)
+    // 1. Filtrar por almacén si hay uno seleccionado
     if (almacenId !== '') {
       lista = lista.filter(inv => inv.almacenId === almacenId);
     }
 
-    // 2. Luego filtrar por la búsqueda de texto (si hay algo escrito)
+    // 2. Filtrar por término de búsqueda si hay texto
     if (termino) {
       lista = lista.filter(inv => inv.productoNombre.toLowerCase().includes(termino));
     }
@@ -80,7 +82,7 @@ export class Inventarios implements OnInit {
   }
 
   //-----------------------------------//
-  //      Seccion de Formularios       //
+  //       Seccion de Formularios      //
   //-----------------------------------//      
 
   inventarioForm: FormGroup = this.fb.group({
