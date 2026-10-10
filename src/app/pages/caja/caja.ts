@@ -44,8 +44,19 @@ export class Caja implements OnInit {
   // Estados de Caja (Turnos)
   get usuarioIdActual(): number {
     const usuario = this.authService.usuarioActual();
-    return usuario ? usuario.id : 0;
-  }
+    if (usuario && usuario.id) {
+      return Number(usuario.id);
+    }
+    
+    // Fallback de seguridad leyendo la sesión directamente
+    const usuarioSession = sessionStorage.getItem('usuario');
+    if (usuarioSession) {
+      const userParsed = JSON.parse(usuarioSession);
+      return Number(userParsed.id || 1);
+    }
+    
+    return 1; // Último recurso de seguridad para evitar romper la BD
+}
   turnoActual = signal<any | null>(null);
   ticketGenerado = signal<any | null>(null);
   
@@ -322,32 +333,37 @@ export class Caja implements OnInit {
   // ==========================================
   // ACCIONES DE TURNOS Y AUDITORÍA
   // ==========================================
-  abrirTurno(): void {
-    if (this.fondoForm.invalid) {
-      this.fondoForm.markAllAsTouched();
-      return;
-    }
-    
-    this.procesando.set(true);
-    const payload = {
-      usuarioCajeroId: this.usuarioIdActual,
-      fondoInicial: this.fondoForm.value.fondoInicial
-    };
-
-    this.cajaService.abrirTurno(payload).subscribe({
-      next: (turno) => {
-        this.turnoActual.set(turno);
-        this.modalApertura.set(false);
-        this.cargarComandas();
-        this.toastService.showSuccess('Caja abierta exitosamente');
-        this.procesando.set(false);
-      },
-      error: () => {
-        this.toastService.showError('Error al abrir la caja');
-        this.procesando.set(false);
-      }
-    });
+  abrirTurno(): void { 
+  if (this.fondoForm.invalid) { 
+    this.fondoForm.markAllAsTouched(); 
+    return; 
   }
+  
+  this.procesando.set(true);
+  
+  const payload = {
+    usuarioCajeroId: this.usuarioIdActual,
+    // Forzamos el valor a Number para prevenir validaciones fallidas del modelo
+    fondoInicial: Number(this.fondoForm.value.fondoInicial) 
+  };
+  
+  this.cajaService.abrirTurno(payload).subscribe({
+    next: (turno) => {
+      this.turnoActual.set(turno);
+      this.modalApertura.set(false);
+      this.cargarComandas();
+      this.toastService.showSuccess('Caja abierta exitosamente');
+      this.procesando.set(false);
+    },
+    error: (err) => {
+      console.error(err);
+      // Intentamos leer el mensaje dinámico del backend si existe
+      const msg = err.error?.mensaje || err.error || 'Error al abrir la caja';
+      this.toastService.showError(msg);
+      this.procesando.set(false);
+    }
+  });
+}
 
   abrirModalProveedor() { 
     this.proveedorForm.reset(); 
@@ -391,18 +407,20 @@ export class Caja implements OnInit {
   }
 
   cerrarCaja(): void {
-    if (this.corteForm.invalid) {
-      this.corteForm.markAllAsTouched();
-      return;
+    if (this.corteForm.invalid) { 
+      this.corteForm.markAllAsTouched(); 
+      return; 
     }
-
-    this.procesando.set(true);
-    const payload = { 
-      turnoId: this.turnoActual().id, 
-      ...this.corteForm.value 
-    };
-
-    this.cajaService.cerrarTurno(payload).subscribe({
+  
+  this.procesando.set(true);
+  const payload = { 
+    turnoId: this.turnoActual().id, 
+    ...this.corteForm.value,
+    // Asegurar que viajen como números
+    efectivoReportado: Number(this.corteForm.value.efectivoReportado)
+  };
+  
+  this.cajaService.cerrarTurno(payload).subscribe({
       next: (ticket) => {
         this.toastService.showSuccess('Caja cuadrada y cerrada exitosamente');
         this.ticketGenerado.set(ticket); 
