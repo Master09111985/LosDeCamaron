@@ -43,20 +43,22 @@ export class Caja implements OnInit {
 
   // Estados de Caja (Turnos)
   get usuarioIdActual(): number {
-    const usuario = this.authService.usuarioActual();
-    if (usuario && usuario.id) {
-      return Number(usuario.id);
+  const usuario = this.authService.usuarioActual();
+  if (usuario && usuario.id) {
+    return Number(usuario.id);
+  }
+  
+  const usuarioSession = sessionStorage.getItem('usuario');
+  if (usuarioSession) {
+    const userParsed = JSON.parse(usuarioSession);
+    if (userParsed && userParsed.id) {
+        return Number(userParsed.id);
     }
-    
-    // Fallback de seguridad leyendo la sesión directamente
-    const usuarioSession = sessionStorage.getItem('usuario');
-    if (usuarioSession) {
-      const userParsed = JSON.parse(usuarioSession);
-      return Number(userParsed.id || 1);
-    }
-    
-    return 1; // Último recurso de seguridad para evitar romper la BD
+  }
+  
+  return 0; 
 }
+
   turnoActual = signal<any | null>(null);
   ticketGenerado = signal<any | null>(null);
   
@@ -334,34 +336,38 @@ export class Caja implements OnInit {
   // ACCIONES DE TURNOS Y AUDITORÍA
   // ==========================================
   abrirTurno(): void { 
-  if (this.fondoForm.invalid) { 
-    this.fondoForm.markAllAsTouched(); 
-    return; 
-  }
-  
-  this.procesando.set(true);
-  
-  const payload = {
-    usuarioCajeroId: this.usuarioIdActual,
-    // Forzamos el valor a Number para prevenir validaciones fallidas del modelo
-    fondoInicial: Number(this.fondoForm.value.fondoInicial) 
-  };
-  
-  this.cajaService.abrirTurno(payload).subscribe({
-    next: (turno) => {
-      this.turnoActual.set(turno);
-      this.modalApertura.set(false);
-      this.cargarComandas();
-      this.toastService.showSuccess('Caja abierta exitosamente');
-      this.procesando.set(false);
-    },
-    error: (err) => {
-      console.error(err);
-      // Intentamos leer el mensaje dinámico del backend si existe
-      const msg = err.error?.mensaje || err.error || 'Error al abrir la caja';
-      this.toastService.showError(msg);
-      this.procesando.set(false);
+    if (this.fondoForm.invalid) { 
+      this.fondoForm.markAllAsTouched(); 
+      return; 
     }
+
+    // Nueva barrera protectora
+    if (this.usuarioIdActual === 0) {
+      this.toastService.showError('Error de sesión: No se identificó al cajero. Vuelve a iniciar sesión.');
+      return;
+    }
+  
+    this.procesando.set(true);
+    const payload = {
+      usuarioCajeroId: this.usuarioIdActual,
+      fondoInicial: Number(this.fondoForm.value.fondoInicial) 
+    };
+  
+    this.cajaService.abrirTurno(payload).subscribe({
+      next: (turno) => {
+        this.turnoActual.set(turno);
+        this.modalApertura.set(false);
+        this.cargarComandas();
+        this.toastService.showSuccess('Caja abierta exitosamente');
+        this.procesando.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        // Intentamos leer el mensaje dinámico del backend si existe
+        const msg = err.error?.mensaje || err.error || 'Error al abrir la caja';
+        this.toastService.showError(msg);
+        this.procesando.set(false);
+      }
   });
 }
 

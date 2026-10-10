@@ -32,25 +32,27 @@ export class AuthService {
 
   // 3. Guardar usuario y permisos normalizados en el sessionStorage
   guardarSesion(usuario: any, respuestaPermisos: any): void {
-    localStorage.clear();
+  localStorage.clear();
 
-    // Aseguramos que el usuario tenga su propiedad id normalizada
-    const usuarioNormalizado: UsuarioDto = {
-      ...usuario,
-      id: usuario.id ?? usuario.Id ?? usuario.usuarioId ?? 1,
-      nombre: usuario.nombre ?? usuario.Nombre ?? '',
-      rolId: usuario.rolId ?? usuario.RolId,
-      rolNombre: usuario.rolNombre ?? usuario.RolNombre ?? ''
-    };
+  // Ampliamos la búsqueda del ID por si el backend lo serializa diferente y quitamos el 1 hardcodeado
+  const idDetectado = usuario.id ?? usuario.Id ?? usuario.usuarioId ?? usuario.idUsuario ?? usuario.IdUsuario;
 
-    const dicPermisos = this.normalizarPermisos(respuestaPermisos);
+  const usuarioNormalizado: UsuarioDto = {
+    ...usuario,
+    id: idDetectado ? Number(idDetectado) : 0, 
+    nombre: usuario.nombre ?? usuario.Nombre ?? '',
+    rolId: usuario.rolId ?? usuario.RolId,
+    rolNombre: usuario.rolNombre ?? usuario.RolNombre ?? ''
+  };
 
-    sessionStorage.setItem('usuario', JSON.stringify(usuarioNormalizado));
-    sessionStorage.setItem('permisos', JSON.stringify(dicPermisos));
+  const dicPermisos = this.normalizarPermisos(respuestaPermisos);
 
-    this.usuarioActual.set(usuarioNormalizado);
-    this.permisosActuales.set(dicPermisos);
-  }
+  sessionStorage.setItem('usuario', JSON.stringify(usuarioNormalizado));
+  sessionStorage.setItem('permisos', JSON.stringify(dicPermisos));
+
+  this.usuarioActual.set(usuarioNormalizado);
+  this.permisosActuales.set(dicPermisos);
+}
 
   // Convierte cualquier formato de respuesta de RolPermiso en Record<string, boolean>
   private normalizarPermisos(data: any): Record<string, boolean> {
