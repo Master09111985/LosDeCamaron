@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -43,21 +43,21 @@ export class Caja implements OnInit {
 
   // Estados de Caja (Turnos)
   get usuarioIdActual(): number {
-  const usuario = this.authService.usuarioActual();
-  if (usuario && usuario.id) {
-    return Number(usuario.id);
-  }
-  
-  const usuarioSession = sessionStorage.getItem('usuario');
-  if (usuarioSession) {
-    const userParsed = JSON.parse(usuarioSession);
-    if (userParsed && userParsed.id) {
-        return Number(userParsed.id);
+    const usuario = this.authService.usuarioActual();
+    if (usuario && usuario.id) {
+      return Number(usuario.id);
     }
+    
+    const usuarioSession = sessionStorage.getItem('usuario');
+    if (usuarioSession) {
+      const userParsed = JSON.parse(usuarioSession);
+      if (userParsed && userParsed.id) {
+          return Number(userParsed.id);
+      }
+    }
+    
+    return 0; 
   }
-  
-  return 0; 
-}
 
   turnoActual = signal<any | null>(null);
   ticketGenerado = signal<any | null>(null);
@@ -97,25 +97,6 @@ export class Caja implements OnInit {
     supervisorPassword: ['', Validators.required]
   });
 
-  constructor() {
-    // Escucha automáticamente cuando quieres imprimir una cuenta
-    effect(() => {
-      const comanda = this.comandaParaImprimir();
-      if (comanda) {
-        // Aquí Angular GARANTIZA que el HTML ya tiene los precios y platillos
-        setTimeout(() => window.print(), 100);
-      }
-    });
-
-    // Escucha automáticamente cuando haces el corte de caja
-    effect(() => {
-      const ticket = this.ticketGenerado();
-      if (ticket) {
-        setTimeout(() => window.print(), 100);
-      }
-    });
-  }
-
   // ==========================================
   // INICIALIZACIÓN Y CARGA DE DATOS
   // ==========================================
@@ -125,66 +106,51 @@ export class Caja implements OnInit {
     this.cargarProveedores();
   }
 
-  /*
   verificarTurno(): void {
+    const cajeroId = this.usuarioIdActual;
+    
+    // Barrera para esperar a que el usuario termine de cargarse en memoria
+    if (cajeroId === 0) {
+      console.warn('ID de cajero es 0. Retrasando verificación...');
+      setTimeout(() => this.verificarTurno(), 300); // Reintenta en 300ms
+      return;
+    }
+
     this.cargando.set(true);
-    this.cajaService.getTurnoAbierto(this.usuarioIdActual).subscribe({
-      next: (turno) => {
-        this.turnoActual.set(turno);
-        this.cargarComandas();
-        this.modalApertura.set(false);
+    console.log(`Buscando turno en SOMEE para el cajero ID: ${cajeroId}`);
+
+    this.cajaService.getTurnoAbierto(cajeroId).subscribe({
+      next: (turno: any) => {
+        console.log('Turno encontrado en BD:', turno);
+        
+        // 1. Detectar el ID sin importar si viene como id, Id, turnoId o TurnoId
+        const idTurno = turno?.id ?? turno?.Id ?? turno?.turnoId ?? turno?.TurnoId;
+
+        // Validamos que sea un objeto de turno real
+        if (turno && idTurno) {
+          // 2. Normalizar el objeto para que siempre tenga la propiedad 'id' en minúscula
+          const turnoNormalizado = { ...turno, id: idTurno };
+
+          this.turnoActual.set(turnoNormalizado);
+          this.cargarComandas();
+          this.modalApertura.set(false); // Ocultamos el modal forzadamente
+        } else {
+          this.modalApertura.set(true);
+        }
+        this.cargando.set(false);
       },
       error: (err) => {
+        console.error('Error devuelto por C#:', err);
+        
         if (err.status === 404 || err.status === 400) {
-          // No hay turno abierto para este usuario, mostramos modal obligatorio
           this.modalApertura.set(true);
-          this.cargando.set(false);
+        } else {
+          this.toastService.showError('Error al contactar con la base de datos de caja.');
         }
+        this.cargando.set(false);
       }
     });
   }
-*/
-
-verificarTurno(): void {
-  const cajeroId = this.usuarioIdActual;
-  
-  // Barrera para esperar a que el usuario termine de cargarse en memoria
-  if (cajeroId === 0) {
-    console.warn('ID de cajero es 0. Retrasando verificación...');
-    setTimeout(() => this.verificarTurno(), 300); // Reintenta en 300ms
-    return;
-  }
-
-  this.cargando.set(true);
-  console.log(`Buscando turno en SOMEE para el cajero ID: ${cajeroId}`);
-
-  this.cajaService.getTurnoAbierto(cajeroId).subscribe({
-    next: (turno) => {
-      console.log('Turno encontrado en BD:', turno);
-      
-      // Validamos que sea un objeto de turno real
-      if (turno && turno.id) {
-        this.turnoActual.set(turno);
-        this.cargarComandas();
-        this.modalApertura.set(false); // Ocultamos el modal forzadamente
-      } else {
-        this.modalApertura.set(true);
-      }
-      this.cargando.set(false);
-    },
-    error: (err) => {
-      console.error('Error devuelto por C#:', err);
-      
-      if (err.status === 404 || err.status === 400) {
-        this.modalApertura.set(true);
-      } else {
-        this.toastService.showError('Error al contactar con la base de datos de caja.');
-      }
-      this.cargando.set(false);
-    }
-  });
-}
-
 
   cargarComandas(): void {
     this.cargando.set(true);
@@ -317,12 +283,25 @@ verificarTurno(): void {
     this.montoMixto1.set(Number((total - m2).toFixed(2)));
   }
 
+  // ==========================================
+  // ACCIONES PARA LA IMPRESIÓN MANUAL
+  // ==========================================
+  cerrarModalImpresionComanda(): void {
+    this.comandaParaImprimir.set(null);
+  }
+
+  cerrarModalImpresionCorte(): void {
+    this.ticketGenerado.set(null);
+  }
+
+  ejecutarImpresion(): void {
+    window.print();
+  }
+
   imprimirTicketComanda(comanda: ComandaDto, event: Event): void {
     event.stopPropagation();
     this.ticketGenerado.set(null); 
-    
-    // Asignamos una copia fresca para forzar al 'effect' a ejecutarse
-    this.comandaParaImprimir.set({ ...comanda }); 
+    this.comandaParaImprimir.set(comanda); // Esto abrirá el modal de vista previa de comanda
   }
 
   procesarCobro(): void {
@@ -397,7 +376,6 @@ verificarTurno(): void {
       return; 
     }
 
-    // Nueva barrera protectora
     if (this.usuarioIdActual === 0) {
       this.toastService.showError('Error de sesión: No se identificó al cajero. Vuelve a iniciar sesión.');
       return;
@@ -410,8 +388,12 @@ verificarTurno(): void {
     };
   
     this.cajaService.abrirTurno(payload).subscribe({
-      next: (turno) => {
-        this.turnoActual.set(turno);
+      next: (turno: any) => {
+        // Normalizar para evitar que falle el cierre de caja después
+        const idTurno = turno?.id ?? turno?.Id ?? turno?.turnoId ?? turno?.TurnoId;
+        const turnoNormalizado = { ...turno, id: idTurno };
+
+        this.turnoActual.set(turnoNormalizado);
         this.modalApertura.set(false);
         this.cargarComandas();
         this.toastService.showSuccess('Caja abierta exitosamente');
@@ -419,13 +401,12 @@ verificarTurno(): void {
       },
       error: (err) => {
         console.error(err);
-        // Intentamos leer el mensaje dinámico del backend si existe
         const msg = err.error?.mensaje || err.error || 'Error al abrir la caja';
         this.toastService.showError(msg);
         this.procesando.set(false);
       }
-  });
-}
+    });
+  }
 
   abrirModalProveedor() { 
     this.proveedorForm.reset(); 
@@ -460,7 +441,7 @@ verificarTurno(): void {
   cancelarApertura(): void {
     this.modalApertura.set(false);
     this.fondoForm.reset();
-    this.router.navigate(['/']);  //----> Este lo agregue para poder cerrar la apertura de la caja.
+    this.router.navigate(['/']); 
   }
 
   abrirModalCorte() { 
@@ -485,8 +466,8 @@ verificarTurno(): void {
       next: (ticket) => {
         this.toastService.showSuccess('Caja cuadrada y cerrada exitosamente');
         
-        this.comandaParaImprimir.set(null); // Limpiamos si había comandas
-        this.ticketGenerado.set({ ...ticket }); // Despierta al effect para imprimir
+        this.comandaParaImprimir.set(null); 
+        this.ticketGenerado.set(ticket); // Esto abrirá el modal de vista previa del corte
         
         this.modalCorte.set(false);
         this.turnoActual.set(null);

@@ -352,6 +352,130 @@
 }
 
 <!-- ========================================== -->
+<!-- MODAL DE PREVIEW: TICKET DE COMANDA        -->
+<!-- ========================================== -->
+@if (comandaParaImprimir(); as c) {
+    <div class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-fade-in print:hidden">
+        <div class="bg-[#1e293b] p-6 md:p-8 rounded-2xl flex flex-col items-center border border-[#334155] shadow-2xl animate-slide-up max-w-sm w-full">
+            
+            <div class="w-full flex justify-between items-center mb-6">
+                <h3 class="text-white font-bold text-lg">Vista Previa de Ticket</h3>
+                <button (click)="cerrarModalImpresionComanda()" class="text-gray-400 hover:text-white transition-colors">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+
+            <!-- Previsualización Visual -->
+            <div class="bg-white text-black p-6 rounded shadow-lg w-full font-mono text-sm relative">
+                <div class="absolute top-0 left-0 right-0 h-2 bg-white" style="background-image: radial-gradient(#1e293b 4px, transparent 4px); background-size: 10px 10px; background-position: -5px -5px;"></div>
+                
+                <div class="text-center mb-4 mt-2">
+                    <h1 class="text-xl font-black uppercase">Los De Camarón</h1>
+                    <p class="text-xs text-gray-600">Paseo de la Cruz #123</p>
+                    <p class="text-xs text-gray-600 mb-2">Aguascalientes, Ags.</p>
+                    <p class="font-bold text-sm uppercase">ORDEN #{{ c.id }}</p>
+                    <p class="text-xs font-bold">{{ c.tipoPedido }} {{ c.numeroMesa ? '- ' + c.numeroMesa : '' }}</p>
+                    <p class="text-[10px]">{{ c.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</p>
+                </div>
+                
+                <div class="mb-4 space-y-1 border-t border-b border-dashed border-gray-400 py-3">
+                    @for (detalle of c.detalles; track detalle.id) {
+                        <div class="flex justify-between items-start text-xs">
+                            <span class="pr-2">{{ detalle.cantidad }}x {{ detalle.platilloNombre }}</span>
+                            <span class="font-bold">${{ detalle.subtotal | number:'1.2-2' }}</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="flex justify-between font-black text-base pt-1">
+                    <span>TOTAL:</span>
+                    <span>${{ c.total | number:'1.2-2' }}</span>
+                </div>
+            </div>
+
+            <div class="mt-8 flex gap-4 w-full">
+                <button (click)="cerrarModalImpresionComanda()" class="flex-1 py-3 rounded-xl border border-[#334155] text-sm font-semibold hover:bg-gray-800 transition-colors text-gray-300">
+                    Cancelar
+                </button>
+                <button (click)="ejecutarImpresion()" class="flex-1 py-3 flex justify-center items-center gap-2 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-500 shadow-lg shadow-blue-600/20 transition-all">
+                    <mat-icon class="text-[20px]">print</mat-icon> Imprimir
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- ========================================== -->
+<!-- MODAL DE PREVIEW: TICKET CORTE DE CAJA     -->
+<!-- ========================================== -->
+@if (ticketGenerado(); as t) {
+    <div class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-fade-in print:hidden h-full">
+        <div class="bg-[#1e293b] p-6 md:p-8 rounded-2xl flex flex-col items-center border border-[#334155] shadow-2xl animate-slide-up max-w-sm w-full max-h-[90vh] overflow-hidden">
+            
+            <div class="w-full flex justify-between items-center mb-6 shrink-0">
+                <h3 class="text-white font-bold text-lg">Vista Previa de Corte</h3>
+                <button (click)="cerrarModalImpresionCorte()" class="text-gray-400 hover:text-white transition-colors">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+
+            <!-- Previsualización Visual -->
+            <div class="bg-white text-black p-6 rounded shadow-lg w-full font-mono text-sm overflow-y-auto custom-scrollbar">
+                <div class="text-center font-bold mb-4">
+                    <h1 class="text-xl">LOS DE CAMARON</h1>
+                    <p>CORTE DE CAJA #{{ t.turnoId }}</p>
+                </div>
+                <div class="border-b border-gray-400 border-dashed mb-3 pb-3 text-xs space-y-1">
+                    <p>Apertura: {{ t.fechaApertura | date:'short' }}</p>
+                    <p>Cierre: {{ t.fechaCierre | date:'short' }}</p>
+                    <p>Cajero: {{ t.nombreCajero }}</p>
+                    <p>Supervisor: {{ t.nombreSupervisor }}</p>
+                </div>
+                
+                <div class="border-b border-gray-400 border-dashed mb-3 pb-3 space-y-1 text-xs">
+                    <p class="font-bold text-center uppercase mb-2">Desglose de Ventas</p>
+                    <div class="flex justify-between"><p>Efectivo:</p><p>${{ t.totalVentasEfectivo | number:'1.2-2' }}</p></div>
+                    <div class="flex justify-between"><p>Tarjeta:</p><p>${{ t.totalVentasTarjeta | number:'1.2-2' }}</p></div>
+                    <div class="flex justify-between"><p>Transferencia:</p><p>${{ t.totalVentasTransferencia | number:'1.2-2' }}</p></div>
+                    <div class="flex justify-between font-bold border-t border-gray-300 pt-1 mt-1">
+                        <p>VENTA TOTAL:</p><p>${{ t.totalVentasGeneral | number:'1.2-2' }}</p>
+                    </div>
+                </div>
+
+                <div class="border-b border-gray-400 border-dashed mb-3 pb-3 space-y-1 text-xs">
+                    <p class="font-bold text-center uppercase mb-2">Flujo de Efectivo</p>
+                    <div class="flex justify-between"><p>Fondo Inicial (+):</p><p>${{ t.fondoInicial | number:'1.2-2' }}</p></div>
+                    <div class="flex justify-between"><p>Ventas Efectivo (+):</p><p>${{ t.totalVentasEfectivo | number:'1.2-2' }}</p></div>
+                    <div class="flex justify-between"><p>Pago Prov. (-):</p><p>${{ t.totalPagosProveedores | number:'1.2-2' }}</p></div>
+                </div>
+
+                <div class="mb-4 space-y-1 text-xs">
+                    <div class="flex justify-between font-bold"><p>Efvo en Sistema:</p><p>${{ t.efectivoCalculadoSistema | number:'1.2-2' }}</p></div>
+                    <div class="flex justify-between font-bold"><p>Físico Reportado:</p><p>${{ t.efectivoFisicoReportado | number:'1.2-2' }}</p></div>
+                </div>
+
+                <div class="text-center font-bold text-sm bg-gray-100 p-2 rounded">
+                    <p>DIFERENCIA</p>
+                    <p class="text-base" [ngClass]="t.diferencia === 0 ? 'text-green-700' : 'text-red-600'">
+                        {{ t.diferencia === 0 ? '¡CAJA CUADRADA!' : (t.diferencia < 0 ? 'FALTANTE: $' + ((t.diferencia * -1) | number:'1.2-2') : 'SOBRANTE: $' + (t.diferencia | number:'1.2-2')) }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-6 flex gap-4 w-full shrink-0">
+                <button (click)="cerrarModalImpresionCorte()" class="flex-1 py-3 rounded-xl border border-[#334155] text-sm font-semibold hover:bg-gray-800 transition-colors text-gray-300">
+                    Cerrar
+                </button>
+                <button (click)="ejecutarImpresion()" class="flex-1 py-3 flex justify-center items-center gap-2 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-500 shadow-lg shadow-blue-600/20 transition-all">
+                    <mat-icon class="text-[20px]">print</mat-icon> Imprimir Ticket
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+
+<!-- ========================================== -->
 <!-- TICKET TÉRMICO (Controlado por caja.css)   -->
 <!-- ========================================== -->
 <div class="ticket-impresion font-mono text-xs">
