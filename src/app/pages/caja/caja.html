@@ -660,14 +660,17 @@
     @if (comandaParaImprimir(); as c) {
         <div class="text-center mb-3">
             <h1 class="text-lg font-black uppercase">Los De Camarón</h1>
-            <p class="text-[10px] leading-tight">Paseo de la Cruz #123</p>
+            <p class="text-[10px] leading-tight">Av. Heroe de Nacozari Sur 710-A</p>
             <p class="text-[10px] leading-tight">Aguascalientes, Ags.</p>
-            <p class="text-[10px] leading-tight">Tel: 449-123-4567</p>
+            <p class="text-[10px] leading-tight">Tel: 449-118-8265</p>
         </div>
 
         <div class="border-b border-black border-dashed mb-2 pb-2 text-center">
             <p class="font-bold text-sm uppercase">ORDEN #{{ c.id }}</p>
-            <p class="text-[11px] font-bold">{{ c.tipoPedido }} {{ c.numeroMesa ? '- ' + c.numeroMesa : '' }}</p>
+            <p class="text-gray-400 text-sm flex items-center gap-1">
+                <mat-icon class="text-[16px]">person</mat-icon> 
+                {{ c.numeroMesa || c.clienteNombre || c.nombreClienteLlevar || c.clienteDireccion || 'Cliente' }}
+            </p>
             <p class="text-[10px]">{{ c.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</p>
         </div>
         

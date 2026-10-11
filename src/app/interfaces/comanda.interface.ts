@@ -1,7 +1,7 @@
 export interface ComandaDetalleDto {
   id: number;
-  platilloId: number;
   numeroPlato: number;
+  platilloId: number;
   platilloNombre: string;
   cantidad: number;
   precioUnitario: number;
@@ -13,14 +13,22 @@ export interface ComandaDto {
   id: number;
   tipoPedido: string;
   numeroMesa?: string;
+  numeroPlato: number;
+  prioridad: number;
   plataformaNombre?: string;
-  direccionEntrega?: string;
-  horaEntrega?: string;
+  horaEntrega?: Date;
   subtotal: number;
   total: number;
-  fechaRegistro: string;
+  fechaRegistro: Date;
   estado: string;
   detalles: ComandaDetalleDto[];
+
+  // --- NUEVOS CAMPOS AGREGADOS ---
+  nombreClienteLlevar?: string;
+  clienteNombre?: string;
+  clienteTelefono?: string;
+  clienteDireccion?: string;
+  clienteReferencias?: string;
 }
 
 export interface CrearComandaDetalleDto {
