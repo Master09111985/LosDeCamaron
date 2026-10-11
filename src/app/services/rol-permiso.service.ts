@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { environment } from '../environments/environment';
+import { environment } from '../../../src/environments/environment';
 import { RolPermisoDto, ActualizarPermisosRolDto } from '../interfaces/rol-permiso.interface';
 
 @Injectable({
@@ -10,7 +10,7 @@ import { RolPermisoDto, ActualizarPermisosRolDto } from '../interfaces/rol-permi
 })
 export class RolPermisoService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl + 'RolPermiso';
+  private apiUrl = environment.someeUrl + 'RolPermiso';
 
   // Obtenemos todos y filtramos por el rol en Angular
   getPermisosDeUnRol(rolId: number): Observable<RolPermisoDto[]> {

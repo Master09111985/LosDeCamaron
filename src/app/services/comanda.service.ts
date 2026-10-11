@@ -1,14 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../environments/environment';
+import { environment } from '../../../src/environments/environment';
 import { ComandaDto, CrearComandaDetalleDto, CrearComandaDto } from '../interfaces/comanda.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ComandaService {
-  private env: string = environment.apiUrl; 
+  private env: string = environment.someeUrl; 
   private http = inject(HttpClient);
   private apiUrl = `${this.env}comanda`;
 

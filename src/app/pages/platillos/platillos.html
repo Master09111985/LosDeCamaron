@@ -139,7 +139,7 @@
                             class="w-full aspect-square rounded-xl border-2 border-dashed border-gray-700 bg-[#111] flex flex-col items-center justify-center relative overflow-hidden group">
                             
                             @if (fotoPrevia()) {
-                                <img [src]="fotoPrevia()" class="w-full h-full object-cover">
+                                <img [src]="fotoPrevia()" alt="Previsualización del platillo" class="w-full h-full object-cover">
                                 <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity pointer-events-none">
                                     <span class="text-white font-bold flex items-center gap-2"><mat-icon>edit</mat-icon> Cambiar Foto</span>
                                 </div>
@@ -148,10 +148,10 @@
                                 <span class="text-gray-500 text-sm font-medium">Subir Imagen (JPG, PNG)</span>
                             }
 
-                            <!-- Input file invisible pero clickeable cubriendo toda la caja -->
+                            <!-- Input file invisible que cubre la caja completa -->
                             <input 
                                 type="file" 
-                                accept="image/png, image/jpeg"
+                                accept=".jpg,.jpeg,.png"
                                 (change)="onFileSelected($event)" 
                                 class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                         </div>
@@ -169,7 +169,7 @@
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Nombre</label>
                             <input 
-                                type="text"
+                                type="text" 
                                 formControlName="nombre"
                                 class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm focus:outline-none focus:border-blue-600 transition-colors text-white"
                                 placeholder="Ej. Sushi Empanizado">
@@ -181,7 +181,7 @@
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Precio Unitario ($)</label>
                             <input 
-                                type="number"
+                                type="number" 
                                 step="0.01"
                                 formControlName="precio"
                                 class="w-full bg-[#111] border border-gray-700 rounded-lg p-3 text-sm font-bold text-emerald-400 focus:outline-none focus:border-blue-600 transition-colors"
@@ -218,8 +218,8 @@
                         [disabled]="platilloForm.invalid || guardando()"
                         class="flex-1 py-2.5 flex justify-center items-center gap-2 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                         @if (guardando()) {
-                        <mat-icon class="animate-spin text-base">refresh</mat-icon>
-                        Subiendo...
+                            <mat-icon class="animate-spin text-base">refresh</mat-icon>
+                            Subiendo...
                         } @else {
                             <mat-icon class="text-base">save</mat-icon>
                             {{ platilloEditando() ? 'Actualizar' : 'Guardar Platillo' }}

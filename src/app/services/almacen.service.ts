@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Almacen, CrearAlmacenDto, ActualizarAlmacenDto } from '../interfaces/almacen.interface';
-import { environment } from '../environments/environment';
+import { environment } from '../../../src/environments/environment';
 
 
 @Injectable({
@@ -11,7 +11,7 @@ import { environment } from '../environments/environment';
 
 export class AlmacenService {
 
-  private environment: string = environment.apiUrl;
+  private environment: string = environment.someeUrl;
   private http = inject(HttpClient);
   private apiUrl = `${this.environment}almacen`;
 

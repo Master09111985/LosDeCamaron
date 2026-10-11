@@ -2,7 +2,7 @@ import { Injectable, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { UnidadMedida, CrearUnidadMedidaDto } from "../interfaces/unidadmedida.interface";
-import { environment } from "../environments/environment";
+import { environment } from '../../../src/environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -10,7 +10,7 @@ import { environment } from "../environments/environment";
 
 export class UnidadMedidaService {
 
-    private environment: string = environment.apiUrl; 
+    private environment: string = environment.someeUrl; 
     private http = inject(HttpClient);
     private apiUrl = `${this.environment}unidad`;
 

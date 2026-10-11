@@ -47,23 +47,23 @@
                     (click)="seleccionarComanda(comanda)">
         
                     <div class="flex justify-between items-start mb-2">
-                    <!-- Izquierda: Número de Orden y Tipo -->
-                    <div>
-                        <span class="bg-blue-500/20 text-blue-400 font-black px-2 py-1 rounded text-sm">#{{ comanda.id }}</span>
-                        <span class="text-gray-300 font-bold ml-2 uppercase text-sm">{{ comanda.tipoPedido }}</span>
+                        <!-- Izquierda: Número de Orden y Tipo -->
+                        <div>
+                            <span class="bg-blue-500/20 text-blue-400 font-black px-2 py-1 rounded text-sm">#{{ comanda.id }}</span>
+                            <span class="text-gray-300 font-bold ml-2 uppercase text-sm">{{ comanda.tipoPedido }}</span>
+                        </div>
+                    
+                        <!-- Derecha: Precio y Botón de Imprimir -->
+                        <div class="flex items-center gap-3">
+                            <span class="text-emerald-400 font-black text-lg">${{ comanda.total | number:'1.2-2' }}</span>
+                            
+                            <button (click)="imprimirTicketComanda(comanda, $event)" 
+                                    class="p-1.5 bg-gray-700/50 hover:bg-blue-600 text-gray-300 hover:text-white rounded-md transition-colors" 
+                                    title="Imprimir Cuenta">
+                                <mat-icon class="text-[18px]">print</mat-icon>
+                            </button>
+                        </div>
                     </div>
-                
-                    <!-- Derecha: Precio y Botón de Imprimir -->
-                    <div class="flex items-center gap-3">
-                        <span class="text-emerald-400 font-black text-lg">${{ comanda.total | number:'1.2-2' }}</span>
-                        
-                        <button (click)="imprimirTicketComanda(comanda, $event)" 
-                                class="p-1.5 bg-gray-700/50 hover:bg-blue-600 text-gray-300 hover:text-white rounded-md transition-colors" 
-                                title="Imprimir Cuenta">
-                            <mat-icon class="text-[18px]">print</mat-icon>
-                        </button>
-                    </div>
-                </div>
 
                     <!-- Abajo: Cliente o Mesa -->
                     <p class="text-gray-400 text-sm flex items-center gap-1">
@@ -85,7 +85,7 @@
             </div>
 
             <!-- Resumen de la Orden (Scrollable) -->
-            <div class="flex-1 overflow-y-auto p-6 bg-[#0f172a]/50">
+            <div class="flex-1 overflow-y-auto p-6 bg-[#0f172a]/50 custom-scrollbar">
                 <h3 class="text-gray-400 font-bold uppercase text-xs tracking-wider mb-4">Detalle de Consumo</h3>
                 <div class="bg-[#1e293b] rounded-xl border border-[#334155] p-4 mb-6">
                     @for (detalle of comanda.detalles; track detalle.id) {
@@ -96,29 +96,107 @@
                     }
                 </div>
 
-                <h3 class="text-gray-400 font-bold uppercase text-xs tracking-wider mb-4">Forma de Pago</h3>
+                <!-- Cabecera de Forma de Pago con Switch Pago Único / Pago Mixto -->
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-gray-400 font-bold uppercase text-xs tracking-wider">Forma de Pago</h3>
+                    <div class="flex bg-[#0f172a] p-1 rounded-lg border border-[#334155]">
+                        <button type="button" (click)="activarModoCobro(false)"
+                                class="px-3 py-1 text-xs font-bold rounded-md transition-colors"
+                                [ngClass]="!esCobroMixto() ? 'bg-emerald-600 text-white' : 'text-gray-400 hover:text-white'">
+                            Pago Único
+                        </button>
+                        <button type="button" (click)="activarModoCobro(true)"
+                                class="px-3 py-1 text-xs font-bold rounded-md transition-colors"
+                                [ngClass]="esCobroMixto() ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'">
+                            Pago Mixto
+                        </button>
+                    </div>
+                </div>
                 
-                <!-- Opciones de Pago (Filtradas Dinámicamente) -->
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
-                    @for (metodo of metodosPagoPermitidos(); track metodo.id) {
-                        <div class="bg-[#1e293b] border border-[#334155] p-4 rounded-xl cursor-pointer text-center hover:bg-gray-800 transition-colors"
-                             [ngClass]="{'border-emerald-500 bg-emerald-900/20': metodoPagoSeleccionado() === metodo.id}"
-                             (click)="metodoPagoSeleccionado.set(metodo.id)">
-                            <mat-icon class="text-gray-400 mb-1" [ngClass]="{'text-emerald-400': metodoPagoSeleccionado() === metodo.id}">
-                                {{ metodo.nombre.toLowerCase().includes('efectivo') ? 'payments' : 
-                                   metodo.nombre.toLowerCase().includes('tarjeta') ? 'credit_card' : 'account_balance' }}
-                            </mat-icon>
-                            <span class="block font-bold text-sm text-gray-300" [ngClass]="{'text-emerald-400': metodoPagoSeleccionado() === metodo.id}">
-                                {{ metodo.nombre }}
+                @if (!esCobroMixto()) {
+                    <!-- Opciones de Pago Único (Filtradas Dinámicamente) -->
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+                        @for (metodo of metodosPagoPermitidos(); track metodo.id) {
+                            <div class="bg-[#1e293b] border border-[#334155] p-4 rounded-xl cursor-pointer text-center hover:bg-gray-800 transition-colors"
+                                 [ngClass]="{'border-emerald-500 bg-emerald-900/20': metodoPagoSeleccionado() === metodo.id}"
+                                 (click)="metodoPagoSeleccionado.set(metodo.id)">
+                                <mat-icon class="text-gray-400 mb-1" [ngClass]="{'text-emerald-400': metodoPagoSeleccionado() === metodo.id}">
+                                    {{ metodo.nombre.toLowerCase().includes('efectivo') ? 'payments' : 
+                                       metodo.nombre.toLowerCase().includes('tarjeta') ? 'credit_card' : 'account_balance' }}
+                                </mat-icon>
+                                <span class="block font-bold text-sm text-gray-300" [ngClass]="{'text-emerald-400': metodoPagoSeleccionado() === metodo.id}">
+                                    {{ metodo.nombre }}
+                                </span>
+                            </div>
+                        }
+                    </div>
+                } @else {
+                    <!-- 3 Combinaciones de Pago Mixto -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+                        <div (click)="seleccionarCombinacionMixta('tarjeta-efectivo')"
+                             class="bg-[#1e293b] border border-[#334155] p-3.5 rounded-xl cursor-pointer text-center hover:bg-gray-800 transition-colors"
+                             [ngClass]="{'border-blue-500 bg-blue-900/20': combinacionMixta() === 'tarjeta-efectivo'}">
+                            <div class="flex justify-center gap-1 text-gray-400 mb-1" [ngClass]="{'text-blue-400': combinacionMixta() === 'tarjeta-efectivo'}">
+                                <mat-icon>credit_card</mat-icon><span>+</span><mat-icon>payments</mat-icon>
+                            </div>
+                            <span class="block font-bold text-xs text-gray-300" [ngClass]="{'text-blue-400': combinacionMixta() === 'tarjeta-efectivo'}">
+                                Tarjeta y Efectivo
                             </span>
                         </div>
-                    }
-                </div>
 
-                <!-- Input de Efectivo (Aparece solo si elige Efectivo) -->
+                        <div (click)="seleccionarCombinacionMixta('tarjeta-transferencia')"
+                             class="bg-[#1e293b] border border-[#334155] p-3.5 rounded-xl cursor-pointer text-center hover:bg-gray-800 transition-colors"
+                             [ngClass]="{'border-blue-500 bg-blue-900/20': combinacionMixta() === 'tarjeta-transferencia'}">
+                            <div class="flex justify-center gap-1 text-gray-400 mb-1" [ngClass]="{'text-blue-400': combinacionMixta() === 'tarjeta-transferencia'}">
+                                <mat-icon>credit_card</mat-icon><span>+</span><mat-icon>account_balance</mat-icon>
+                            </div>
+                            <span class="block font-bold text-xs text-gray-300" [ngClass]="{'text-blue-400': combinacionMixta() === 'tarjeta-transferencia'}">
+                                Tarjeta y Transferencia
+                            </span>
+                        </div>
+
+                        <div (click)="seleccionarCombinacionMixta('transferencia-efectivo')"
+                             class="bg-[#1e293b] border border-[#334155] p-3.5 rounded-xl cursor-pointer text-center hover:bg-gray-800 transition-colors"
+                             [ngClass]="{'border-blue-500 bg-blue-900/20': combinacionMixta() === 'transferencia-efectivo'}">
+                            <div class="flex justify-center gap-1 text-gray-400 mb-1" [ngClass]="{'text-blue-400': combinacionMixta() === 'transferencia-efectivo'}">
+                                <mat-icon>account_balance</mat-icon><span>+</span><mat-icon>payments</mat-icon>
+                            </div>
+                            <span class="block font-bold text-xs text-gray-300" [ngClass]="{'text-blue-400': combinacionMixta() === 'transferencia-efectivo'}">
+                                Transferencia y Efectivo
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Desglose de Montos Mixtos (Se autocompletan al escribir) -->
+                    @if (combinacionMixta(); as comb) {
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 bg-[#1e293b] border border-blue-500/30 p-4 rounded-xl">
+                            <div>
+                                <label class="text-xs font-bold text-blue-400 uppercase block mb-1">
+                                    {{ comb.startsWith('tarjeta') ? 'Monto en Tarjeta ($)' : 'Monto en Transferencia ($)' }}
+                                </label>
+                                <input type="number" step="0.01" [ngModel]="montoMixto1()" (ngModelChange)="actualizarMontoMixto1($event)"
+                                       class="w-full bg-[#0f172a] border border-[#334155] rounded-xl p-3 text-xl font-black text-white focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-emerald-400 uppercase block mb-1">
+                                    {{ comb.endsWith('efectivo') ? 'Monto a cobrar en Efectivo ($)' : 'Monto en Transferencia ($)' }}
+                                </label>
+                                <input type="number" step="0.01" [ngModel]="montoMixto2()" (ngModelChange)="actualizarMontoMixto2($event)"
+                                       class="w-full bg-[#0f172a] border border-[#334155] rounded-xl p-3 text-xl font-black text-emerald-400 focus:outline-none focus:border-emerald-500">
+                            </div>
+                        </div>
+                    }
+                }
+
+                <!-- Input de Efectivo (Aparece si elige Efectivo o combinación mixta con Efectivo) -->
                 @if (esEfectivo()) {
                     <div class="bg-[#1e293b] border border-blue-500/30 p-4 rounded-xl mb-6 animate-slide-up">
-                        <label class="text-sm font-bold text-blue-400 uppercase tracking-wide block mb-2">Efectivo Recibido</label>
+                        <label class="text-sm font-bold text-blue-400 uppercase tracking-wide block mb-2">
+                            Efectivo Recibido
+                            @if (esCobroMixto()) {
+                                <span class="text-xs text-gray-400 font-normal">(Para cubrir ${{ montoMixto2() | number:'1.2-2' }})</span>
+                            }
+                        </label>
                         <div class="relative">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-2xl text-gray-400 font-bold">$</span>
                             <input type="number" [(ngModel)]="efectivoRecibido" class="w-full bg-[#0f172a] border border-[#334155] rounded-xl py-4 pl-10 pr-4 text-3xl font-black text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="0.00">
@@ -144,7 +222,7 @@
                     </div>
                 </div>
 
-                <button (click)="procesarCobro()" [disabled]="!metodoPagoSeleccionado() || (esEfectivo() && ((efectivoRecibido() || 0) < comanda.total)) || procesando()"
+                <button (click)="procesarCobro()" [disabled]="!cobroValido() || procesando()"
                         class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xl py-5 rounded-xl flex justify-center items-center gap-2 transition-all shadow-lg shadow-emerald-600/20 active:scale-95 disabled:opacity-50 disabled:active:scale-100">
                     @if (procesando()) {
                         <mat-icon class="animate-spin">refresh</mat-icon> PROCESANDO PAGO...
@@ -169,20 +247,41 @@
 <!-- ========================================== -->
 @if (modalApertura()) {
     <div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm print:hidden">
-        <div class="bg-[#1e293b] w-full max-w-sm rounded-2xl border border-gray-700 p-6 shadow-2xl">
-            <div class="text-center mb-6">
+        <div class="bg-[#1e293b] w-full max-w-sm rounded-2xl border border-gray-700 p-6 shadow-2xl relative">
+            
+            <!-- Botón de Tacha para Cerrar / Ir a Home -->
+            <button type="button" 
+                    (click)="cancelarApertura()" 
+                    class="absolute top-5 right-5 text-gray-400 hover:text-white transition-colors cursor-pointer p-1 rounded-lg hover:bg-gray-800"
+                    title="Cerrar y volver al inicio">
+                <mat-icon>close</mat-icon>
+            </button>
+
+            <div class="text-center mb-6 mt-2">
                 <mat-icon class="text-emerald-400 text-5xl mb-2">account_balance_wallet</mat-icon>
                 <h2 class="text-2xl font-black text-white">Apertura de Caja</h2>
                 <p class="text-gray-400 text-sm">Ingresa el fondo inicial en efectivo para comenzar tu turno.</p>
             </div>
+            
             <form [formGroup]="fondoForm" (ngSubmit)="abrirTurno()">
                 <div class="mb-6 relative">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-gray-400">$</span>
                     <input type="number" formControlName="fondoInicial" class="w-full bg-[#0f172a] border border-[#334155] rounded-xl py-3 pl-8 pr-4 text-2xl font-bold text-white focus:border-emerald-500 outline-none" placeholder="0.00">
                 </div>
-                <button type="submit" [disabled]="fondoForm.invalid || procesando()" class="w-full bg-emerald-600 hover:bg-emerald-500 transition-colors text-white font-bold py-3 rounded-xl disabled:opacity-50">
-                    {{ procesando() ? 'Abriendo...' : 'Abrir Caja' }}
-                </button>
+                
+                <div class="flex gap-3">
+                    <button type="button" 
+                            (click)="cancelarApertura()" 
+                            class="flex-1 py-3 rounded-xl border border-gray-700 text-sm font-semibold hover:bg-gray-800 transition-colors text-gray-300">
+                        Cancelar
+                    </button>
+                    
+                    <button type="submit" 
+                            [disabled]="fondoForm.invalid || procesando()" 
+                            class="flex-1 bg-emerald-600 hover:bg-emerald-500 transition-colors text-white font-bold py-3 rounded-xl disabled:opacity-50">
+                        {{ procesando() ? 'Abriendo...' : 'Abrir Caja' }}
+                    </button>
+                </div>
             </form>
         </div>
     </div>
@@ -380,6 +479,130 @@
 }
 
 <!-- ========================================== -->
+<!-- MODAL DE PREVIEW: TICKET DE COMANDA        -->
+<!-- ========================================== -->
+@if (comandaParaImprimir(); as c) {
+    <div class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-fade-in print:hidden">
+        <div class="bg-[#1e293b] p-6 md:p-8 rounded-2xl flex flex-col items-center border border-[#334155] shadow-2xl animate-slide-up max-w-sm w-full">
+            
+            <div class="w-full flex justify-between items-center mb-6">
+                <h3 class="text-white font-bold text-lg">Vista Previa de Ticket</h3>
+                <button (click)="cerrarModalImpresionComanda()" class="text-gray-400 hover:text-white transition-colors">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+
+            <!-- Previsualización Visual -->
+            <div class="bg-white text-black p-6 rounded shadow-lg w-full font-mono text-sm relative">
+                <div class="absolute top-0 left-0 right-0 h-2 bg-white" style="background-image: radial-gradient(#1e293b 4px, transparent 4px); background-size: 10px 10px; background-position: -5px -5px;"></div>
+                
+                <div class="text-center mb-4 mt-2">
+                    <h1 class="text-xl font-black uppercase">Los De Camarón</h1>
+                    <p class="text-xs text-gray-600">Paseo de la Cruz #123</p>
+                    <p class="text-xs text-gray-600 mb-2">Aguascalientes, Ags.</p>
+                    <p class="font-bold text-sm uppercase">ORDEN #{{ c.id }}</p>
+                    <p class="text-xs font-bold">{{ c.tipoPedido }} {{ c.numeroMesa ? '- ' + c.numeroMesa : '' }}</p>
+                    <p class="text-[10px]">{{ c.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</p>
+                </div>
+                
+                <div class="mb-4 space-y-1 border-t border-b border-dashed border-gray-400 py-3">
+                    @for (detalle of c.detalles; track detalle.id) {
+                        <div class="flex justify-between items-start text-xs">
+                            <span class="pr-2">{{ detalle.cantidad }}x {{ detalle.platilloNombre }}</span>
+                            <span class="font-bold">${{ detalle.subtotal | number:'1.2-2' }}</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="flex justify-between font-black text-base pt-1">
+                    <span>TOTAL:</span>
+                    <span>${{ c.total | number:'1.2-2' }}</span>
+                </div>
+            </div>
+
+            <div class="mt-8 flex gap-4 w-full">
+                <button (click)="cerrarModalImpresionComanda()" class="flex-1 py-3 rounded-xl border border-[#334155] text-sm font-semibold hover:bg-gray-800 transition-colors text-gray-300">
+                    Cancelar
+                </button>
+                <button (click)="ejecutarImpresion()" class="flex-1 py-3 flex justify-center items-center gap-2 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-500 shadow-lg shadow-blue-600/20 transition-all">
+                    <mat-icon class="text-[20px]">print</mat-icon> Imprimir
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- ========================================== -->
+<!-- MODAL DE PREVIEW: TICKET CORTE DE CAJA     -->
+<!-- ========================================== -->
+@if (ticketGenerado(); as t) {
+    <div class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-fade-in print:hidden h-full">
+        <div class="bg-[#1e293b] p-6 md:p-8 rounded-2xl flex flex-col items-center border border-[#334155] shadow-2xl animate-slide-up max-w-sm w-full max-h-[90vh] overflow-hidden">
+            
+            <div class="w-full flex justify-between items-center mb-6 shrink-0">
+                <h3 class="text-white font-bold text-lg">Vista Previa de Corte</h3>
+                <button (click)="cerrarModalImpresionCorte()" class="text-gray-400 hover:text-white transition-colors">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+
+            <!-- Previsualización Visual -->
+            <div class="bg-white text-black p-6 rounded shadow-lg w-full font-mono text-sm overflow-y-auto custom-scrollbar">
+                <div class="text-center font-bold mb-4">
+                    <h1 class="text-xl">LOS DE CAMARON</h1>
+                    <p>CORTE DE CAJA #{{ t.turnoId }}</p>
+                </div>
+                <div class="border-b border-gray-400 border-dashed mb-3 pb-3 text-xs space-y-1">
+                    <p>Apertura: {{ t.fechaApertura | date:'short' }}</p>
+                    <p>Cierre: {{ t.fechaCierre | date:'short' }}</p>
+                    <p>Cajero: {{ t.nombreCajero }}</p>
+                    <p>Supervisor: {{ t.nombreSupervisor }}</p>
+                </div>
+                
+                <div class="border-b border-gray-400 border-dashed mb-3 pb-3 space-y-1 text-xs">
+                    <p class="font-bold text-center uppercase mb-2">Desglose de Ventas</p>
+                    <div class="flex justify-between"><p>Efectivo:</p><p>${{ t.totalVentasEfectivo | number:'1.2-2' }}</p></div>
+                    <div class="flex justify-between"><p>Tarjeta:</p><p>${{ t.totalVentasTarjeta | number:'1.2-2' }}</p></div>
+                    <div class="flex justify-between"><p>Transferencia:</p><p>${{ t.totalVentasTransferencia | number:'1.2-2' }}</p></div>
+                    <div class="flex justify-between font-bold border-t border-gray-300 pt-1 mt-1">
+                        <p>VENTA TOTAL:</p><p>${{ t.totalVentasGeneral | number:'1.2-2' }}</p>
+                    </div>
+                </div>
+
+                <div class="border-b border-gray-400 border-dashed mb-3 pb-3 space-y-1 text-xs">
+                    <p class="font-bold text-center uppercase mb-2">Flujo de Efectivo</p>
+                    <div class="flex justify-between"><p>Fondo Inicial (+):</p><p>${{ t.fondoInicial | number:'1.2-2' }}</p></div>
+                    <div class="flex justify-between"><p>Ventas Efectivo (+):</p><p>${{ t.totalVentasEfectivo | number:'1.2-2' }}</p></div>
+                    <div class="flex justify-between"><p>Pago Prov. (-):</p><p>${{ t.totalPagosProveedores | number:'1.2-2' }}</p></div>
+                </div>
+
+                <div class="mb-4 space-y-1 text-xs">
+                    <div class="flex justify-between font-bold"><p>Efvo en Sistema:</p><p>${{ t.efectivoCalculadoSistema | number:'1.2-2' }}</p></div>
+                    <div class="flex justify-between font-bold"><p>Físico Reportado:</p><p>${{ t.efectivoFisicoReportado | number:'1.2-2' }}</p></div>
+                </div>
+
+                <div class="text-center font-bold text-sm bg-gray-100 p-2 rounded">
+                    <p>DIFERENCIA</p>
+                    <p class="text-base" [ngClass]="t.diferencia === 0 ? 'text-green-700' : 'text-red-600'">
+                        {{ t.diferencia === 0 ? '¡CAJA CUADRADA!' : (t.diferencia < 0 ? 'FALTANTE: $' + ((t.diferencia * -1) | number:'1.2-2') : 'SOBRANTE: $' + (t.diferencia | number:'1.2-2')) }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-6 flex gap-4 w-full shrink-0">
+                <button (click)="cerrarModalImpresionCorte()" class="flex-1 py-3 rounded-xl border border-[#334155] text-sm font-semibold hover:bg-gray-800 transition-colors text-gray-300">
+                    Cerrar
+                </button>
+                <button (click)="ejecutarImpresion()" class="flex-1 py-3 flex justify-center items-center gap-2 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-500 shadow-lg shadow-blue-600/20 transition-all">
+                    <mat-icon class="text-[20px]">print</mat-icon> Imprimir Ticket
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+
+<!-- ========================================== -->
 <!-- TICKET TÉRMICO (Controlado por caja.css)   -->
 <!-- Se mantienen al final para la impresión nativa -->
 <!-- ========================================== -->
@@ -396,21 +619,35 @@
             <p>Supervisor: {{ t.nombreSupervisor }}</p>
         </div>
         
+        <!-- 1. DESGLOSE DE VENTAS POR MÉTODO DE PAGO -->
         <div class="border-b border-black border-dashed mb-2 pb-2 space-y-1">
-            <div class="flex justify-between"><p>Fondo Inicial:</p><p>${{ t.fondoInicial | number:'1.2-2' }}</p></div>
+            <p class="font-bold text-center uppercase mb-1">Desglose de Ventas</p>
+            <div class="flex justify-between"><p>Efectivo:</p><p>${{ t.totalVentasEfectivo | number:'1.2-2' }}</p></div>
+            <div class="flex justify-between"><p>Tarjeta:</p><p>${{ t.totalVentasTarjeta | number:'1.2-2' }}</p></div>
+            <div class="flex justify-between"><p>Transferencia:</p><p>${{ t.totalVentasTransferencia | number:'1.2-2' }}</p></div>
+            <div class="flex justify-between font-bold border-t border-black border-dotted pt-1 mt-1">
+                <p>VENTA TOTAL:</p>
+                <p>${{ t.totalVentasGeneral | number:'1.2-2' }}</p>
+            </div>
+        </div>
+
+        <!-- 2. MOVIMIENTOS DEL CAJÓN DE EFECTIVO -->
+        <div class="border-b border-black border-dashed mb-2 pb-2 space-y-1">
+            <p class="font-bold text-center uppercase mb-1">Flujo de Efectivo</p>
+            <div class="flex justify-between"><p>Fondo Inicial (+):</p><p>${{ t.fondoInicial | number:'1.2-2' }}</p></div>
             <div class="flex justify-between"><p>Ventas Efectivo (+):</p><p>${{ t.totalVentasEfectivo | number:'1.2-2' }}</p></div>
-            <div class="flex justify-between"><p>Ventas Tarjeta:</p><p>${{ t.totalVentasTarjeta | number:'1.2-2' }}</p></div>
             <div class="flex justify-between"><p>Pago Prov. (-):</p><p>${{ t.totalPagosProveedores | number:'1.2-2' }}</p></div>
         </div>
 
+        <!-- 3. CUADRE DE CAJA FÍSICA -->
         <div class="border-b border-black mb-2 pb-2 space-y-1">
-            <div class="flex justify-between font-bold"><p>Sistema Tenía:</p><p>${{ t.efectivoCalculadoSistema | number:'1.2-2' }}</p></div>
+            <div class="flex justify-between font-bold"><p>Efectivo en Sistema:</p><p>${{ t.efectivoCalculadoSistema | number:'1.2-2' }}</p></div>
             <div class="flex justify-between font-bold"><p>Físico Reportado:</p><p>${{ t.efectivoFisicoReportado | number:'1.2-2' }}</p></div>
         </div>
 
         <div class="text-center font-bold text-sm mb-4">
-            <p>DIFERENCIA</p>
-            <p class="text-base">{{ t.diferencia === 0 ? '¡CAJA CUADRADA!' : (t.diferencia < 0 ? 'FALTANTE: $' + (t.diferencia * -1) : 'SOBRANTE: $' + t.diferencia) }}</p>
+            <p>DIFERENCIA EN CAJÓN</p>
+            <p class="text-base">{{ t.diferencia === 0 ? '¡CAJA CUADRADA!' : (t.diferencia < 0 ? 'FALTANTE: $' + ((t.diferencia * -1) | number:'1.2-2') : 'SOBRANTE: $' + (t.diferencia | number:'1.2-2')) }}</p>
         </div>
         <div class="text-center text-[10px] mt-8 pt-4 border-t border-black">
             <p>_______________________</p>

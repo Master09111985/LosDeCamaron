@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../environments/environment';
+import { environment } from '../../../src/environments/environment';
 import { CrearPuestoDto, Puesto } from '../interfaces/puesto.interface';
 import { Observable } from 'rxjs';
 
@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 
 export class PuestoService {
     private http = inject(HttpClient);
-    private apiUrl = `${environment.apiUrl}puesto`;
+    private apiUrl = `${environment.someeUrl}puesto`;
 
     getPuestos(): Observable<Puesto[]> {
         return this.http.get<Puesto[]>(`${this.apiUrl}/listarpuestos`);
@@ -25,7 +25,7 @@ export class PuestoService {
     }
 
     actualizarPuesto(id: number, puesto: Puesto): Observable<void> {
-        return this.http.patch<void>(`${this.apiUrl}/${id}`, puesto);
+    return this.http.put<void>(`${this.apiUrl}/Actualizar/${id}`, puesto);
     }
 
     borrarPuesto(id: number): Observable<void> {

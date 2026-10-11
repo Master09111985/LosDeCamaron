@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
-import { environment } from '../environments/environment';
+import { environment } from '../../../src/environments/environment';
 import { RegistrarChecadaDto, RespuestaChecadaDto } from '../interfaces/asistencia.interface';
 
 @Injectable({
@@ -10,7 +10,7 @@ import { RegistrarChecadaDto, RespuestaChecadaDto } from '../interfaces/asistenc
 export class AsistenciaService {
 
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}asistencia`;
+  private apiUrl = `${environment.someeUrl}asistencia`;
 
   registrarChecada(datos: RegistrarChecadaDto): Observable<RespuestaChecadaDto> {
     return this.http.post<RespuestaChecadaDto>(`${this.apiUrl}/registrar`, datos)

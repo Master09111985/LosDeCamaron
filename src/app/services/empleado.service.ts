@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { environment } from '../environments/environment';
+import { environment } from '../../../src/environments/environment';
 import { CrearEmpleadoDto, ActualizarEmpleadoDto, Empleado } from "../interfaces/empleado.interface";
 import { Observable } from 'rxjs';
 
@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 export class EmpleadoService {
 
     private http = inject(HttpClient);
-    private apiUrl = `${environment.apiUrl}Empleado`;
+    private apiUrl = `${environment.someeUrl}Empleado`;
 
     getEmpleados(): Observable<Empleado[]> {
         return this.http.get<Empleado[]>(`${this.apiUrl}/Listar`);

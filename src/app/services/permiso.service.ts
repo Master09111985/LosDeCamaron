@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../environments/environment';
+import { environment } from '../../../src/environments/environment';
 import { Permiso, CrearPermisoDto } from '../interfaces/permiso.interface';
 
 @Injectable({
@@ -10,7 +10,7 @@ import { Permiso, CrearPermisoDto } from '../interfaces/permiso.interface';
 
 export class PermisoService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl + 'Permiso';
+  private apiUrl = environment.someeUrl + 'Permiso';
 
   getPermisos(): Observable<Permiso[]> {
     return this.http.get<Permiso[]>(`${this.apiUrl}/Listar`);

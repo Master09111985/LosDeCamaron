@@ -2,68 +2,138 @@ import { Injectable, inject, signal } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 
-import { environment } from "../environments/environment";
-import { LoginDto, MapaPermisosDto, UsuarioDto } from "../interfaces/auth.interface";
-
+import { environment } from '../../../src/environments/environment';
+import { LoginDto, UsuarioDto } from "../interfaces/auth.interface";
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
-
 export class AuthService {
 
-    private apiUrl = environment.apiUrl;
-    private http = inject(HttpClient);
+  private apiUrl = environment.someeUrl;
+  private http = inject(HttpClient);
 
-    usuarioActual = signal<UsuarioDto | null>(null);
-    permisosActuales = signal<Record<string, boolean>>({});
+  usuarioActual = signal<UsuarioDto | null>(null);
+  permisosActuales = signal<Record<string, boolean>>({});
 
-    constructor() {
-        this.cargarSesionInicial();        
-    }
+  constructor() {
+    this.cargarSesionInicial();        
+  }
 
-    // 1. Enviar credenciales a la API
-    login(credenciales: any): Observable<any> {
-        return this.http.post(`${this.apiUrl}Usuario/Login`, credenciales);
-    }
+  // 1. Enviar credenciales a la API
+  login(credenciales: LoginDto): Observable<any> {
+    return this.http.post(`${this.apiUrl}Usuario/Login`, credenciales);
+  }
 
-    // 2. Traer el diccionario de permisos segun el Rol
-    getPermisosPorRol(rolId: number): Observable<any> {
-        return this.http.get(`${this.apiUrl}RolPermiso/PorRol/${rolId}`);
-    }
+  // 2. Traer los permisos según el Rol
+  getPermisosPorRol(rolId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}RolPermiso/PorRol/${rolId}`);
+  }
 
-    // 3. Guardar usuario y permisos en el localStorage
-    guardarSesion(usuario: UsuarioDto, mapa: MapaPermisosDto): void {
-        localStorage.setItem('usuario', JSON.stringify(usuario));
-        // Guardamos solo el diccionario de permisos {"Ventas": true, ...}
-        localStorage.setItem('permisos', JSON.stringify(mapa.permisos));
-        // Actualizamos las signals
-        this.usuarioActual.set(usuario);
-        this.permisosActuales.set(mapa.permisos);
-    }
+  // 3. Guardar usuario y permisos normalizados en el sessionStorage
+  guardarSesion(usuario: any, respuestaPermisos: any): void {
+  localStorage.clear();
 
-    // 4. Limpiar la sesion al salir
-    cerrarSesion(): void {
-        localStorage.removeItem('usuario');
-        localStorage.removeItem('permisos');
-        this.usuarioActual.set(null);
-        this.permisosActuales.set({});
-    }
+  // Ampliamos la búsqueda del ID por si el backend lo serializa diferente y quitamos el 1 hardcodeado
+  const idDetectado = usuario.id ?? usuario.Id ?? usuario.usuarioId ?? usuario.idUsuario ?? usuario.IdUsuario;
 
-    // 5. Verificar si tiene permiso
-    tienePermiso(nombrePermiso: string): boolean {
-        return this.permisosActuales()[nombrePermiso] === true;
-    }
+  const usuarioNormalizado: UsuarioDto = {
+    ...usuario,
+    id: idDetectado ? Number(idDetectado) : 0, 
+    nombre: usuario.nombre ?? usuario.Nombre ?? '',
+    rolId: usuario.rolId ?? usuario.RolId,
+    rolNombre: usuario.rolNombre ?? usuario.RolNombre ?? ''
+  };
 
-    // 6. Obtener los datos del usuario logueado
-    private cargarSesionInicial(): void {
-        const usuarioStr = localStorage.getItem('usuario');
-        const permisosStr = localStorage.getItem('permisos');
-    
-        if (usuarioStr && permisosStr) {
-        this.usuarioActual.set(JSON.parse(usuarioStr));
-        this.permisosActuales.set(JSON.parse(permisosStr));
+  const dicPermisos = this.normalizarPermisos(respuestaPermisos);
+
+  sessionStorage.setItem('usuario', JSON.stringify(usuarioNormalizado));
+  sessionStorage.setItem('permisos', JSON.stringify(dicPermisos));
+
+  this.usuarioActual.set(usuarioNormalizado);
+  this.permisosActuales.set(dicPermisos);
+}
+
+  // Convierte cualquier formato de respuesta de RolPermiso en Record<string, boolean>
+  private normalizarPermisos(data: any): Record<string, boolean> {
+    const mapa: Record<string, boolean> = {};
+    if (!data) return mapa;
+
+    // Caso 1: Viene como { permisos: { "Almacenes": true, ... } } o { Permisos: ... }
+    const fuente = data.permisos ?? data.Permisos ?? data;
+
+    // Caso 2: Si la fuente es un Arreglo (colección de permisos desde .NET)
+    if (Array.isArray(fuente)) {
+      for (const item of fuente) {
+        if (typeof item === 'string') {
+          mapa[item] = true;
+        } else if (item && typeof item === 'object') {
+          const nombre = item.permisoNombre || item.nombrePermiso || item.nombre || item.PermisoNombre || item.Nombre;
+          // Si tiene propiedad activo/asignado/estado la respetamos, si solo devuelve los asignados es true
+          const activo = item.asignado ?? item.activo ?? item.estado ?? item.tienePermiso ?? true;
+          if (nombre) {
+            mapa[nombre] = Boolean(activo);
+          }
         }
+      }
+      return mapa;
     }
 
+    // Caso 3: Si ya es un objeto diccionario { "VerCatalogos": true, "Almacenes": true }
+    if (typeof fuente === 'object') {
+      for (const key of Object.keys(fuente)) {
+        if (key !== 'rolId' && key !== 'rolNombre' && key !== 'RolId' && key !== 'RolNombre') {
+          mapa[key] = Boolean(fuente[key]);
+        }
+      }
+    }
+
+    return mapa;
+  }
+
+  // 4. Limpiar la sesión al salir
+  cerrarSesion(): void {
+    localStorage.clear();
+    sessionStorage.removeItem('usuario');
+    sessionStorage.removeItem('permisos');
+    sessionStorage.clear();
+    this.usuarioActual.set(null);
+    this.permisosActuales.set({});
+  }
+
+  // 5. Verificar si tiene permiso exclusivamente por el mapa de su Rol
+  tienePermiso(nombrePermiso: string): boolean {
+    const mapa = this.permisosActuales();
+    if (!mapa) return false;
+
+    if (mapa[nombrePermiso] === true) return true;
+
+    const claveEncontrada = Object.keys(mapa).find(
+      k => k.toLowerCase() === nombrePermiso.toLowerCase()
+    );
+    return claveEncontrada ? mapa[claveEncontrada] === true : false;
+  }
+
+  // 6. Obtener los datos del usuario logueado al recargar con F5
+  private cargarSesionInicial(): void {
+    localStorage.clear();
+    const usuarioStr = sessionStorage.getItem('usuario');
+    const permisosStr = sessionStorage.getItem('permisos');
+  
+    if (usuarioStr && permisosStr) {
+      try {
+        const usuario = JSON.parse(usuarioStr);
+        const permisos = JSON.parse(permisosStr);
+
+        if (usuario && usuario.id && usuario.nombre !== 'Tester Local') {
+          this.usuarioActual.set(usuario);
+          this.permisosActuales.set(permisos);
+        } else {
+          this.cerrarSesion();
+        }
+      } catch {
+        this.cerrarSesion();
+      }
+    }
+  }
 }

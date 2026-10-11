@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment } from '../environments/environment';
+import { environment } from '../../../src/environments/environment';
 import { Rol, CrearRolDto } from '../interfaces/rol.interface';
 
 @Injectable({
@@ -10,7 +10,7 @@ import { Rol, CrearRolDto } from '../interfaces/rol.interface';
 })
 export class RolService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl + 'Rol';
+  private apiUrl = environment.someeUrl + 'Rol';
 
   getRoles(): Observable<Rol[]> {
     return this.http.get<Rol[]>(`${this.apiUrl}/Listar`);

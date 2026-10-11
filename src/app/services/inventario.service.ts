@@ -1,7 +1,7 @@
 import { Injectable, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { environment } from "../environments/environment";
+import { environment } from '../../../src/environments/environment';
 import { Inventario, CrearInventarioDto, TrasladoInventarioDto } from "../interfaces/inventario.interface";
 
 @Injectable({
@@ -10,7 +10,7 @@ import { Inventario, CrearInventarioDto, TrasladoInventarioDto } from "../interf
 
 export class InventarioService {
 
-    private env: string = environment.apiUrl;
+    private env: string = environment.someeUrl;
     private http = inject(HttpClient);
 
     private apiUrl = `${this.env}Inventario`;

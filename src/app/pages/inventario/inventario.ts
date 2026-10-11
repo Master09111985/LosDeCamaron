@@ -16,7 +16,6 @@ import { Producto } from '../../interfaces/producto.interface';
 import { MotivoBaja } from '../../interfaces/motivo-baja.interface';
 import { CrearBajaDto } from '../../interfaces/baja.interface';
 
-
 @Component({
   selector: 'app-inventario',
   imports: [
@@ -27,7 +26,6 @@ import { CrearBajaDto } from '../../interfaces/baja.interface';
   templateUrl: './inventario.html',
   styleUrl: './inventario.css',
 })
-
 export class Inventarios implements OnInit {
 
   private inventarioService = inject(InventarioService);
@@ -50,19 +48,27 @@ export class Inventarios implements OnInit {
   modalBajaAbierto = signal<boolean>(false);
   inventarioEditando = signal<Inventario | null>(null);
   inventarioATrasladar = signal<Inventario | null>(null);
+  
+  // Señales de filtrado
   terminoBusqueda = signal<string>('');
+  filtroAlmacenId = signal<number | ''>('');
 
   inventariosFiltrados = computed(() => {
     const termino = this.terminoBusqueda().toLowerCase();
-    const lista = this.inventarios();
+    const almacenId = this.filtroAlmacenId();
+    let lista = this.inventarios();
 
-    // Si el buscador esta vacio, regresamos toda la lista
-    if (!termino) return lista;
+    // 1. Filtrar por almacén si hay uno seleccionado
+    if (almacenId !== '') {
+      lista = lista.filter(inv => inv.almacenId === almacenId);
+    }
 
-    // Si hay texto, filtramos buscando coincidencias en el nombre del producto
-    return lista.filter(inv =>
-      inv.productoNombre.toLowerCase().includes(termino)
-    );
+    // 2. Filtrar por término de búsqueda si hay texto
+    if (termino) {
+      lista = lista.filter(inv => inv.productoNombre.toLowerCase().includes(termino));
+    }
+
+    return lista;
   });
 
   actualizarBusqueda(event: Event) {
@@ -70,8 +76,13 @@ export class Inventarios implements OnInit {
     this.terminoBusqueda.set(input.value);
   }
 
+  actualizarFiltroAlmacen(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    this.filtroAlmacenId.set(select.value === '' ? '' : Number(select.value));
+  }
+
   //-----------------------------------//
-  //      Seccion de Formularios       //
+  //       Seccion de Formularios      //
   //-----------------------------------//      
 
   inventarioForm: FormGroup = this.fb.group({
@@ -157,7 +168,13 @@ export class Inventarios implements OnInit {
   }
 
   abrirModalBaja(): void {
-    this.bajaForm.reset();
+    this.bajaForm.reset({
+      almacenId: '',
+      productoId: '',
+      motivoBajaId: '',
+      cantidad: '',
+      comentarios: ''
+    });
     this.modalBajaAbierto.set(true);
   }
 
@@ -200,7 +217,6 @@ export class Inventarios implements OnInit {
     this.modalAbierto.set(true);
   }
 
-  
   guardar(): void {
     if (this.inventarioForm.invalid) return;
 
@@ -259,7 +275,7 @@ export class Inventarios implements OnInit {
           this.toastService.showError(errorMsg);
           this.guardando.set(false);
         }
-      })
+      });
     }
   }
 
@@ -273,7 +289,7 @@ export class Inventarios implements OnInit {
 
     // Validacion extra: no trasladar al mismo almacen.
     if (Number(formValue.almacenDestinoId) === invOrigen.almacenId) {
-      this.toastService.showError('El almacen destino debe ser diferente al origen');
+      this.toastService.showWarning('El almacén destino debe ser diferente al origen');
       return;
     }
 
@@ -288,7 +304,7 @@ export class Inventarios implements OnInit {
 
     this.inventarioService.trasladarInventario(dto).subscribe({
       next: () => {
-        this.toastService.showSuccess('Traslado completado con exito');
+        this.toastService.showSuccess('Traslado completado con éxito');
         this.cargarInventario();
         this.cerrarModalTraslado();
         this.guardando.set(false);
@@ -315,7 +331,7 @@ export class Inventarios implements OnInit {
       productoId: Number(formValue.productoId),
       motivoBajaId: Number(formValue.motivoBajaId),
       cantidad: Number(formValue.cantidad),
-      comentarios: formValue.comentarios
+      comentarios: formValue.comentarios || ''
     };
 
     this.bajaService.crearBaja(dto).subscribe({
@@ -336,6 +352,14 @@ export class Inventarios implements OnInit {
   }
 
   borrarInventario(inventario: Inventario): void {
+    // 1. Validación preventiva en frontend: No permitir eliminar si tiene existencias físicas
+    if (inventario.cantidad > 0) {
+      this.toastService.showWarning(
+        `No puedes eliminar "${inventario.productoNombre}" porque aún tiene ${inventario.cantidad} ${inventario.unidadMedidaNombre} en existencia. Registra una baja primero.`
+      );
+      return;
+    }
+
     if (confirm(`¿Estás seguro de eliminar el registro de ${inventario.productoNombre} en ${inventario.almacenNombre}?`)) {
       this.loading.set(true);
       this.inventarioService.eliminarInventario(inventario.id).subscribe({
@@ -345,7 +369,12 @@ export class Inventarios implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          this.toastService.showError('Ocurrió un error al eliminar el registro');
+          // 2. Si tiene historial de bajas en la BD o error 500 por Foreign Key, mostramos advertencia clara
+          const msj = err.error?.mensaje 
+            || (err.error && err.error[''] ? err.error[''][0] : null)
+            || `No se puede eliminar "${inventario.productoNombre}" porque ya cuenta con historial de movimientos o bajas en este almacén.`;
+          
+          this.toastService.showWarning(msj);
           this.loading.set(false);
         }
       });

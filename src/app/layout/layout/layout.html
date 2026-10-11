@@ -4,9 +4,9 @@
     <header class="h-16 bg-[#1a1a1a] border-b border-gray-800 flex items-center px-6 shrink-0 shadow-lg justify-between z-20">
         <div class="flex items-center gap-4">
           <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white shadow-blue-600/20 shadow-md">
-            <img src="/assets/images/Logo.jpg" alt="Logo" class="w-full h-full object-cover rounded-lg">
+            <img src="assets/images/Logo.jpg" alt="Logo" class="w-full h-full object-cover rounded-lg">
           </div>
-          <!-- Nombre Dinámico -->
+          <!-- Nombre real del usuario logueado -->
           <h1 class="text-xl font-bold tracking-tight text-white hidden sm:block">
             Bienvenido, {{ authService.usuarioActual()?.empleadoNombre || authService.usuarioActual()?.nombre }}
           </h1>
@@ -16,9 +16,9 @@
           </button>
         </div>
         <div class="ml-auto flex items-center gap-3">
-          <!-- Rol Dinámico -->
+          <!-- Rol real del usuario logueado -->
           <div class="text-xs text-gray-400 bg-gray-800 px-3 py-1 rounded-full hidden sm:block">
-            Rol: {{ authService.usuarioActual()?.rolNombre || 'Sin Rol' }}
+            Rol: {{ authService.usuarioActual()?.rolNombre }}
           </div>
           <!-- Iniciales Dinámicas -->
           <div class="w-8 h-8 rounded-full bg-blue-700/20 border border-blue-600/30 flex items-center justify-center text-blue-500 font-bold text-xs shadow-inner uppercase">
@@ -35,262 +35,168 @@
             [class.w-16]="!isSidebarOpen()">
 
             <nav class="overflow-y-auto px-2 py-4 space-y-2">
-                <!-- Inicio (Siempre visible si está logueado) -->
-                <a routerLink="/" class="flex items-center p-3 text-gray-400 hover:bg-gray-800/50 rounded-lg transition-colors cursor-pointer" [class.justify-center]="!isSidebarOpen()" [class.gap-3]="isSidebarOpen()" [title]="!isSidebarOpen() ? 'Inicio' : ''">
+                <!-- Inicio -->
+                <a routerLink="/" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="text-blue-500 bg-gray-800/50" class="flex items-center p-3 text-gray-400 hover:bg-gray-800/50 rounded-lg transition-colors cursor-pointer" [class.justify-center]="!isSidebarOpen()" [class.gap-3]="isSidebarOpen()" [title]="!isSidebarOpen() ? 'Inicio' : ''">
                     <mat-icon class="text-base">home</mat-icon>
                     @if (isSidebarOpen()) {
                         <span class="text-sm font-medium whitespace-nowrap">Inicio</span>
                     }
                 </a>
 
-                <!-- Bloque Catálogos: Ocultar todo si no tiene un permiso general o dejarlo si maneja permisos individuales dentro -->
-                @if (authService.tienePermiso('VerCatalogos')) {
-                  <div class="space-y-1">
-                      <button (click)="toggleCatalogos()" class="w-full flex items-center p-3 rounded-lg transition-colors cursor-pointer"
-                              [class.justify-between]="isSidebarOpen()"
-                              [class.justify-center]="!isSidebarOpen()"
-                              [class.bg-blue-600]="isSidebarOpen() && isCatalogosOpen()"
-                              [class.bg-opacity-10]="isSidebarOpen() && isCatalogosOpen()"
-                              [class.text-blue-500]="isSidebarOpen() && isCatalogosOpen()"
-                              [class.text-gray-400]="!(isSidebarOpen() && isCatalogosOpen())"
-                              [class.hover:bg-gray-800]="!(isSidebarOpen() && isCatalogosOpen())"
-                              [class.hover:bg-opacity-50]="!(isSidebarOpen() && isCatalogosOpen())"
-                              [title]="!isSidebarOpen() ? 'Catálogos' : ''">
-                          <div class="flex items-center" [class.gap-3]="isSidebarOpen()" [class.justify-center]="!isSidebarOpen()">
-                              <mat-icon class="text-base">folder_open</mat-icon>
-                              @if (isSidebarOpen()) {
-                                  <span class="text-base font-medium tracking-wider whitespace-nowrap">Catálogos</span>
-                              }
-                          </div>
-                              @if (isSidebarOpen()) {
-                                  <mat-icon class="text-base transition-transform" [class.rotate-180]="isCatalogosOpen()">expand_more</mat-icon>
-                              }
-                      </button>
+                <!-- Bloque Catálogos (ID 1: VerCatalogos) -->
+                @if (tienePermiso('VerCatalogos')) {
+                    <div class="space-y-1">
+                        <button (click)="toggleCatalogos()" class="w-full flex items-center p-3 rounded-lg transition-colors cursor-pointer"
+                                [class.justify-between]="isSidebarOpen()"
+                                [class.justify-center]="!isSidebarOpen()"
+                                [class.bg-blue-600]="isSidebarOpen() && isCatalogosOpen()"
+                                [class.bg-opacity-10]="isSidebarOpen() && isCatalogosOpen()"
+                                [class.text-blue-500]="isSidebarOpen() && isCatalogosOpen()"
+                                [class.text-gray-400]="!(isSidebarOpen() && isCatalogosOpen())"
+                                [class.hover:bg-gray-800]="!(isSidebarOpen() && isCatalogosOpen())"
+                                [class.hover:bg-opacity-50]="!(isSidebarOpen() && isCatalogosOpen())"
+                                [title]="!isSidebarOpen() ? 'Catálogos' : ''">
+                            <div class="flex items-center" [class.gap-3]="isSidebarOpen()" [class.justify-center]="!isSidebarOpen()">
+                                <mat-icon class="text-base">folder_open</mat-icon>
+                                @if (isSidebarOpen()) {
+                                    <span class="text-base font-medium tracking-wider whitespace-nowrap">Catálogos</span>
+                                }
+                            </div>
+                            @if (isSidebarOpen()) {
+                                <mat-icon class="text-base transition-transform" [class.rotate-180]="isCatalogosOpen()">expand_more</mat-icon>
+                            }
+                        </button>
 
-                      @if (isSidebarOpen() && isCatalogosOpen()) {
-                          <div class="pl-11 space-y-2 py-2">
-
-                            @if (authService.tienePermiso('Almacenes')) {
-                              <a
-                                routerLink="/catalogos/almacenes" 
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600" 
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                                >Almacenes
-                              </a>
-                            }
-
-                            @if (authService.tienePermiso('Checador')) {
-                              <a
-                                routerLink="/catalogos/asistencias"
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600"
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                              >Checador</a>
-                            }
-                            
-                            @if (authService.tienePermiso('Clientes')) {
-                              <a
-                                routerLink="/catalogos/clientes" 
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600" 
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                                >Clientes
-                              </a>
-                            }
-
-                            @if (authService.tienePermiso('Puestos')) {
-                              <a
-                                routerLink="/catalogos/puestos" 
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600" 
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                                >Puestos
-                              </a>
-                            }
-
-                            @if (authService.tienePermiso('Empleados')) {
-                              <a
-                                routerLink="/catalogos/empleados" 
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600" 
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                                >Empleados
-                              </a>
-                            }
-
-                            @if (authService.tienePermiso('Unidades')) {
-                              <a
-                                routerLink="/catalogos/unidades" 
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600" 
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                                >Unidades de Medida
-                              </a>
-                            }
-
-                            @if (authService.tienePermiso('Productos')) {
-                              <a
-                                routerLink="/catalogos/productos" 
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600" 
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                                >Productos
-                              </a>
-                            }
-
-                            @if (authService.tienePermiso('MotivosSalida')) {
-                              <a
-                                routerLink="/catalogos/motivos-salida" 
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600" 
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                                >Motivos Salida
-                              </a>
-                            }
-                            
-                            @if (authService.tienePermiso('Inventarios')) {
-                              <a
-                                routerLink="/catalogos/inventarios" 
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600" 
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                                >Inventario
-                              </a>
-                            }
-                            
-                            @if (authService.tienePermiso('Plataformas')) {
-                              <a
-                                routerLink="/catalogos/plataformas" 
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600" 
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                                >Plataformas
-                              </a>
-                            }
-                            
-                            @if (authService.tienePermiso('Permisos')) {
-                              <a
-                                routerLink="/catalogos/permisos" 
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600" 
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                                >Permisos
-                              </a>
-                            }
-                            
-                            @if (authService.tienePermiso('Roles')) {
-                              <a
-                                routerLink="/catalogos/roles" 
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600" 
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                                >Roles
-                              </a>
-                            }
-                            
-                            @if (authService.tienePermiso('MetodosPago')) {
-                              <a
-                                routerLink="/catalogos/metodo-pago" 
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600" 
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                                >Metodo Pago
-                              </a>
-                            }
-
-                            @if (authService.tienePermiso('Proveedores')) {
-                              <a
-                                routerLink="/catalogos/proveedores" 
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600" 
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                                >Proveedores
-                              </a>
-                            }
-
-                            @if (authService.tienePermiso('Platillos')) {
-                              <a
-                                routerLink="/catalogos/platillos" 
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600" 
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                                >Platillos
-                              </a>
-                            }
-
-                            @if (authService.tienePermiso('Usuarios')) {
-                              <a
-                                routerLink="/catalogos/usuarios" 
-                                routerLinkActive="text-blue-500 font-semibold border-blue-600" 
-                                class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent"
-                                >Usuarios
-                              </a>
-                            }
-                    
-                          </div>
-                      }
-                  </div>
+                        @if (isSidebarOpen() && isCatalogosOpen()) {
+                            <div class="pl-11 space-y-2 py-2">
+                                @if (tienePermiso('Almacenes')) {
+                                    <a routerLink="/catalogos/almacenes" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Almacenes</a>
+                                }
+                                @if (tienePermiso('Checador')) {
+                                    <a routerLink="/catalogos/asistencias" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Checador</a>
+                                }
+                                @if (tienePermiso('Clientes')) {
+                                    <a routerLink="/catalogos/clientes" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Clientes</a>
+                                }
+                                @if (tienePermiso('Puestos')) {
+                                    <a routerLink="/catalogos/puestos" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Puestos</a>
+                                }
+                                @if (tienePermiso('Empleados')) {
+                                    <a routerLink="/catalogos/empleados" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Empleados</a>
+                                }
+                                @if (tienePermiso('Unidades')) {
+                                    <a routerLink="/catalogos/unidades" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Unidades de Medida</a>
+                                }
+                                @if (tienePermiso('Productos')) {
+                                    <a routerLink="/catalogos/productos" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Productos</a>
+                                }
+                                @if (tienePermiso('MotivosSalida')) {
+                                    <a routerLink="/catalogos/motivos-salida" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Motivos Salida</a>
+                                }
+                                @if (tienePermiso('Inventarios')) {
+                                    <a routerLink="/catalogos/inventarios" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Inventario</a>
+                                }
+                                @if (tienePermiso('Plataformas')) {
+                                    <a routerLink="/catalogos/plataformas" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Plataformas</a>
+                                }
+                                @if (tienePermiso('Permisos')) {
+                                    <a routerLink="/catalogos/permisos" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Permisos</a>
+                                }
+                                @if (tienePermiso('Roles')) {
+                                    <a routerLink="/catalogos/roles" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Roles</a>
+                                }
+                                @if (tienePermiso('MetodosDePago')) {
+                                    <a routerLink="/catalogos/metodo-pago" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Metodo Pago</a>
+                                }
+                                @if (tienePermiso('Proveedores')) {
+                                    <a routerLink="/catalogos/proveedores" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Proveedores</a>
+                                }
+                                @if (tienePermiso('Platillos')) {
+                                    <a routerLink="/catalogos/platillos" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Platillos</a>
+                                }
+                                @if (tienePermiso('Usuarios')) {
+                                    <a routerLink="/catalogos/usuarios" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Usuarios</a>
+                                }
+                            </div>
+                        }
+                    </div>
                 }
 
-                <!-- Plataformas -->
-                @if (authService.tienePermiso('VerPlataformas')) {
-                  <div class="space-y-1">
-                      <button (click)="togglePlataformas()" class="w-full flex items-center p-3 rounded-lg transition-colors cursor-pointer"
-                              [class.justify-between]="isSidebarOpen()"
-                              [class.justify-center]="!isSidebarOpen()"
-                              [class.bg-blue-600]="isSidebarOpen() && isPlataformasOpen()"
-                              [class.bg-opacity-10]="isSidebarOpen() && isPlataformasOpen()"
-                              [class.text-blue-500]="isSidebarOpen() && isPlataformasOpen()"
-                              [class.text-gray-400]="!(isSidebarOpen() && isPlataformasOpen())"
-                              [class.hover:bg-gray-800]="!(isSidebarOpen() && isPlataformasOpen())"
-                              [class.hover:bg-opacity-50]="!(isSidebarOpen() && isPlataformasOpen())"
-                              [title]="!isSidebarOpen() ? 'Plataformas' : ''">
-                          <div class="flex items-center" [class.gap-3]="isSidebarOpen()" [class.justify-center]="!isSidebarOpen()">
-                              <mat-icon class="text-base">devices</mat-icon>
-                              @if (isSidebarOpen()) {
-                                  <span class="text-base font-medium tracking-wider whitespace-nowrap">Plataformas</span>
-                              }
-                          </div>
-                              @if (isSidebarOpen()) {
-                                  <mat-icon class="text-base transition-transform" [class.rotate-180]="isPlataformasOpen()">expand_more</mat-icon>
-                              }
-                      </button>
+                <!-- Bloque Plataformas (ID 2: VerPlataformas) -->
+                @if (tienePermiso('VerPlataformas')) {
+                    <div class="space-y-1">
+                        <button (click)="togglePlataformas()" class="w-full flex items-center p-3 rounded-lg transition-colors cursor-pointer"
+                                [class.justify-between]="isSidebarOpen()"
+                                [class.justify-center]="!isSidebarOpen()"
+                                [class.bg-blue-600]="isSidebarOpen() && isPlataformasOpen()"
+                                [class.bg-opacity-10]="isSidebarOpen() && isPlataformasOpen()"
+                                [class.text-blue-500]="isSidebarOpen() && isPlataformasOpen()"
+                                [class.text-gray-400]="!(isSidebarOpen() && isPlataformasOpen())"
+                                [class.hover:bg-gray-800]="!(isSidebarOpen() && isPlataformasOpen())"
+                                [class.hover:bg-opacity-50]="!(isSidebarOpen() && isPlataformasOpen())"
+                                [title]="!isSidebarOpen() ? 'Plataformas' : ''">
+                            <div class="flex items-center" [class.gap-3]="isSidebarOpen()" [class.justify-center]="!isSidebarOpen()">
+                                <mat-icon class="text-base">devices</mat-icon>
+                                @if (isSidebarOpen()) {
+                                    <span class="text-base font-medium tracking-wider whitespace-nowrap">Plataformas</span>
+                                }
+                            </div>
+                            @if (isSidebarOpen()) {
+                                <mat-icon class="text-base transition-transform" [class.rotate-180]="isPlataformasOpen()">expand_more</mat-icon>
+                            }
+                        </button>
 
-                      @if (isSidebarOpen() && isPlataformasOpen()) {
-                          <div class="pl-11 space-y-2 py-2">
-                              @if (authService.tienePermiso('Caja')) {
-                                <a routerLink="/plataformas/caja" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Caja</a>
-                              }
-                              @if (authService.tienePermiso('Menu')) {
-                                <a routerLink="plataforma/comandas" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Menu</a>
-                              }
-                              @if (authService.tienePermiso('Cocina')) {
-                                <a routerLink="plataforma/cocina" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Cocina</a>
-                              }
-                          </div>
-                      }
-                  </div>
+                        @if (isSidebarOpen() && isPlataformasOpen()) {
+                            <div class="pl-11 space-y-2 py-2">
+                                @if (tienePermiso('Caja')) {
+                                    <a routerLink="/plataformas/caja" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Caja</a>
+                                }
+                                @if (tienePermiso('Menu')) {
+                                    <a routerLink="/plataformas/comandas" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Menu</a>
+                                }
+                                @if (tienePermiso('Cocina')) {
+                                    <a routerLink="/plataformas/cocina" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Cocina</a>
+                                }
+                            </div>
+                        }
+                    </div>
                 }
 
-                @if (authService.tienePermiso('VerReportes')) {
-                  <div class="space-y-1">
-                    <button (click)="toggleReportes()" class="w-full flex items-center p-3 rounded-lg transition-colors cursor-pointer"
-                              [class.justify-between]="isSidebarOpen()"
-                              [class.justify-center]="!isSidebarOpen()"
-                              [class.bg-blue-600]="isSidebarOpen() && isPlataformasOpen()"
-                              [class.bg-opacity-10]="isSidebarOpen() && isPlataformasOpen()"
-                              [class.text-blue-500]="isSidebarOpen() && isPlataformasOpen()"
-                              [class.text-gray-400]="!(isSidebarOpen() && isPlataformasOpen())"
-                              [class.hover:bg-gray-800]="!(isSidebarOpen() && isReportesOpen())"
-                              [class.hover:bg-opacity-50]="!(isSidebarOpen() && isReportesOpen())"
-                              [title]="!isSidebarOpen() ? 'Plataformas' : ''">
-                          <div class="flex items-center" [class.gap-3]="isSidebarOpen()" [class.justify-center]="!isSidebarOpen()">
-                              <mat-icon class="text-base">devices</mat-icon>
-                              @if (isSidebarOpen()) {
-                                  <span class="text-base font-medium tracking-wider whitespace-nowrap">Reportes</span>
-                              }
-                          </div>
-                              @if (isSidebarOpen()) {
-                                  <mat-icon class="text-base transition-transform" [class.rotate-180]="isReportesOpen()">expand_more</mat-icon>
-                              }
-                      </button>
-                      @if (isSidebarOpen() && isPlataformasOpen()) {
-                          <div class="pl-11 space-y-2 py-2">
-                              @if (authService.tienePermiso('Dashboard')) {
-                                <a routerLink="/plataformas/caja" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Dashboard</a>
-                              }
-                              @if (authService.tienePermiso('Nomina')) {
-                                <a routerLink="plataforma/comandas" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Nomina</a>
-                              }
-                          </div>
-                      }
-                  </div>
+                <!-- Bloque Reportes (ID 22: VerReportes) -->
+                @if (tienePermiso('VerReportes')) {
+                    <div class="space-y-1">
+                        <button (click)="toggleReportes()" class="w-full flex items-center p-3 rounded-lg transition-colors cursor-pointer"
+                                [class.justify-between]="isSidebarOpen()"
+                                [class.justify-center]="!isSidebarOpen()"
+                                [class.bg-blue-600]="isSidebarOpen() && isReportesOpen()"
+                                [class.bg-opacity-10]="isSidebarOpen() && isReportesOpen()"
+                                [class.text-blue-500]="isSidebarOpen() && isReportesOpen()"
+                                [class.text-gray-400]="!(isSidebarOpen() && isReportesOpen())"
+                                [class.hover:bg-gray-800]="!(isSidebarOpen() && isReportesOpen())"
+                                [class.hover:bg-opacity-50]="!(isSidebarOpen() && isReportesOpen())"
+                                [title]="!isSidebarOpen() ? 'Reportes' : ''">
+                            <div class="flex items-center" [class.gap-3]="isSidebarOpen()" [class.justify-center]="!isSidebarOpen()">
+                                <mat-icon class="text-base">assessment</mat-icon>
+                                @if (isSidebarOpen()) {
+                                    <span class="text-base font-medium tracking-wider whitespace-nowrap">Reportes</span>
+                                }
+                            </div>
+                            @if (isSidebarOpen()) {
+                                <mat-icon class="text-base transition-transform" [class.rotate-180]="isReportesOpen()">expand_more</mat-icon>
+                            }
+                        </button>
+                        
+                        @if (isSidebarOpen() && isReportesOpen()) {
+                            <div class="pl-11 space-y-2 py-2">
+                                @if (tienePermiso('Dashboard')) {
+                                    <a routerLink="/reportes/dashboard" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Dashboard</a>
+                                }
+                                @if (tienePermiso('Nomina')) {
+                                    <a routerLink="/reportes/nomina" routerLinkActive="text-blue-500 font-semibold border-blue-600" class="block text-gray-500 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-4 py-1 border-l-2 border-transparent">Nomina</a>
+                                }
+                            </div>
+                        }
+                    </div>
                 }
             </nav>
 
@@ -302,7 +208,7 @@
                         <span class="text-sm font-medium whitespace-nowrap">Cerrar Sesión</span>
                     }
                 </button>
-          </div>
+           </div>
 
         </aside>
 

@@ -2,12 +2,14 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { ComandaService } from '../../services/comanda.service';
 import { MetodoPagoService } from '../../services/metodo-pago.service';
 import { ToastService } from '../../services/toast.service';
 import { CajaService } from '../../services/caja.service';
 import { ProveedorService } from '../../services/proveedor.service';
+import { AuthService } from '../../services/auth.service';
 
 import { ComandaDto } from '../../interfaces/comanda.interface';
 import { MetodoPagos } from '../../interfaces/metodo-pago.interface';
@@ -27,6 +29,8 @@ export class Caja implements OnInit {
   private cajaService = inject(CajaService);
   private proveedorService = inject(ProveedorService);
   private toastService = inject(ToastService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
   private fb = inject(FormBuilder);
 
   // Estados Base
@@ -38,7 +42,23 @@ export class Caja implements OnInit {
   procesando = signal<boolean>(false);
 
   // Estados de Caja (Turnos)
-  usuarioIdActual = 1; // TODO: Cambiar por el ID real que saques de tu LocalStorage/AuthService
+  get usuarioIdActual(): number {
+    const usuario = this.authService.usuarioActual();
+    if (usuario && usuario.id) {
+      return Number(usuario.id);
+    }
+    
+    const usuarioSession = sessionStorage.getItem('usuario');
+    if (usuarioSession) {
+      const userParsed = JSON.parse(usuarioSession);
+      if (userParsed && userParsed.id) {
+          return Number(userParsed.id);
+      }
+    }
+    
+    return 0; 
+  }
+
   turnoActual = signal<any | null>(null);
   ticketGenerado = signal<any | null>(null);
   
@@ -47,10 +67,15 @@ export class Caja implements OnInit {
   modalProveedor = signal<boolean>(false);
   modalCorte = signal<boolean>(false);
 
-  // Estados de Selección (Cobro)
+  // Estados de Selección (Cobro Simple y Mixto)
   comandaSeleccionada = signal<ComandaDto | null>(null);
   metodoPagoSeleccionado = signal<number | null>(null);
   efectivoRecibido = signal<number | null>(null);
+
+  esCobroMixto = signal<boolean>(false);
+  combinacionMixta = signal<'tarjeta-efectivo' | 'tarjeta-transferencia' | 'transferencia-efectivo' | null>(null);
+  montoMixto1 = signal<number | null>(null); // Monto del primer método (Tarjeta o Transferencia)
+  montoMixto2 = signal<number | null>(null); // Monto del segundo método (Efectivo o Transferencia)
 
   // ==========================================
   // FORMULARIOS REACTIVOS
@@ -82,18 +107,47 @@ export class Caja implements OnInit {
   }
 
   verificarTurno(): void {
+    const cajeroId = this.usuarioIdActual;
+    
+    // Barrera para esperar a que el usuario termine de cargarse en memoria
+    if (cajeroId === 0) {
+      console.warn('ID de cajero es 0. Retrasando verificación...');
+      setTimeout(() => this.verificarTurno(), 300); // Reintenta en 300ms
+      return;
+    }
+
     this.cargando.set(true);
-    this.cajaService.getTurnoAbierto(this.usuarioIdActual).subscribe({
-      next: (turno) => {
-        this.turnoActual.set(turno);
-        this.cargarComandas();
-        this.modalApertura.set(false);
+    console.log(`Buscando turno en SOMEE para el cajero ID: ${cajeroId}`);
+
+    this.cajaService.getTurnoAbierto(cajeroId).subscribe({
+      next: (turno: any) => {
+        console.log('Turno encontrado en BD:', turno);
+        
+        // 1. Detectar el ID sin importar si viene como id, Id, turnoId o TurnoId
+        const idTurno = turno?.id ?? turno?.Id ?? turno?.turnoId ?? turno?.TurnoId;
+
+        // Validamos que sea un objeto de turno real
+        if (turno && idTurno) {
+          // 2. Normalizar el objeto para que siempre tenga la propiedad 'id' en minúscula
+          const turnoNormalizado = { ...turno, id: idTurno };
+
+          this.turnoActual.set(turnoNormalizado);
+          this.cargarComandas();
+          this.modalApertura.set(false); // Ocultamos el modal forzadamente
+        } else {
+          this.modalApertura.set(true);
+        }
+        this.cargando.set(false);
       },
       error: (err) => {
+        console.error('Error devuelto por C#:', err);
+        
         if (err.status === 404 || err.status === 400) {
           this.modalApertura.set(true);
-          this.cargando.set(false);
+        } else {
+          this.toastService.showError('Error al contactar con la base de datos de caja.');
         }
+        this.cargando.set(false);
       }
     });
   }
@@ -102,6 +156,7 @@ export class Caja implements OnInit {
     this.cargando.set(true);
     this.comandaService.getComandas().subscribe({
       next: (comandas) => {
+        // Filtramos solo las que ya se entregaron (estatus 'Entregado')
         this.comandasPorCobrar.set(comandas.filter(c => c.estado === 'Entregado'));
         this.cargando.set(false);
       },
@@ -138,64 +193,164 @@ export class Caja implements OnInit {
     });
   });
 
+  // Helper para buscar el ID real en BD de Efectivo, Tarjeta o Transferencia
+  private obtenerIdMetodoPorNombre(palabraClave: string): number | null {
+    const metodo = this.metodosPagoDb().find(m => m.nombre.toLowerCase().includes(palabraClave.toLowerCase()));
+    return metodo ? metodo.id : null;
+  }
+
   esEfectivo = computed(() => {
+    if (this.esCobroMixto()) {
+      const comb = this.combinacionMixta();
+      return comb === 'tarjeta-efectivo' || comb === 'transferencia-efectivo';
+    }
     const metodoId = this.metodoPagoSeleccionado();
     const metodo = this.metodosPagoDb().find(m => m.id === metodoId);
     return metodo ? metodo.nombre.toLowerCase().includes('efectivo') : false;
   });
 
   cambio = computed(() => {
-    const total = this.comandaSeleccionada()?.total || 0;
     const recibido = this.efectivoRecibido() || 0;
+    if (this.esCobroMixto()) {
+      const montoEfectivoACobrar = this.montoMixto2() || 0;
+      return recibido > montoEfectivoACobrar ? recibido - montoEfectivoACobrar : 0;
+    }
+    const total = this.comandaSeleccionada()?.total || 0;
     return recibido > total ? recibido - total : 0;
   });
 
+  cobroValido = computed(() => {
+    const comanda = this.comandaSeleccionada();
+    if (!comanda) return false;
+
+    if (!this.esCobroMixto()) {
+      if (!this.metodoPagoSeleccionado()) return false;
+      if (this.esEfectivo() && (this.efectivoRecibido() || 0) < comanda.total) return false;
+      return true;
+    } else {
+      if (!this.combinacionMixta()) return false;
+      const m1 = Number(this.montoMixto1() || 0);
+      const m2 = Number(this.montoMixto2() || 0);
+      const sumaExacta = Math.abs((m1 + m2) - comanda.total) < 0.01;
+      if (!sumaExacta || m1 <= 0 || m2 <= 0) return false;
+      if (this.esEfectivo() && (this.efectivoRecibido() || 0) < m2) return false;
+      return true;
+    }
+  });
+
   // ==========================================
-  // ACCIONES DE COBRO Y PREVIEW
+  // ACCIONES DE COBRO
   // ==========================================
   seleccionarComanda(comanda: ComandaDto): void {
     this.comandaSeleccionada.set(comanda);
     this.metodoPagoSeleccionado.set(null); 
     this.efectivoRecibido.set(null);
+    this.esCobroMixto.set(false);
+    this.combinacionMixta.set(null);
+    this.montoMixto1.set(null);
+    this.montoMixto2.set(null);
+  }
+
+  activarModoCobro(mixto: boolean): void {
+    this.esCobroMixto.set(mixto);
+    this.metodoPagoSeleccionado.set(null);
+    this.combinacionMixta.set(null);
+    this.montoMixto1.set(null);
+    this.montoMixto2.set(null);
+    this.efectivoRecibido.set(null);
+  }
+
+  seleccionarCombinacionMixta(comb: 'tarjeta-efectivo' | 'tarjeta-transferencia' | 'transferencia-efectivo'): void {
+    this.combinacionMixta.set(comb);
+    const total = this.comandaSeleccionada()?.total || 0;
+    const mitad = Number((total / 2).toFixed(2));
+    this.montoMixto1.set(mitad);
+    this.montoMixto2.set(Number((total - mitad).toFixed(2)));
+    this.efectivoRecibido.set(null);
+  }
+
+  actualizarMontoMixto1(valor: number): void {
+    const total = this.comandaSeleccionada()?.total || 0;
+    const m1 = Math.max(0, Math.min(Number(valor || 0), total));
+    this.montoMixto1.set(m1);
+    this.montoMixto2.set(Number((total - m1).toFixed(2)));
+  }
+
+  actualizarMontoMixto2(valor: number): void {
+    const total = this.comandaSeleccionada()?.total || 0;
+    const m2 = Math.max(0, Math.min(Number(valor || 0), total));
+    this.montoMixto2.set(m2);
+    this.montoMixto1.set(Number((total - m2).toFixed(2)));
+  }
+
+  // ==========================================
+  // ACCIONES PARA LA IMPRESIÓN MANUAL
+  // ==========================================
+  cerrarModalImpresionComanda(): void {
+    this.comandaParaImprimir.set(null);
+  }
+
+  cerrarModalImpresionCorte(): void {
+    this.ticketGenerado.set(null);
+  }
+
+  ejecutarImpresion(): void {
+    window.print();
   }
 
   imprimirTicketComanda(comanda: ComandaDto, event: Event): void {
     event.stopPropagation();
     this.ticketGenerado.set(null); 
-    this.comandaParaImprimir.set(comanda);
-    // Ya no hacemos window.print() aquí; esperamos a que el usuario confirme en el modal
-  }
-
-  cerrarModalImpresion() {
-    this.comandaParaImprimir.set(null);
-    this.ticketGenerado.set(null);
-  }
-
-  ejecutarImpresion() {
-    window.print();
+    this.comandaParaImprimir.set(comanda); // Esto abrirá el modal de vista previa de comanda
   }
 
   procesarCobro(): void {
     const comanda = this.comandaSeleccionada();
-    const metodoId = this.metodoPagoSeleccionado();
-
-    if (!comanda || !metodoId || !this.turnoActual()) {
-      this.toastService.showError('Seleccione un método de pago y asegúrese de tener turno abierto');
+    if (!comanda || !this.turnoActual() || !this.cobroValido()) {
+      this.toastService.showError('Verifique los montos y el método de pago seleccionado');
       return;
     }
 
-    if (this.esEfectivo() && (this.efectivoRecibido() || 0) < comanda.total) {
-      this.toastService.showError('El monto recibido es menor al total de la cuenta');
-      return;
+    let payload: any;
+
+    if (!this.esCobroMixto()) {
+      payload = { 
+        comandaId: comanda.id, 
+        metodoPagoId: this.metodoPagoSeleccionado(), 
+        usuarioCajeroId: this.usuarioIdActual 
+      };
+    } else {
+      const comb = this.combinacionMixta();
+      const idEfectivo = this.obtenerIdMetodoPorNombre('efectivo') || 1;
+      const idTarjeta = this.obtenerIdMetodoPorNombre('tarjeta') || 2;
+      const idTransferencia = this.obtenerIdMetodoPorNombre('transferencia') || 3;
+
+      let metodo1Id = idTarjeta;
+      let metodo2Id = idEfectivo;
+
+      if (comb === 'tarjeta-efectivo') {
+        metodo1Id = idTarjeta;
+        metodo2Id = idEfectivo;
+      } else if (comb === 'tarjeta-transferencia') {
+        metodo1Id = idTarjeta;
+        metodo2Id = idTransferencia;
+      } else if (comb === 'transferencia-efectivo') {
+        metodo1Id = idTransferencia;
+        metodo2Id = idEfectivo;
+      }
+
+      payload = {
+        comandaId: comanda.id,
+        metodoPagoId: metodo1Id,
+        usuarioCajeroId: this.usuarioIdActual,
+        pagos: [
+          { metodoPagoId: metodo1Id, monto: Number(this.montoMixto1()) },
+          { metodoPagoId: metodo2Id, monto: Number(this.montoMixto2()) }
+        ]
+      };
     }
 
     this.procesando.set(true);
-    
-    const payload = { 
-      comandaId: comanda.id, 
-      metodoPagoId: metodoId, 
-      usuarioCajeroId: this.usuarioIdActual 
-    };
 
     this.cajaService.cobrarComanda(payload).subscribe({
       next: () => {
@@ -215,28 +370,39 @@ export class Caja implements OnInit {
   // ==========================================
   // ACCIONES DE TURNOS Y AUDITORÍA
   // ==========================================
-  abrirTurno(): void {
-    if (this.fondoForm.invalid) {
-      this.fondoForm.markAllAsTouched();
+  abrirTurno(): void { 
+    if (this.fondoForm.invalid) { 
+      this.fondoForm.markAllAsTouched(); 
+      return; 
+    }
+
+    if (this.usuarioIdActual === 0) {
+      this.toastService.showError('Error de sesión: No se identificó al cajero. Vuelve a iniciar sesión.');
       return;
     }
-    
+  
     this.procesando.set(true);
     const payload = {
       usuarioCajeroId: this.usuarioIdActual,
-      fondoInicial: this.fondoForm.value.fondoInicial
+      fondoInicial: Number(this.fondoForm.value.fondoInicial) 
     };
-
+  
     this.cajaService.abrirTurno(payload).subscribe({
-      next: (turno) => {
-        this.turnoActual.set(turno);
+      next: (turno: any) => {
+        // Normalizar para evitar que falle el cierre de caja después
+        const idTurno = turno?.id ?? turno?.Id ?? turno?.turnoId ?? turno?.TurnoId;
+        const turnoNormalizado = { ...turno, id: idTurno };
+
+        this.turnoActual.set(turnoNormalizado);
         this.modalApertura.set(false);
         this.cargarComandas();
         this.toastService.showSuccess('Caja abierta exitosamente');
         this.procesando.set(false);
       },
-      error: () => {
-        this.toastService.showError('Error al abrir la caja');
+      error: (err) => {
+        console.error(err);
+        const msg = err.error?.mensaje || err.error || 'Error al abrir la caja';
+        this.toastService.showError(msg);
         this.procesando.set(false);
       }
     });
@@ -266,10 +432,23 @@ export class Caja implements OnInit {
         this.procesando.set(false);
       },
       error: (err) => {
-        this.toastService.showError(err.error || 'Credenciales inválidas o error de servidor');
+        console.error(err);
+        
+        if (err.status === 401) {
+          this.toastService.showWarning('Credenciales no autorizadas para pagar a proveedores.');
+        } else {
+          this.toastService.showError(err.error || 'Ocurrió un error al procesar el pago.');
+        }
+        
         this.procesando.set(false);
       }
     });
+  }
+
+  cancelarApertura(): void {
+    this.modalApertura.set(false);
+    this.fondoForm.reset();
+    this.router.navigate(['/']); 
   }
 
   abrirModalCorte() { 
@@ -278,29 +457,45 @@ export class Caja implements OnInit {
   }
 
   cerrarCaja(): void {
-    if (this.corteForm.invalid) {
-      this.corteForm.markAllAsTouched();
-      return;
+    if (this.corteForm.invalid) { 
+      this.corteForm.markAllAsTouched(); 
+      return; 
     }
-
+  
     this.procesando.set(true);
     const payload = { 
       turnoId: this.turnoActual().id, 
-      ...this.corteForm.value 
+      ...this.corteForm.value,
+      efectivoReportado: Number(this.corteForm.value.efectivoReportado)
     };
-
+  
     this.cajaService.cerrarTurno(payload).subscribe({
       next: (ticket) => {
         this.toastService.showSuccess('Caja cuadrada y cerrada exitosamente');
+        
+        this.comandaParaImprimir.set(null); 
+        this.ticketGenerado.set(ticket); 
+        
         this.modalCorte.set(false);
         this.turnoActual.set(null);
-        
-        // Esto automáticamente abrirá el modal de Preview en el HTML
-        this.ticketGenerado.set(ticket); 
         this.procesando.set(false);
       },
       error: (err) => {
-        this.toastService.showError(err.error || 'Credenciales inválidas');
+        console.error(err);
+        
+        // Si el backend responde 401 (Unauthorized)
+        if (err.status === 401) {
+          this.toastService.showWarning('Credenciales no autorizadas para el corte de caja.');
+        } 
+        // Si el backend responde 400 (Bad Request - Ej. comandas pendientes en cocina)
+        else if (err.status === 400) {
+          this.toastService.showWarning(err.error || 'No se puede realizar el corte de caja.');
+        } 
+        // Cualquier otro error
+        else {
+          this.toastService.showError('Ocurrió un error inesperado al procesar el corte.');
+        }
+        
         this.procesando.set(false);
       }
     });

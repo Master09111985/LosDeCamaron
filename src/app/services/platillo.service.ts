@@ -1,14 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../environments/environment';
+import { environment } from '../../../src/environments/environment';
 import { Platillo } from '../interfaces/platillo.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlatilloService {
-  private env: string = environment.apiUrl;
+  private env: string = environment.someeUrl;
   private http = inject(HttpClient);
   private apiUrl = `${this.env}Platillo`;
 

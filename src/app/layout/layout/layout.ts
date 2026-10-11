@@ -59,16 +59,24 @@ export class Layout {
   // Método para obtener iniciales del usuario (ej: 'Juan Perez' -> 'JP')
   getIniciales(): string {
     const usuario = this.authService.usuarioActual();
-    if (!usuario) return 'US';
+    if (!usuario) return '';
     
-    // Si tiene empleadoNombre lo usamos, si no, su nombre de usuario
-    const nombre = usuario.empleadoNombre || usuario.nombre;
+    const nombre = usuario.empleadoNombre || usuario.nombre || '';
+    if (!nombre) return '';
+
     const partes = nombre.trim().split(' ');
-    
     if (partes.length >= 2) {
       return (partes[0][0] + partes[1][0]).toUpperCase();
     }
     return nombre.substring(0, 2).toUpperCase();
+  }
+
+  // Evalúa ÚNICAMENTE los permisos asignados al rol en AuthService
+  tienePermiso(nombrePermiso: string): boolean {
+    const usuario = this.authService.usuarioActual();
+    if (!usuario || !usuario.id) return false;
+
+    return this.authService.tienePermiso(nombrePermiso);
   }
 
   cerrarSesion() {
