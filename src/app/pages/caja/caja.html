@@ -65,11 +65,20 @@
                         </div>
                     </div>
 
-                    <!-- Abajo: Cliente o Mesa -->
-                    <p class="text-gray-400 text-sm flex items-center gap-1">
-                        <mat-icon class="text-[16px]">person</mat-icon> 
-                        {{ comanda.numeroMesa || comanda.direccionEntrega || 'Cliente' }}
-                    </p>
+                    <!-- Abajo: Cliente, Mesa o Plataforma según tipo de comanda -->
+                    <div class="text-gray-400 text-sm flex flex-col gap-0.5">
+                        <p class="flex items-center gap-1 font-medium text-gray-300">
+                            <mat-icon class="text-[16px]">person</mat-icon>
+                            <span>
+                                {{ comanda.numeroMesa || comanda.clienteNombre || comanda.nombreClienteLlevar || comanda.plataformaNombre || 'Cliente' }}
+                            </span>
+                        </p>
+                        @if (comanda.clienteDireccion) {
+                            <p class="text-xs text-gray-400 flex items-center gap-1 pl-5 truncate">
+                                {{ comanda.clienteDireccion }}
+                            </p>
+                        }
+                    </div>
                 </div>
             }
         </div>
@@ -81,7 +90,12 @@
             
             <div class="p-6 border-b border-[#334155] bg-[#0f172a]">
                 <h2 class="text-2xl font-black text-white">Cobrar Orden #{{ comanda.id }}</h2>
-                <p class="text-gray-400 mt-1">Registrando pago para pedido {{ comanda.tipoPedido }}</p>
+                <p class="text-gray-400 mt-1">
+                    Registrando pago para pedido <span class="text-white font-semibold">{{ comanda.tipoPedido }}</span>
+                    @if (comanda.clienteNombre || comanda.nombreClienteLlevar) {
+                        — {{ comanda.clienteNombre || comanda.nombreClienteLlevar }}
+                    }
+                </p>
             </div>
 
             <!-- Resumen de la Orden (Scrollable) -->
@@ -167,7 +181,7 @@
                         </div>
                     </div>
 
-                    <!-- Desglose de Montos Mixtos (Se autocompletan al escribir) -->
+                    <!-- Desglose de Montos Mixtos -->
                     @if (combinacionMixta(); as comb) {
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 bg-[#1e293b] border border-blue-500/30 p-4 rounded-xl">
                             <div>
@@ -188,7 +202,7 @@
                     }
                 }
 
-                <!-- Input de Efectivo (Aparece si elige Efectivo o combinación mixta con Efectivo) -->
+                <!-- Input de Efectivo -->
                 @if (esEfectivo()) {
                     <div class="bg-[#1e293b] border border-blue-500/30 p-4 rounded-xl mb-6 animate-slide-up">
                         <label class="text-sm font-bold text-blue-400 uppercase tracking-wide block mb-2">
@@ -249,7 +263,6 @@
     <div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm print:hidden">
         <div class="bg-[#1e293b] w-full max-w-sm rounded-2xl border border-gray-700 p-6 shadow-2xl relative">
             
-            <!-- Botón de Tacha para Cerrar / Ir a Home -->
             <button type="button" 
                     (click)="cancelarApertura()" 
                     class="absolute top-5 right-5 text-gray-400 hover:text-white transition-colors cursor-pointer p-1 rounded-lg hover:bg-gray-800"
@@ -351,138 +364,11 @@
     </div>
 }
 
-
-<!-- ========================================== -->
-<!-- MODAL PREVIEW: TICKET COMANDA              -->
-<!-- ========================================== -->
-@if (comandaParaImprimir(); as c) {
-    <div class="fixed inset-0 z-100 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-fade-in print:hidden">
-        <div class="bg-[#1a1a1a] p-8 rounded-2xl flex flex-col items-center border border-gray-800 shadow-2xl animate-slide-up max-w-sm w-full">
-            <div class="w-full flex justify-between items-center mb-6">
-                <h3 class="text-white font-bold text-lg">Vista Previa de Ticket</h3>
-                <button (click)="cerrarModalImpresion()" class="text-gray-500 hover:text-white transition-colors">
-                    <mat-icon>close</mat-icon>
-                </button>
-            </div>
-            
-            <!-- Contenedor del Ticket (Estilo papel) -->
-            <div class="bg-white text-black p-6 rounded shadow-lg w-full font-mono text-xs">
-                <div class="text-center mb-3">
-                    <h1 class="text-lg font-black uppercase">Los De Camarón</h1>
-                    <p class="text-[10px] leading-tight">Paseo de la Cruz #123</p>
-                    <p class="text-[10px] leading-tight">Aguascalientes, Ags.</p>
-                    <p class="text-[10px] leading-tight">Tel: 449-123-4567</p>
-                </div>
-        
-                <div class="border-b border-black border-dashed mb-2 pb-2 text-center">
-                    <p class="font-bold text-sm uppercase">ORDEN #{{ c.id }}</p>
-                    <p class="text-[11px] font-bold">{{ c.tipoPedido }} {{ c.numeroMesa ? '- ' + c.numeroMesa : '' }}</p>
-                    <p class="text-[10px]">{{ c.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</p>
-                </div>
-                
-                <div class="mb-3 space-y-1">
-                    @for (detalle of c.detalles; track detalle.id) {
-                        <div class="flex justify-between items-start text-[11px]">
-                            <span class="pr-2">{{ detalle.cantidad }}x {{ detalle.platilloNombre }}</span>
-                            <span class="font-bold">${{ detalle.subtotal | number:'1.2-2' }}</span>
-                        </div>
-                    }
-                </div>
-        
-                <div class="border-t border-black border-dashed pt-2 mt-2">
-                    <div class="flex justify-between font-black text-sm">
-                        <span>TOTAL:</span>
-                        <span>${{ c.total | number:'1.2-2' }}</span>
-                    </div>
-                </div>
-        
-                <div class="text-center text-[10px] mt-6">
-                    <p>¡Gracias por su preferencia!</p>
-                    <p>Vuelva pronto</p>
-                </div>
-            </div>
-            
-            <!-- Acciones -->
-            <div class="mt-8 flex gap-4 w-full">
-                <button (click)="cerrarModalImpresion()" class="flex-1 py-3 rounded-lg border border-gray-700 text-sm font-semibold hover:bg-gray-800 transition-colors text-gray-300">
-                    Cancelar
-                </button>
-                <button (click)="ejecutarImpresion()" class="flex-1 py-3 flex justify-center items-center gap-2 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all">
-                    <mat-icon class="text-base">print</mat-icon>
-                    Imprimir Ticket
-                </button>
-            </div>
-        </div>
-    </div>
-}
-
-<!-- ========================================== -->
-<!-- MODAL PREVIEW: CORTE DE CAJA               -->
-<!-- ========================================== -->
-@if (ticketGenerado(); as t) {
-    <div class="fixed inset-0 z-100 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-fade-in print:hidden">
-        <div class="bg-[#1a1a1a] p-8 rounded-2xl flex flex-col items-center border border-gray-800 shadow-2xl animate-slide-up max-w-sm w-full">
-            <div class="w-full flex justify-between items-center mb-6">
-                <h3 class="text-white font-bold text-lg">Vista Previa de Corte</h3>
-                <button (click)="cerrarModalImpresion()" class="text-gray-500 hover:text-white transition-colors">
-                    <mat-icon>close</mat-icon>
-                </button>
-            </div>
-            
-            <!-- Contenedor del Ticket (Estilo papel) -->
-            <div class="bg-white text-black p-6 rounded shadow-lg w-full font-mono text-xs">
-                <div class="text-center font-bold mb-2">
-                    <h1 class="text-lg">LOS DE CAMARON</h1>
-                    <p>CORTE DE CAJA #{{ t.turnoId }}</p>
-                </div>
-                <div class="border-b border-black border-dashed mb-2 pb-2">
-                    <p>Apertura: {{ t.fechaApertura | date:'short' }}</p>
-                    <p>Cierre: {{ t.fechaCierre | date:'short' }}</p>
-                    <p>Cajero: {{ t.nombreCajero }}</p>
-                    <p>Supervisor: {{ t.nombreSupervisor }}</p>
-                </div>
-                
-                <div class="border-b border-black border-dashed mb-2 pb-2 space-y-1">
-                    <div class="flex justify-between"><p>Fondo Inicial:</p><p>${{ t.fondoInicial | number:'1.2-2' }}</p></div>
-                    <div class="flex justify-between"><p>Ventas Efectivo (+):</p><p>${{ t.totalVentasEfectivo | number:'1.2-2' }}</p></div>
-                    <div class="flex justify-between"><p>Ventas Tarjeta:</p><p>${{ t.totalVentasTarjeta | number:'1.2-2' }}</p></div>
-                    <div class="flex justify-between"><p>Pago Prov. (-):</p><p>${{ t.totalPagosProveedores | number:'1.2-2' }}</p></div>
-                </div>
-        
-                <div class="border-b border-black mb-2 pb-2 space-y-1">
-                    <div class="flex justify-between font-bold"><p>Sistema Tenía:</p><p>${{ t.efectivoCalculadoSistema | number:'1.2-2' }}</p></div>
-                    <div class="flex justify-between font-bold"><p>Físico Reportado:</p><p>${{ t.efectivoFisicoReportado | number:'1.2-2' }}</p></div>
-                </div>
-        
-                <div class="text-center font-bold text-sm mb-4">
-                    <p>DIFERENCIA</p>
-                    <p class="text-base">{{ t.diferencia === 0 ? '¡CAJA CUADRADA!' : (t.diferencia < 0 ? 'FALTANTE: $' + (t.diferencia * -1) : 'SOBRANTE: $' + t.diferencia) }}</p>
-                </div>
-                <div class="text-center text-[10px] mt-8 pt-4 border-t border-black">
-                    <p>_______________________</p>
-                    <p>Firma Supervisor</p>
-                </div>
-            </div>
-            
-            <!-- Acciones -->
-            <div class="mt-8 flex gap-4 w-full">
-                <button (click)="cerrarModalImpresion()" class="flex-1 py-3 rounded-lg border border-gray-700 text-sm font-semibold hover:bg-gray-800 transition-colors text-gray-300">
-                    Cerrar
-                </button>
-                <button (click)="ejecutarImpresion()" class="flex-1 py-3 flex justify-center items-center gap-2 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all">
-                    <mat-icon class="text-base">print</mat-icon>
-                    Imprimir Corte
-                </button>
-            </div>
-        </div>
-    </div>
-}
-
 <!-- ========================================== -->
 <!-- MODAL DE PREVIEW: TICKET DE COMANDA        -->
 <!-- ========================================== -->
 @if (comandaParaImprimir(); as c) {
-    <div class="fixed inset-0 z-index:100 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-fade-in print:hidden">
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-fade-in print:hidden">
         <div class="bg-[#1e293b] p-6 md:p-8 rounded-2xl flex flex-col items-center border border-[#334155] shadow-2xl animate-slide-up max-w-sm w-full">
             
             <div class="w-full flex justify-between items-center mb-6">
@@ -493,30 +379,60 @@
             </div>
 
             <!-- Previsualización Visual -->
-            <div class="bg-white text-black p-6 rounded shadow-lg w-full font-mono text-sm relative">
-                <div class="absolute top-0 left-0 right-0 h-2 bg-white" style="background-image: radial-gradient(#1e293b 4px, transparent 4px); background-size: 10px 10px; background-position: -5px -5px;"></div>
-                
-                <div class="text-center mb-4 mt-2">
-                    <h1 class="text-xl font-black uppercase">Los De Camarón</h1>
-                    <p class="text-xs text-gray-600">Paseo de la Cruz #123</p>
-                    <p class="text-xs text-gray-600 mb-2">Aguascalientes, Ags.</p>
+            <div class="bg-white text-black p-6 rounded shadow-lg w-full font-mono text-xs relative">
+                <div class="text-center mb-3">
+                    <h1 class="text-lg font-black uppercase">Los De Camarón</h1>
+                    <p class="text-[10px] leading-tight">Av. Héroe de Nacozari Sur 710-A</p>
+                    <p class="text-[10px] leading-tight">Aguascalientes, Ags.</p>
+                    <p class="text-[10px] leading-tight mb-2">Tel: 449-118-8265</p>
                     <p class="font-bold text-sm uppercase">ORDEN #{{ c.id }}</p>
-                    <p class="text-xs font-bold">{{ c.tipoPedido }} {{ c.numeroMesa ? '- ' + c.numeroMesa : '' }}</p>
+                    <p class="text-[11px] font-bold uppercase">{{ c.tipoPedido }}</p>
                     <p class="text-[10px]">{{ c.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</p>
                 </div>
+
+                <!-- Datos específicos según el Tipo de Pedido -->
+                <div class="border-t border-dashed border-black py-2 text-[11px] space-y-0.5 text-left">
+                    @if (c.tipoPedido === 'Local' || c.numeroMesa) {
+                        <p><span class="font-bold">Mesa:</span> {{ c.numeroMesa }}</p>
+                    }
+                    @if (c.tipoPedido === 'Llevar' || c.tipoPedido === 'Para Llevar' || c.nombreClienteLlevar) {
+                        <p><span class="font-bold">Cliente:</span> {{ c.nombreClienteLlevar || c.clienteNombre }}</p>
+                    }
+                    @if (c.tipoPedido === 'Domicilio' || c.tipoPedido === 'Agendado' || c.clienteDireccion) {
+                        <p><span class="font-bold">Cliente:</span> {{ c.clienteNombre || 'Cliente' }}</p>
+                        @if (c.clienteTelefono) {
+                            <p><span class="font-bold">Tel:</span> {{ c.clienteTelefono }}</p>
+                        }
+                        <p><span class="font-bold">Domicilio:</span> {{ c.clienteDireccion || 'Sin dirección registrada' }}</p>
+                        @if (c.clienteReferencias) {
+                            <p><span class="font-bold">Ref:</span> {{ c.clienteReferencias }}</p>
+                        }
+                        @if (c.horaEntrega) {
+                            <p><span class="font-bold">Entrega:</span> {{ c.horaEntrega | date:'dd/MM/yyyy HH:mm' }}</p>
+                        }
+                    }
+                    @if (c.tipoPedido === 'Plataforma' || c.plataformaNombre) {
+                        <p><span class="font-bold">Plataforma:</span> {{ c.plataformaNombre }}</p>
+                    }
+                </div>
                 
-                <div class="mb-4 space-y-1 border-t border-b border-dashed border-gray-400 py-3">
+                <div class="mb-3 space-y-1 border-t border-b border-dashed border-black py-2">
                     @for (detalle of c.detalles; track detalle.id) {
-                        <div class="flex justify-between items-start text-xs">
+                        <div class="flex justify-between items-start text-[11px]">
                             <span class="pr-2">{{ detalle.cantidad }}x {{ detalle.platilloNombre }}</span>
                             <span class="font-bold">${{ detalle.subtotal | number:'1.2-2' }}</span>
                         </div>
                     }
                 </div>
 
-                <div class="flex justify-between font-black text-base pt-1">
+                <div class="flex justify-between font-black text-sm pt-1">
                     <span>TOTAL:</span>
                     <span>${{ c.total | number:'1.2-2' }}</span>
+                </div>
+
+                <div class="text-center text-[10px] mt-5">
+                    <p>¡Gracias por su preferencia!</p>
+                    <p>Vuelva pronto</p>
                 </div>
             </div>
 
@@ -525,7 +441,7 @@
                     Cancelar
                 </button>
                 <button (click)="ejecutarImpresion()" class="flex-1 py-3 flex justify-center items-center gap-2 rounded-xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-500 shadow-lg shadow-blue-600/20 transition-all">
-                    <mat-icon class="text-[20px]">print</mat-icon> Imprimir
+                    <mat-icon class="text-[20px]">print</mat-icon> Imprimir Ticket
                 </button>
             </div>
         </div>
@@ -536,7 +452,7 @@
 <!-- MODAL DE PREVIEW: TICKET CORTE DE CAJA     -->
 <!-- ========================================== -->
 @if (ticketGenerado(); as t) {
-    <div class="fixed inset-0 z-index:100 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-fade-in print:hidden h-full">
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-fade-in print:hidden h-full">
         <div class="bg-[#1e293b] p-6 md:p-8 rounded-2xl flex flex-col items-center border border-[#334155] shadow-2xl animate-slide-up max-w-sm w-full max-h-[90vh] overflow-hidden">
             
             <div class="w-full flex justify-between items-center mb-6 shrink-0">
@@ -555,7 +471,9 @@
                 <div class="border-b border-gray-400 border-dashed mb-3 pb-3 text-xs space-y-1">
                     <p>Apertura: {{ t.fechaApertura | date:'short' }}</p>
                     <p>Cierre: {{ t.fechaCierre | date:'short' }}</p>
-                    <p>Cajero: {{ t.nombreCajero }}</p>
+                    @if (t.nombreCajero) {
+                        <p>Cajero: {{ t.nombreCajero }}</p>
+                    }
                     <p>Supervisor: {{ t.nombreSupervisor }}</p>
                 </div>
                 
@@ -604,7 +522,7 @@
 
 <!-- ========================================== -->
 <!-- TICKET TÉRMICO (Controlado por caja.css)   -->
-<!-- Se mantienen al final para la impresión nativa -->
+<!-- Unificado en un solo contenedor de impresión -->
 <!-- ========================================== -->
 <div class="ticket-impresion font-mono text-xs">
     @if (ticketGenerado(); as t) {
@@ -615,7 +533,9 @@
         <div class="border-b border-black border-dashed mb-2 pb-2">
             <p>Apertura: {{ t.fechaApertura | date:'short' }}</p>
             <p>Cierre: {{ t.fechaCierre | date:'short' }}</p>
-            <p>Cajero: {{ t.nombreCajero }}</p>
+            @if (t.nombreCajero) {
+                <p>Cajero: {{ t.nombreCajero }}</p>
+            }
             <p>Supervisor: {{ t.nombreSupervisor }}</p>
         </div>
         
@@ -654,24 +574,45 @@
             <p>Firma Supervisor</p>
         </div>
     }
-</div>
 
-<div class="ticket-impresion font-mono text-xs">
     @if (comandaParaImprimir(); as c) {
         <div class="text-center mb-3">
             <h1 class="text-lg font-black uppercase">Los De Camarón</h1>
-            <p class="text-[10px] leading-tight">Av. Heroe de Nacozari Sur 710-A</p>
+            <p class="text-[10px] leading-tight">Av. Héroe de Nacozari Sur 710-A</p>
             <p class="text-[10px] leading-tight">Aguascalientes, Ags.</p>
             <p class="text-[10px] leading-tight">Tel: 449-118-8265</p>
         </div>
 
         <div class="border-b border-black border-dashed mb-2 pb-2 text-center">
             <p class="font-bold text-sm uppercase">ORDEN #{{ c.id }}</p>
-            <p class="text-gray-400 text-sm flex items-center gap-1">
-                <mat-icon class="text-[16px]">person</mat-icon> 
-                {{ c.numeroMesa || c.clienteNombre || c.nombreClienteLlevar || c.clienteDireccion || 'Cliente' }}
-            </p>
+            <p class="text-[11px] font-bold uppercase">{{ c.tipoPedido }}</p>
             <p class="text-[10px]">{{ c.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</p>
+        </div>
+
+        <!-- Datos de Entrega / Mesa / Cliente en Ticket Térmico -->
+        <div class="border-b border-black border-dashed mb-2 pb-2 text-[11px] text-left space-y-0.5">
+            @if (c.tipoPedido === 'Local' || c.numeroMesa) {
+                <p><span class="font-bold">Mesa:</span> {{ c.numeroMesa }}</p>
+            }
+            @if (c.tipoPedido === 'Llevar' || c.tipoPedido === 'Para Llevar' || c.nombreClienteLlevar) {
+                <p><span class="font-bold">Cliente:</span> {{ c.nombreClienteLlevar || c.clienteNombre }}</p>
+            }
+            @if (c.tipoPedido === 'Domicilio' || c.tipoPedido === 'Agendado' || c.clienteDireccion) {
+                <p><span class="font-bold">Cliente:</span> {{ c.clienteNombre || 'Cliente' }}</p>
+                @if (c.clienteTelefono) {
+                    <p><span class="font-bold">Tel:</span> {{ c.clienteTelefono }}</p>
+                }
+                <p><span class="font-bold">Domicilio:</span> {{ c.clienteDireccion || 'Sin dirección' }}</p>
+                @if (c.clienteReferencias) {
+                    <p><span class="font-bold">Ref:</span> {{ c.clienteReferencias }}</p>
+                }
+                @if (c.horaEntrega) {
+                    <p><span class="font-bold">Entrega:</span> {{ c.horaEntrega | date:'dd/MM/yyyy HH:mm' }}</p>
+                }
+            }
+            @if (c.tipoPedido === 'Plataforma' || c.plataformaNombre) {
+                <p><span class="font-bold">Plataforma:</span> {{ c.plataformaNombre }}</p>
+            }
         </div>
         
         <div class="mb-3 space-y-1">
