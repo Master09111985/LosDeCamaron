@@ -23,11 +23,13 @@ export interface ComandaDto {
   estado: string;
   detalles: ComandaDetalleDto[];
 
-  // --- NUEVOS CAMPOS AGREGADOS ---
+  // --- DATOS DE CLIENTE Y ENTREGA ---
+  clienteId?: number;
   nombreClienteLlevar?: string;
   clienteNombre?: string;
   clienteTelefono?: string;
   clienteDireccion?: string;
+  direccionEntrega?: string;
   clienteReferencias?: string;
 }
 

@@ -52,7 +52,7 @@ export class Caja implements OnInit {
     if (usuarioSession) {
       const userParsed = JSON.parse(usuarioSession);
       if (userParsed && userParsed.id) {
-          return Number(userParsed.id);
+        return Number(userParsed.id);
       }
     }
     
@@ -112,7 +112,7 @@ export class Caja implements OnInit {
     // Barrera para esperar a que el usuario termine de cargarse en memoria
     if (cajeroId === 0) {
       console.warn('ID de cajero es 0. Retrasando verificación...');
-      setTimeout(() => this.verificarTurno(), 300); // Reintenta en 300ms
+      setTimeout(() => this.verificarTurno(), 300);
       return;
     }
 
@@ -133,7 +133,7 @@ export class Caja implements OnInit {
 
           this.turnoActual.set(turnoNormalizado);
           this.cargarComandas();
-          this.modalApertura.set(false); // Ocultamos el modal forzadamente
+          this.modalApertura.set(false);
         } else {
           this.modalApertura.set(true);
         }
@@ -155,9 +155,21 @@ export class Caja implements OnInit {
   cargarComandas(): void {
     this.cargando.set(true);
     this.comandaService.getComandas().subscribe({
-      next: (comandas) => {
-        // Filtramos solo las que ya se entregaron (estatus 'Entregado')
-        this.comandasPorCobrar.set(comandas.filter(c => c.estado === 'Entregado'));
+      next: (comandas: any[]) => {
+        // Filtramos solo las que ya se entregaron y normalizamos posibles variantes del backend C#
+        const entregadas: ComandaDto[] = comandas
+          .filter(c => c.estado === 'Entregado')
+          .map(c => ({
+            ...c,
+            clienteNombre: c.clienteNombre ?? c.ClienteNombre ?? c.cliente?.nombre ?? c.Cliente?.Nombre,
+            clienteTelefono: c.clienteTelefono ?? c.ClienteTelefono ?? c.cliente?.telefono ?? c.Cliente?.Telefono,
+            clienteDireccion: c.clienteDireccion ?? c.ClienteDireccion ?? c.direccionEntrega ?? c.cliente?.direccion ?? c.Cliente?.Direccion,
+            clienteReferencias: c.clienteReferencias ?? c.ClienteReferencias ?? c.cliente?.referencias ?? c.Cliente?.Referencias,
+            nombreClienteLlevar: c.nombreClienteLlevar ?? c.NombreClienteLlevar,
+            plataformaNombre: c.plataformaNombre ?? c.PlataformaNombre ?? c.plataforma?.nombre ?? c.Plataforma?.Nombre
+          }));
+
+        this.comandasPorCobrar.set(entregadas);
         this.cargando.set(false);
       },
       error: () => {
@@ -286,6 +298,11 @@ export class Caja implements OnInit {
   // ==========================================
   // ACCIONES PARA LA IMPRESIÓN MANUAL
   // ==========================================
+  cerrarModalImpresion(): void {
+    this.comandaParaImprimir.set(null);
+    this.ticketGenerado.set(null);
+  }
+
   cerrarModalImpresionComanda(): void {
     this.comandaParaImprimir.set(null);
   }
@@ -301,7 +318,7 @@ export class Caja implements OnInit {
   imprimirTicketComanda(comanda: ComandaDto, event: Event): void {
     event.stopPropagation();
     this.ticketGenerado.set(null); 
-    this.comandaParaImprimir.set(comanda); // Esto abrirá el modal de vista previa de comanda
+    this.comandaParaImprimir.set(comanda); // Abre el modal de vista previa de comanda
   }
 
   procesarCobro(): void {
@@ -389,7 +406,6 @@ export class Caja implements OnInit {
   
     this.cajaService.abrirTurno(payload).subscribe({
       next: (turno: any) => {
-        // Normalizar para evitar que falle el cierre de caja después
         const idTurno = turno?.id ?? turno?.Id ?? turno?.turnoId ?? turno?.TurnoId;
         const turnoNormalizado = { ...turno, id: idTurno };
 
@@ -483,16 +499,11 @@ export class Caja implements OnInit {
       error: (err) => {
         console.error(err);
         
-        // Si el backend responde 401 (Unauthorized)
         if (err.status === 401) {
           this.toastService.showWarning('Credenciales no autorizadas para el corte de caja.');
-        } 
-        // Si el backend responde 400 (Bad Request - Ej. comandas pendientes en cocina)
-        else if (err.status === 400) {
+        } else if (err.status === 400) {
           this.toastService.showWarning(err.error || 'No se puede realizar el corte de caja.');
-        } 
-        // Cualquier otro error
-        else {
+        } else {
           this.toastService.showError('Ocurrió un error inesperado al procesar el corte.');
         }
         
