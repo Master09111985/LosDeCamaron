@@ -57,7 +57,7 @@ export class Comandas implements OnInit {
   guardando = signal<boolean>(false);
 
   // SELECCIÓN DE PLATOS
-  platosDisponibles = signal<number[]>([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]); // Soporta hasta 6 platos a la vez
+  platosDisponibles = signal<number[]>([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
   platoActivo = signal<number>(1);
 
   tiposPedido = [
@@ -72,6 +72,10 @@ export class Comandas implements OnInit {
   totalComanda = computed(() => {
     return this.carrito().reduce((acc, item) => acc + item.subtotal, 0);
   });
+
+  // --- SEÑALES PARA LA IMPRESIÓN DEL TICKET ---
+  datosTicket = signal<any>(null);
+  fechaImpresion = signal<Date>(new Date());
 
   comandaForm: FormGroup = this.fb.group({
     tipoPedido: [1, Validators.required],
@@ -88,17 +92,20 @@ export class Comandas implements OnInit {
     this.escucharCambiosTipoPedido();
   }
 
-  // --- LÓGICA DE PLATOS ---
   seleccionarPlato(numero: number): void {
     this.platoActivo.set(numero);
   }
 
-  // Obtenemos los items del carrito filtrados por el plato actual para mostrarlos ordenados
   getItemsPorPlato(platoNum: number) {
     return this.carrito().filter(item => item.numeroPlato === platoNum);
   }
 
-  // --- LOGICA ORIGINAL DE CATÁLOGOS ---
+  // Helper para el ticket de impresión
+  getItemsParaTicket(platoNum: number): ItemCarrito[] {
+    if (!this.datosTicket()) return [];
+    return this.datosTicket().items.filter((i: ItemCarrito) => i.numeroPlato === platoNum);
+  }
+
   cargarCatalogos(): void {
     this.cargando.set(true);
 
@@ -185,12 +192,10 @@ export class Comandas implements OnInit {
     });
   }
 
-  // --- CARRITO ACTUALIZADO PARA RECIBIR PLATOS ---
   agregarAlCarrito(platillo: Platillo): void {
     const platoActual = this.platoActivo();
     
     this.carrito.update(items => {
-      // Ahora verificamos que sea el mismo platillo Y EN EL MISMO PLATO
       const existe = items.find(i => i.platillo.id === platillo.id && i.notas === '' && i.numeroPlato === platoActual);
       
       if (existe) {
@@ -265,13 +270,33 @@ export class Comandas implements OnInit {
     };
 
     this.comandaService.crearComanda(nuevaComanda).subscribe({
-      next: () => {
-        this.toastService.showSuccess('Comanda enviada a cocina exitosamente');
-        this.carrito.set([]);
-        this.platoActivo.set(1); // Reseteamos al Plato 1
-        this.clienteEncontrado.set(null); 
-        this.comandaForm.reset({ tipoPedido: 1 });
-        this.guardando.set(false);
+      next: (res) => {
+        this.toastService.showSuccess('Comanda generada y lista para cobro');
+        
+        // 1. PREPARAR DATOS PARA EL TICKET
+        this.fechaImpresion.set(new Date());
+        this.datosTicket.set({
+          id: res.comandaId,
+          tipoPedidoLabel: this.tiposPedido.find(t => t.value === tipoPedidoNum)?.label,
+          numeroMesa: formValue.numeroMesa,
+          cliente: formValue.nombreClienteLlevar || this.clienteEncontrado()?.nombre,
+          items: [...this.carrito()],
+          total: this.totalComanda(),
+          platosUnicos: [...new Set(this.carrito().map(i => i.numeroPlato))].sort((a,b)=>a-b)
+        });
+
+        // 2. DISPARAR IMPRESIÓN (Pequeño retraso para que Angular dibuje el DOM oculto del ticket)
+        setTimeout(() => {
+          window.print();
+          
+          // 3. LIMPIAR TODO DESPUÉS DE MANDAR A IMPRIMIR
+          this.carrito.set([]);
+          this.platoActivo.set(1); 
+          this.clienteEncontrado.set(null); 
+          this.comandaForm.reset({ tipoPedido: 1 });
+          this.guardando.set(false);
+          this.datosTicket.set(null);
+        }, 200);
       },
       error: (err) => {
         console.error(err);

@@ -1,0 +1,112 @@
+/* Ocultamos el ticket en la vista normal de la tablet */
+@media screen {
+  #zona-impresion {
+    display: none;
+  }
+}
+
+/* Configuramos la vista exclusiva para la impresora */
+@media print {
+  /* Ocultamos absolutamente todo el layout de Angular */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Solo mostramos la zona de impresión, y la movemos a la esquina superior izquierda */
+  #zona-impresion, #zona-impresion * {
+    visibility: visible;
+  }
+  
+  #zona-impresion {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80mm; /* Ajusta a 58mm si tu impresora térmica es más pequeña */
+    font-family: 'Courier New', Courier, monospace;
+    color: black;
+    font-size: 14px; /* Un poco más grande para mejor lectura en cocina */
+  }
+
+  .ticket-header {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .ticket-header h2 {
+    margin: 3px 0;
+  }
+
+  .titulo-ticket {
+    background-color: black;
+    color: white !important;
+    padding: 4px;
+    margin: 8px 0;
+    font-size: 16px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .tipo-pedido {
+    margin: 5px 0;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .destacado {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 2px 0;
+  }
+
+  .plato-header {
+    font-weight: bold;
+    text-align: center;
+    margin: 8px 0 4px 0;
+    font-size: 15px;
+  }
+
+  .ticket-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .ticket-table td {
+    vertical-align: top;
+    padding: 4px 0;
+    border-bottom: 1px dashed #ccc; /* Línea separadora para no confundir platillos */
+  }
+
+  /* Ahora que no hay precio, la cantidad y descripción tienen más espacio */
+  .cant { 
+    width: 15%; 
+    font-weight: bold; 
+    font-size: 16px;
+  }
+  
+  .desc { 
+    width: 85%; 
+    font-weight: bold;
+  }
+
+  .notas {
+    font-size: 12px;
+    font-style: italic;
+    font-weight: normal;
+    margin-top: 2px;
+  }
+
+  .ticket-footer {
+    margin-top: 15px;
+    text-align: center;
+  }
+
+  .copia-label {
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 5px;
+  }
+
+  .page-break {
+    page-break-after: always;
+  }
+}

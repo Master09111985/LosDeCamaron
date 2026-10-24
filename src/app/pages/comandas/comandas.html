@@ -77,7 +77,7 @@
                     }
 
                     @if (comandaForm.get('clienteId')?.invalid && comandaForm.get('clienteId')?.touched) {
-                        <small class="text-red-500 text-[11px] font-medium">* Por favor busque y confirme un cliente registrado.</small>
+                        <small class="text-red-500 text-[11px] font-medium">Por favor busque y confirme un cliente registrado.</small>
                     }
                 </div>
             }
@@ -181,10 +181,73 @@
                     @if (guardando()) {
                         <mat-icon class="animate-spin">refresh</mat-icon> Procesando...
                     } @else {
-                        <mat-icon>send</mat-icon> Enviar a Cocina
+                        <mat-icon>print</mat-icon> Confirmar e Imprimir
                     }
                 </button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- ========================================== -->
+<!-- ZONA DE IMPRESIÓN INTERNA (COCINA / EMPLATADO) -->
+<!-- ========================================== -->
+@if (datosTicket()) {
+  <div id="zona-impresion">
+    
+    <!-- Iteramos dos veces: 1 para Cocina, 2 para Emplatado -->
+    @for (copia of [1, 2]; track copia) {
+      <div class="ticket-termico">
+        
+        <div class="ticket-header">
+          <h2>FLOW FOOD</h2>
+          <!-- Título Dinámico según la copia -->
+          <h2 class="titulo-ticket">
+            @if (copia === 1) { TICKET DE COCINA }
+            @if (copia === 2) { TICKET DE EMPLATADO }
+          </h2>
+          
+          <p>Comanda #{{ datosTicket().id }}</p>
+          <p>{{ fechaImpresion() | date:'dd/MM/yyyy HH:mm' }}</p>
+          <h3 class="tipo-pedido">{{ datosTicket().tipoPedidoLabel | uppercase }}</h3>
+          
+          @if (datosTicket().numeroMesa) { <p class="destacado">Mesa: {{ datosTicket().numeroMesa }}</p> }
+          @if (datosTicket().cliente) { <p class="destacado">Cliente: {{ datosTicket().cliente }}</p> }
+          <p>--------------------------------</p>
+        </div>
+
+        <!-- Cuerpo del ticket: Solo platos, nombres y notas (SIN PRECIOS) -->
+        <div class="ticket-body">
+          @for (plato of datosTicket().platosUnicos; track plato) {
+            <div class="plato-header">--- PLATO {{ plato }} ---</div>
+            
+            <table class="ticket-table">
+              @for (item of getItemsParaTicket(plato); track item.platillo.id) {
+                <tr>
+                  <td class="cant">{{ item.cantidad }}x</td>
+                  <td class="desc">
+                    {{ item.platillo.nombre }}
+                    @if (item.notas) { <div class="notas">* {{ item.notas }}</div> }
+                  </td>
+                </tr>
+              }
+            </table>
+          }
+        </div>
+
+        <div class="ticket-footer">
+          <p>--------------------------------</p>
+          <p class="copia-label">
+            @if (copia === 1) { -- FIN TICKET COCINA -- }
+            @if (copia === 2) { -- FIN TICKET EMPLATADO -- }
+          </p>
+        </div>
+        
+      </div>
+      
+      <!-- Salto de página para que la impresora separe los tickets -->
+      <div class="page-break"></div>
+    }
+
+  </div>
+}
