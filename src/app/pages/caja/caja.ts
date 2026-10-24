@@ -41,6 +41,10 @@ export class Caja implements OnInit {
   cargando = signal<boolean>(false);
   procesando = signal<boolean>(false);
 
+  // --- SEÑALES PARA EL TICKET FINAL DEL CLIENTE ---
+  datosTicketCliente = signal<any>(null);
+  fechaImpresionCliente = signal<Date>(new Date());
+
   // Estados de Caja (Turnos)
   get usuarioIdActual(): number {
     const usuario = this.authService.usuarioActual();
@@ -156,7 +160,7 @@ export class Caja implements OnInit {
     this.cargando.set(true);
     this.comandaService.getComandas().subscribe({
       next: (comandas: any[]) => {
-        // Filtramos solo las que ya se entregaron y normalizamos posibles variantes del backend C#
+        // Filtramos las que vienen directamente para cobro (ahora estatus 2 pasa directo de comandas o de kds)
         const entregadas: ComandaDto[] = comandas
           .filter(c => c.estado === 'Entregado')
           .map(c => ({
@@ -205,7 +209,6 @@ export class Caja implements OnInit {
     });
   });
 
-  // Helper para buscar el ID real en BD de Efectivo, Tarjeta o Transferencia
   private obtenerIdMetodoPorNombre(palabraClave: string): number | null {
     const metodo = this.metodosPagoDb().find(m => m.nombre.toLowerCase().includes(palabraClave.toLowerCase()));
     return metodo ? metodo.id : null;
@@ -249,6 +252,19 @@ export class Caja implements OnInit {
       return true;
     }
   });
+
+  generarTextoMetodoPago(): string {
+    if (!this.esCobroMixto()) {
+      const mp = this.metodosPagoDb().find(m => m.id === this.metodoPagoSeleccionado());
+      return mp ? mp.nombre : 'No especificado';
+    } else {
+      const comb = this.combinacionMixta();
+      if (comb === 'tarjeta-efectivo') return `Tarjeta: $${this.montoMixto1()} / Efectivo: $${this.montoMixto2()}`;
+      if (comb === 'tarjeta-transferencia') return `Tarjeta: $${this.montoMixto1()} / Transf: $${this.montoMixto2()}`;
+      if (comb === 'transferencia-efectivo') return `Transf: $${this.montoMixto1()} / Efectivo: $${this.montoMixto2()}`;
+      return 'Pago Mixto';
+    }
+  }
 
   // ==========================================
   // ACCIONES DE COBRO
@@ -372,9 +388,32 @@ export class Caja implements OnInit {
     this.cajaService.cobrarComanda(payload).subscribe({
       next: () => {
         this.toastService.showSuccess(`¡Orden #${comanda.id} cobrada exitosamente!`);
-        this.comandasPorCobrar.update(lista => lista.filter(c => c.id !== comanda.id));
-        this.comandaSeleccionada.set(null);
-        this.procesando.set(false);
+        
+        // 1. PREPARAR TICKET DEL CLIENTE ANTES DE LIMPIAR
+        this.fechaImpresionCliente.set(new Date());
+        this.datosTicketCliente.set({
+          id: comanda.id,
+          tipoPedidoLabel: comanda.tipoPedido,
+          numeroMesa: comanda.numeroMesa,
+          cliente: comanda.clienteNombre || comanda.nombreClienteLlevar,
+          detalles: comanda.detalles, 
+          subtotal: comanda.subtotal,
+          total: comanda.total,
+          metodoPago: this.generarTextoMetodoPago(),
+          efectivoRecibido: this.esEfectivo() ? this.efectivoRecibido() : null,
+          cambio: this.esEfectivo() ? this.cambio() : null
+        });
+
+        // 2. DISPARAR IMPRESIÓN (Pequeño retraso para que Angular dibuje el DOM)
+        setTimeout(() => {
+          window.print();
+
+          // 3. LIMPIEZA DESPUÉS DEL TICKET
+          this.comandasPorCobrar.update(lista => lista.filter(c => c.id !== comanda.id));
+          this.comandaSeleccionada.set(null);
+          this.datosTicketCliente.set(null);
+          this.procesando.set(false);
+        }, 200);
       },
       error: (err) => {
         console.error(err);

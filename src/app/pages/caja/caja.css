@@ -1,26 +1,31 @@
-/* Ocultamos el ticket en la pantalla normal */
-.ticket-impresion {
+/* Ocultamos la zona de impresión en la vista normal del cajero */
+@media screen {
+  .ticket-impresion {
     display: none;
+  }
 }
 
-/* Reglas exclusivas para cuando se abre la ventana de imprimir */
+/* Configuramos la vista exclusiva para la impresora */
 @media print {
-    /* Forzamos el tamaño del papel a 58mm para impresoras térmicas */
-    @page {
-        margin: 0;
-        size: 58mm auto;
-    }
-
-    /* Mostramos el ticket, lo posicionamos arriba a la izquierda y con fondo blanco */
-    .ticket-impresion {
-        display: block !important;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 58mm;
-        background-color: white;
-        color: black;
-        margin: 0;
-        padding: 8px;
-    }
+  /* Ocultamos todo el layout de Angular, modales y botones gracias a print:hidden de Tailwind */
+  
+  /* Aseguramos que solo el contenedor de impresión sea visible */
+  .ticket-impresion, .ticket-impresion * {
+    visibility: visible;
+  }
+  
+  .ticket-impresion {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80mm; /* 80mm o 58mm dependiendo de tu impresora térmica */
+    padding: 0;
+    margin: 0;
+    color: black; /* Forzamos color negro para impresión térmica */
+  }
+  
+  /* Para impresoras térmicas, eliminamos márgenes de página del navegador */
+  @page {
+    margin: 0;
+  }
 }
