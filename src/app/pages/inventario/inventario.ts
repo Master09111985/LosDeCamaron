@@ -88,19 +88,19 @@ export class Inventarios implements OnInit {
   inventarioForm: FormGroup = this.fb.group({
     almacenId: ['', Validators.required],
     productoId: ['', Validators.required],
-    cantidad: ['', [Validators.required, Validators.min(0.01)]]
+    cantidad: [null, [Validators.required, Validators.min(0.01)]]
   });
 
   trasladoForm: FormGroup = this.fb.group({
     almacenDestinoId: ['', Validators.required],
-    cantidad: ['', [Validators.required, Validators.min(0.01)]]
+    cantidad: [null, [Validators.required, Validators.min(0.01)]]
   });
 
   bajaForm: FormGroup = this.fb.group({
     almacenId: ['', Validators.required],
     productoId: ['', Validators.required],
     motivoBajaId: ['', Validators.required],
-    cantidad: ['', [Validators.required, Validators.min(0.01)]],
+    cantidad: [null, [Validators.required, Validators.min(0.01)]],
     comentarios: ['', Validators.maxLength(200)]
   });
 
@@ -155,12 +155,15 @@ export class Inventarios implements OnInit {
 
   abrirModalTraslado(inventario: Inventario): void {
     this.inventarioATrasladar.set(inventario);
-    // Reseteamos el formulario y ponemos el maximo permitido
-    this.trasladoForm.reset();
+    this.trasladoForm.reset(); // Limpia los valores previos
+    
+    // CAMBIO AQUI: Limpiamos explicitly el campo y luego aplicamos validadores
+    this.trasladoForm.get('cantidad')?.setValue(null); 
+    
     this.trasladoForm.get('cantidad')?.setValidators([
       Validators.required,
       Validators.min(0.01),
-      Validators.max(inventario.cantidad) // No puede trasladar mas de lo que tiene
+      Validators.max(inventario.cantidad)
     ]);
     this.trasladoForm.get('cantidad')?.updateValueAndValidity();
 
