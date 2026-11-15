@@ -16,7 +16,7 @@ import { Plataforma } from './pages/plataforma/plataforma';
 import { MetodoPago } from './pages/metodo-pago/metodo-pago';
 import { Platillos } from './pages/platillos/platillos';
 import { Comandas } from './pages/comandas/comandas';
-import { Cocina } from './pages/cocina/cocina';
+// import { Cocina } from './pages/cocina/cocina';
 import { Usuarios } from './pages/usuarios/usuarios';
 import { Roles } from './pages/roles/roles';
 import { Permisos } from './pages/permisos/permisos';
@@ -60,7 +60,7 @@ export const routes: Routes = [
       { path: 'plataformas/caja', component: Caja, data: { permiso: 'Caja' } },
       { path: 'plataformas/comandas', component: Comandas, data: { permiso: 'Menu' } },
       { path: 'plataformas/menu', component: Comandas, data: { permiso: 'Menu' } },
-      { path: 'plataformas/cocina', component: Cocina, data: { permiso: 'Cocina' } },
+      // { path: 'plataformas/cocina', component: Cocina, data: { permiso: 'Cocina' } },
 
       // Reportes
       { path: 'reportes/dashboard', component: Home, data: { permiso: 'Dashboard' } },
