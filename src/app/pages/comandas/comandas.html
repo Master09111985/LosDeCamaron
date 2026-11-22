@@ -1,29 +1,29 @@
 <!-- Contenedor Principal -->
 <!-- En vertical: altura automática para permitir scroll. En horizontal (lg): altura fija a la pantalla -->
-<div class="flex flex-col lg:flex-row h-auto lg:h-[calc(100vh-5rem)] min-h-[calc(100vh-5rem)] p-4 gap-4 bg-[#0f172a]">
+    <div class="flex flex-col lg:flex-row h-auto lg:h-[calc(100vh-5rem)] min-h-[calc(100vh-5rem)] p-4 gap-4 bg-[#0f172a]">
 
-    <!-- LADO IZQUIERDO: Tarjetas de Platillos -->
-    <!-- En vertical: alto de 65vh. En horizontal (lg): flex-1 (toma el espacio sobrante) y alto total -->
-    <div class="w-full lg:flex-1 h-[65vh] lg:h-full flex flex-col bg-[#1e293b] rounded-xl shadow-lg border border-[#334155] overflow-hidden shrink-0">
-        <div class="p-4 border-b border-[#334155] bg-[#0f172a] shrink-0">
-            <h2 class="text-xl font-bold text-white">Menú</h2>
-            <p class="text-xs text-gray-400">Toca las tarjetas para agregar a la comanda</p>
-        </div>
+        <!-- LADO IZQUIERDO: Tarjetas de Platillos -->
+        <!-- En vertical: alto de 65vh. En horizontal (lg): flex-1 (toma el espacio sobrante) y alto total -->
+        <div class="w-full lg:flex-1 h-[65vh] lg:h-full flex flex-col bg-[#1e293b] rounded-xl shadow-lg border border-[#334155] overflow-hidden shrink-0">
+            <div class="p-4 border-b border-[#334155] bg-[#0f172a] shrink-0">
+                <h2 class="text-xl font-bold text-white">Menú</h2>
+                <p class="text-xs text-gray-400">Toca las tarjetas para agregar a la comanda</p>
+            </div>
 
-        <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
-            <!-- Grid dinámico: 2 col en móvil, 4 en tablet vertical, 2 en tablet horizontal, 3 o 4 en PC -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
-                @for (platillo of menuPlatillos(); track platillo.id) {
-                    <app-platillo-card [platillo]="platillo" (seleccion)="agregarAlCarrito(platillo)"/> 
-                }
+            <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                <!-- Grid dinámico: 2 col en móvil, 4 en tablet vertical, 2 en tablet horizontal, 3 o 4 en PC -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+                    @for (platillo of menuPlatillos(); track platillo.id) {
+                        <app-platillo-card [platillo]="platillo" (seleccion)="agregarAlCarrito(platillo)"/> 
+                    }
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- LADO DERECHO: Formulario y Detalle -->
-    <!-- En vertical: alto de 75vh. En horizontal (lg): ancho fijo de 400px y alto total -->
-    <div class="w-full lg:w-[400px] xl:w-[450px] h-[75vh] lg:h-full flex flex-col bg-[#1e293b] rounded-xl shadow-lg border border-[#334155] overflow-hidden shrink-0">
-        
+        <!-- LADO DERECHO: Formulario y Detalle -->
+        <!-- En vertical: alto de 75vh. En horizontal (lg): ancho fijo de 400px y alto total -->
+        <div class="w-full lg:w-[400px] xl:w-[450px] max-h-[85vh] lg:max-h-[calc(100vh-2rem)] lg:self-start flex flex-col bg-[#1e293b] rounded-xl shadow-lg border border-[#334155] overflow-hidden shrink-0">
+            
         <!-- Formulario de Datos de Comanda -->
         <form [formGroup]="comandaForm" class="p-4 border-b border-[#334155] bg-[#0f172a] flex flex-col gap-3 shrink-0">
             <h2 class="text-lg font-bold text-blue-400">Datos de la comanda</h2>
@@ -52,13 +52,13 @@
             }
 
             @if (comandaForm.get('tipoPedido')?.value === 3 || comandaForm.get('tipoPedido')?.value === '3' || 
-                 comandaForm.get('tipoPedido')?.value === 4 || comandaForm.get('tipoPedido')?.value === '4') {
+                comandaForm.get('tipoPedido')?.value === 4 || comandaForm.get('tipoPedido')?.value === '4') {
                 <div class="flex flex-col gap-2 animate-fade-in mt-1">
                     <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Buscar Cliente (Teléfono) <span class="text-red-500">*</span></label>
                     <div class="flex gap-2">
                         <input type="text" formControlName="telefonoBusqueda" placeholder="Ej. 4491234567" 
-                               class="w-full bg-[#1e293b] border border-[#334155] rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500"
-                               (keyup.enter)="buscarCliente()">
+                            class="w-full bg-[#1e293b] border border-[#334155] rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500"
+                            (keyup.enter)="buscarCliente()">
                         <button type="button" (click)="buscarCliente()" [disabled]="buscandoCliente()" 
                                 class="bg-blue-600 hover:bg-blue-500 text-white px-3 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50">
                             @if (buscandoCliente()) {
@@ -130,9 +130,9 @@
             </div>
 
             <!-- Lista de Productos Agrupados -->
-            <div class="flex-1 overflow-y-auto p-3 flex flex-col gap-3 custom-scrollbar min-h-0">
+            <div class="flex-1 overflow-y-auto p-3 flex flex-col gap-3 custom-scrollbar min-h-[220px]">
                 @if (carrito().length === 0) {
-                    <div class="h-full flex flex-col items-center justify-center text-gray-500 opacity-60">
+                    <div class="py-10 flex flex-col items-center justify-center text-gray-500 opacity-60">
                         <mat-icon class="text-4xl mb-2">receipt_long</mat-icon>
                         <span class="text-sm font-medium">Comanda vacía</span>
                     </div>
@@ -163,7 +163,7 @@
                                                 </div>
                                                 
                                                 <!-- Notas del Platillo -->
-                                                <input type="text" [value]="item.notas" (input)="actualizarNotas(carrito().indexOf(item), $event)" class="w-full bg-transparent border-b border-[#334155] text-[11px] text-gray-300 placeholder-gray-600 p-1 outline-none focus:border-blue-500 transition-colors" placeholder="Notas (Ej. Sin cebolla)">
+                                                <input type="text" [value]="item.notas" (input)="actualizarNotas(carrito().indexOf(item), $event)" class="w-full bg-transparent border-b border-[#334155] text-[11px] text-gray-300 placeholder-gray-600 p-1 outline-none focus:border-blue-500 transition-colors" placeholder="Sin Notas">
                                             </div>
                                         }
                                     </div>
