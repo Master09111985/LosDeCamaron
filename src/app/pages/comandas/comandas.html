@@ -22,175 +22,175 @@
 
         <!-- LADO DERECHO: Formulario y Detalle -->
         <!-- En vertical: alto de 75vh. En horizontal (lg): ancho fijo de 400px y alto total -->
-        <div class="w-full lg:w-[400px] xl:w-[450px] max-h-[85vh] lg:max-h-[calc(100vh-2rem)] lg:self-start flex flex-col bg-[#1e293b] rounded-xl shadow-lg border border-[#334155] overflow-hidden shrink-0">
-            
-        <!-- Formulario de Datos de Comanda -->
-        <form [formGroup]="comandaForm" class="p-4 border-b border-[#334155] bg-[#0f172a] flex flex-col gap-3 shrink-0">
-            <h2 class="text-lg font-bold text-blue-400">Datos de la comanda</h2>
-            
+        <div class="w-full lg:w-[400px] xl:w-[450px] max-h-[85dvh] lg:max-h-[calc(100dvh-2rem)] lg:self-start flex flex-col bg-[#1e293b] rounded-xl shadow-lg border border-[#334155] overflow-y-auto custom-scrollbar shrink-0">
+        
+    <!-- Formulario de Datos de Comanda -->
+    <form [formGroup]="comandaForm" class="p-4 border-b border-[#334155] bg-[#0f172a] flex flex-col gap-3 shrink-0">
+        <h2 class="text-lg font-bold text-blue-400">Datos de la comanda</h2>
+        
+        <div class="flex flex-col gap-1">
+            <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Tipo de Pedido</label>
+            <select formControlName="tipoPedido" class="w-full bg-[#1e293b] border border-[#334155] rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500">
+                @for (tipo of tiposPedido; track tipo.value) {
+                    <option [value]="tipo.value">{{ tipo.label }}</option>
+                }
+            </select>
+        </div>
+
+        @if (comandaForm.get('tipoPedido')?.value === 1 || comandaForm.get('tipoPedido')?.value === '1') {
             <div class="flex flex-col gap-1">
-                <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Tipo de Pedido</label>
-                <select formControlName="tipoPedido" class="w-full bg-[#1e293b] border border-[#334155] rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500">
-                    @for (tipo of tiposPedido; track tipo.value) {
-                        <option [value]="tipo.value">{{ tipo.label }}</option>
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Numero de Mesa <span class="text-red-500">*</span></label>
+                <input type="text" formControlName="numeroMesa" placeholder="Ej. Mesa 4" class="w-full bg-[#1e293b] border border-[#334155] rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500">
+            </div>
+        }
+
+        @if (comandaForm.get('tipoPedido')?.value === 2 || comandaForm.get('tipoPedido')?.value === '2') {
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Nombre Cliente <span class="text-red-500">*</span></label>
+                <input type="text" formControlName="nombreClienteLlevar" placeholder="Ej. Juan Pérez" class="w-full bg-[#1e293b] border border-[#334155] rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500">
+            </div>
+        }
+
+        @if (comandaForm.get('tipoPedido')?.value === 3 || comandaForm.get('tipoPedido')?.value === '3' || 
+             comandaForm.get('tipoPedido')?.value === 4 || comandaForm.get('tipoPedido')?.value === '4') {
+            <div class="flex flex-col gap-2 animate-fade-in mt-1">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Buscar Cliente (Teléfono) <span class="text-red-500">*</span></label>
+                <div class="flex gap-2">
+                    <input type="text" formControlName="telefonoBusqueda" placeholder="Ej. 4491234567" 
+                           class="w-full bg-[#1e293b] border border-[#334155] rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500"
+                           (keyup.enter)="buscarCliente()">
+                    <button type="button" (click)="buscarCliente()" [disabled]="buscandoCliente()" 
+                            class="bg-blue-600 hover:bg-blue-500 text-white px-3 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50">
+                        @if (buscandoCliente()) {
+                            <mat-icon class="animate-spin text-sm">refresh</mat-icon>
+                        } @else {
+                            <mat-icon class="text-sm">search</mat-icon>
+                        }
+                    </button>
+                </div>
+
+                @if (clienteEncontrado()) {
+                    <div class="bg-emerald-500/10 border border-emerald-500/20 p-2.5 rounded-lg flex flex-col gap-0.5">
+                        <span class="text-emerald-400 font-bold text-sm leading-tight flex items-center gap-1">
+                            <mat-icon class="text-[16px]">check_circle</mat-icon> {{ clienteEncontrado()!.nombre }}
+                        </span>
+                        <span class="text-gray-400 text-xs flex items-start gap-1">
+                            <mat-icon class="text-[14px] mt-0.5">location_on</mat-icon> {{ clienteEncontrado()!.direccion }}
+                        </span>
+                    </div>
+                }
+
+                @if (comandaForm.get('clienteId')?.invalid && comandaForm.get('clienteId')?.touched) {
+                    <small class="text-red-500 text-[11px] font-medium">Por favor busque y confirme un cliente registrado.</small>
+                }
+            </div>
+        }
+
+        @if (comandaForm.get('tipoPedido')?.value === 4 || comandaForm.get('tipoPedido')?.value === '4') {
+            <div class="flex flex-col gap-1 mt-2">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Fecha y Hora de Entrega <span class="text-red-500">*</span></label>
+                <input type="datetime-local" formControlName="fechaHoraAgendada" class="w-full bg-[#1e293b] border border-[#334155] rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500" [class.border-red-500]="comandaForm.get('fechaHoraAgendada')?.invalid && comandaForm.get('fechaHoraAgendada')?.touched">
+            </div>
+        }
+
+        @if (comandaForm.get('tipoPedido')?.value === 5 || comandaForm.get('tipoPedido')?.value === '5') {
+            <div class="flex flex-col gap-1 animate-fade-in mt-1">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Plataforma Delivery <span class="text-red-500">*</span></label>
+                <select formControlName="plataformaId" 
+                        class="w-full bg-[#1e293b] border border-[#334155] rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500"
+                        [class.border-red-500]="comandaForm.get('plataformaId')?.invalid && comandaForm.get('plataformaId')?.touched">
+                    <option [ngValue]="null" disabled selected>Seleccione la plataforma</option>
+                    @for (plat of plataformas(); track plat.id) {
+                        <option [value]="plat.id">{{ plat.nombre }}</option>
                     }
                 </select>
             </div>
+        }
+    </form>
 
-            @if (comandaForm.get('tipoPedido')?.value === 1 || comandaForm.get('tipoPedido')?.value === '1') {
-                <div class="flex flex-col gap-1">
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Numero de Mesa <span class="text-red-500">*</span></label>
-                    <input type="text" formControlName="numeroMesa" placeholder="Ej. Mesa 4" class="w-full bg-[#1e293b] border border-[#334155] rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500">
-                </div>
-            }
-
-            @if (comandaForm.get('tipoPedido')?.value === 2 || comandaForm.get('tipoPedido')?.value === '2') {
-                <div class="flex flex-col gap-1">
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Nombre Cliente <span class="text-red-500">*</span></label>
-                    <input type="text" formControlName="nombreClienteLlevar" placeholder="Ej. Juan Pérez" class="w-full bg-[#1e293b] border border-[#334155] rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500">
-                </div>
-            }
-
-            @if (comandaForm.get('tipoPedido')?.value === 3 || comandaForm.get('tipoPedido')?.value === '3' || 
-                comandaForm.get('tipoPedido')?.value === 4 || comandaForm.get('tipoPedido')?.value === '4') {
-                <div class="flex flex-col gap-2 animate-fade-in mt-1">
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Buscar Cliente (Teléfono) <span class="text-red-500">*</span></label>
-                    <div class="flex gap-2">
-                        <input type="text" formControlName="telefonoBusqueda" placeholder="Ej. 4491234567" 
-                            class="w-full bg-[#1e293b] border border-[#334155] rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500"
-                            (keyup.enter)="buscarCliente()">
-                        <button type="button" (click)="buscarCliente()" [disabled]="buscandoCliente()" 
-                                class="bg-blue-600 hover:bg-blue-500 text-white px-3 rounded-lg flex items-center justify-center transition-colors disabled:opacity-50">
-                            @if (buscandoCliente()) {
-                                <mat-icon class="animate-spin text-sm">refresh</mat-icon>
-                            } @else {
-                                <mat-icon class="text-sm">search</mat-icon>
-                            }
-                        </button>
-                    </div>
-
-                    @if (clienteEncontrado()) {
-                        <div class="bg-emerald-500/10 border border-emerald-500/20 p-2.5 rounded-lg flex flex-col gap-0.5">
-                            <span class="text-emerald-400 font-bold text-sm leading-tight flex items-center gap-1">
-                                <mat-icon class="text-[16px]">check_circle</mat-icon> {{ clienteEncontrado()!.nombre }}
-                            </span>
-                            <span class="text-gray-400 text-xs flex items-start gap-1">
-                                <mat-icon class="text-[14px] mt-0.5">location_on</mat-icon> {{ clienteEncontrado()!.direccion }}
-                            </span>
-                        </div>
-                    }
-
-                    @if (comandaForm.get('clienteId')?.invalid && comandaForm.get('clienteId')?.touched) {
-                        <small class="text-red-500 text-[11px] font-medium">Por favor busque y confirme un cliente registrado.</small>
-                    }
-                </div>
-            }
-
-            @if (comandaForm.get('tipoPedido')?.value === 4 || comandaForm.get('tipoPedido')?.value === '4') {
-                <div class="flex flex-col gap-1 mt-2">
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Fecha y Hora de Entrega <span class="text-red-500">*</span></label>
-                    <input type="datetime-local" formControlName="fechaHoraAgendada" class="w-full bg-[#1e293b] border border-[#334155] rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500" [class.border-red-500]="comandaForm.get('fechaHoraAgendada')?.invalid && comandaForm.get('fechaHoraAgendada')?.touched">
-                </div>
-            }
-
-            @if (comandaForm.get('tipoPedido')?.value === 5 || comandaForm.get('tipoPedido')?.value === '5') {
-                <div class="flex flex-col gap-1 animate-fade-in mt-1">
-                    <label class="text-xs font-bold text-gray-400 uppercase tracking-wide">Plataforma Delivery <span class="text-red-500">*</span></label>
-                    <select formControlName="plataformaId" 
-                            class="w-full bg-[#1e293b] border border-[#334155] rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500"
-                            [class.border-red-500]="comandaForm.get('plataformaId')?.invalid && comandaForm.get('plataformaId')?.touched">
-                        <option [ngValue]="null" disabled selected>Seleccione la plataforma</option>
-                        @for (plat of plataformas(); track plat.id) {
-                            <option [value]="plat.id">{{ plat.nombre }}</option>
-                        }
-                    </select>
-                </div>
-            }
-        </form>
-
-        <!-- SECCIÓN DEL CARRITO (Con selector de platos integrado) -->
-        <div class="flex-1 flex flex-col min-h-0 bg-[#0f172a]">
-            
-            <!-- Selector de Platos -->
-            <div class="p-3 border-b border-[#334155] bg-[#1e293b] shrink-0">
-                <div class="flex justify-between items-center mb-2">
-                    <h3 class="text-sm font-bold text-gray-300 uppercase tracking-wide">Armando Plato</h3>
-                    <span class="text-xs bg-blue-600/20 text-blue-400 px-2 py-0.5 rounded">{{ carrito().length }} items</span>
-                </div>
-                
-                <div class="flex gap-2 overflow-x-auto custom-scrollbar pb-1 w-full shrink-0">
-                    @for (plato of platosDisponibles(); track plato) {
-                        <button type="button" (click)="seleccionarPlato(plato)"
-                                class="px-3 py-1.5 text-xs rounded-lg font-bold transition-all border shrink-0 focus:outline-none"
-                                [ngClass]="platoActivo() === plato ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-500/30' : 'bg-[#0f172a] text-gray-400 border-[#334155] hover:border-gray-400'">
-                            Plato {{ plato }}
-                        </button>
-                    }
-                </div>
+    <!-- SECCIÓN DEL CARRITO (Con selector de platos integrado) -->
+    <div class="flex-1 flex flex-col bg-[#0f172a]">
+        
+        <!-- Selector de Platos -->
+        <div class="p-3 border-b border-[#334155] bg-[#1e293b] shrink-0">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-sm font-bold text-gray-300 uppercase tracking-wide">Armando Plato</h3>
+                <span class="text-xs bg-blue-600/20 text-blue-400 px-2 py-0.5 rounded">{{ carrito().length }} items</span>
             </div>
-
-            <!-- Lista de Productos Agrupados -->
-            <div class="flex-1 overflow-y-auto p-3 flex flex-col gap-3 custom-scrollbar min-h-[220px]">
-                @if (carrito().length === 0) {
-                    <div class="py-10 flex flex-col items-center justify-center text-gray-500 opacity-60">
-                        <mat-icon class="text-4xl mb-2">receipt_long</mat-icon>
-                        <span class="text-sm font-medium">Comanda vacía</span>
-                    </div>
-                } @else {
-                    <div class="space-y-4">
-                        @for (plato of platosDisponibles(); track plato) {
-                            @if (getItemsPorPlato(plato).length > 0) {
-                                <div class="bg-[#1e293b] border border-[#334155] rounded-lg overflow-hidden">
-                                    <div class="bg-[#162032] px-3 py-1.5 border-b border-[#334155]">
-                                        <h4 class="text-blue-400 font-bold uppercase text-[10px] tracking-wider">Plato {{ plato }}</h4>
-                                    </div>
-                                    <div class="p-2 space-y-2">
-                                        @for (item of getItemsPorPlato(plato); track item.platillo.id) {
-                                            <div class="flex flex-col gap-1.5 border-b border-gray-700/50 pb-2 last:border-0 last:pb-0">
-                                                
-                                                <div class="flex justify-between items-start">
-                                                    <div class="flex-1 leading-tight pr-2">
-                                                        <span class="font-bold text-sm text-white">{{ item.platillo.nombre }}</span>
-                                                        <span class="block text-emerald-400 font-bold text-xs">${{ item.subtotal | number:'1.2-2' }}</span>
-                                                    </div>
-                                                    
-                                                    <!-- Controles de Cantidad -->
-                                                    <div class="flex items-center gap-1 bg-[#0f172a] rounded-lg border border-[#334155] shrink-0">
-                                                        <button type="button" (click)="actualizarCantidad(carrito().indexOf(item), -1)" class="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-l-lg"><mat-icon class="text-[16px]">remove</mat-icon></button>
-                                                        <span class="text-xs font-bold w-4 text-center text-white">{{ item.cantidad }}</span>
-                                                        <button type="button" (click)="actualizarCantidad(carrito().indexOf(item), 1)" class="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-r-lg"><mat-icon class="text-[16px]">add</mat-icon></button>
-                                                    </div>
-                                                </div>
-                                                
-                                                <!-- Notas del Platillo -->
-                                                <input type="text" [value]="item.notas" (input)="actualizarNotas(carrito().indexOf(item), $event)" class="w-full bg-transparent border-b border-[#334155] text-[11px] text-gray-300 placeholder-gray-600 p-1 outline-none focus:border-blue-500 transition-colors" placeholder="Sin Notas">
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                            }
-                        }
-                    </div>
+            
+            <div class="flex gap-2 overflow-x-auto custom-scrollbar pb-1 w-full shrink-0">
+                @for (plato of platosDisponibles(); track plato) {
+                    <button type="button" (click)="seleccionarPlato(plato)"
+                            class="px-3 py-1.5 text-xs rounded-lg font-bold transition-all border shrink-0 focus:outline-none"
+                            [ngClass]="platoActivo() === plato ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-500/30' : 'bg-[#0f172a] text-gray-400 border-[#334155] hover:border-gray-400'">
+                        Plato {{ plato }}
+                    </button>
                 }
             </div>
+        </div>
 
-            <!-- Panel de Envío -->
-            <div class="p-4 bg-[#1e293b] border-t border-[#334155] shrink-0">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="font-bold text-gray-400 uppercase text-sm">Total</span>
-                    <span class="text-2xl font-black text-emerald-400">${{ totalComanda() | number:'1.2-2' }}</span>
+        <!-- Lista de Productos Agrupados -->
+        <div class="flex-1 p-3 flex flex-col gap-3">
+            @if (carrito().length === 0) {
+                <div class="py-8 flex flex-col items-center justify-center text-gray-500 opacity-60">
+                    <mat-icon class="text-4xl mb-2">receipt_long</mat-icon>
+                    <span class="text-sm font-medium">Comanda vacía</span>
                 </div>
-
-                <button (click)="enviarComanda()" [disabled]="carrito().length === 0 || guardando()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 md:py-4 rounded-xl flex justify-center items-center gap-2 disabled:opacity-50 transition-colors active:scale-95">
-                    @if (guardando()) {
-                        <mat-icon class="animate-spin">refresh</mat-icon> Procesando...
-                    } @else {
-                        <mat-icon>print</mat-icon> Confirmar e Imprimir
+            } @else {
+                <div class="space-y-4">
+                    @for (plato of platosDisponibles(); track plato) {
+                        @if (getItemsPorPlato(plato).length > 0) {
+                            <div class="bg-[#1e293b] border border-[#334155] rounded-lg overflow-hidden">
+                                <div class="bg-[#162032] px-3 py-1.5 border-b border-[#334155]">
+                                    <h4 class="text-blue-400 font-bold uppercase text-[10px] tracking-wider">Plato {{ plato }}</h4>
+                                </div>
+                                <div class="p-2 space-y-2">
+                                    @for (item of getItemsPorPlato(plato); track item.platillo.id) {
+                                        <div class="flex flex-col gap-1.5 border-b border-gray-700/50 pb-2 last:border-0 last:pb-0">
+                                            
+                                            <div class="flex justify-between items-start">
+                                                <div class="flex-1 leading-tight pr-2">
+                                                    <span class="font-bold text-sm text-white">{{ item.platillo.nombre }}</span>
+                                                    <span class="block text-emerald-400 font-bold text-xs">${{ item.subtotal | number:'1.2-2' }}</span>
+                                                </div>
+                                                
+                                                <!-- Controles de Cantidad -->
+                                                <div class="flex items-center gap-1 bg-[#0f172a] rounded-lg border border-[#334155] shrink-0">
+                                                    <button type="button" (click)="actualizarCantidad(carrito().indexOf(item), -1)" class="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-l-lg"><mat-icon class="text-[16px]">remove</mat-icon></button>
+                                                    <span class="text-xs font-bold w-4 text-center text-white">{{ item.cantidad }}</span>
+                                                    <button type="button" (click)="actualizarCantidad(carrito().indexOf(item), 1)" class="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-r-lg"><mat-icon class="text-[16px]">add</mat-icon></button>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Notas del Platillo -->
+                                            <input type="text" [value]="item.notas" (input)="actualizarNotas(carrito().indexOf(item), $event)" class="w-full bg-transparent border-b border-[#334155] text-[11px] text-gray-300 placeholder-gray-600 p-1 outline-none focus:border-blue-500 transition-colors" placeholder="Sin Notas">
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
                     }
-                </button>
+                </div>
+            }
+        </div>
+
+        <!-- Panel de Envío (Fijo al fondo al hacer scroll) -->
+        <div class="sticky bottom-0 z-10 p-4 bg-[#1e293b] border-t border-[#334155] shrink-0">
+            <div class="flex justify-between items-center mb-3">
+                <span class="font-bold text-gray-400 uppercase text-sm">Total</span>
+                <span class="text-2xl font-black text-emerald-400">${{ totalComanda() | number:'1.2-2' }}</span>
             </div>
+
+            <button (click)="enviarComanda()" [disabled]="carrito().length === 0 || guardando()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2 disabled:opacity-50 transition-colors active:scale-95">
+                @if (guardando()) {
+                    <mat-icon class="animate-spin">refresh</mat-icon> Procesando...
+                } @else {
+                    <mat-icon>print</mat-icon> Confirmar e Imprimir
+                }
+            </button>
         </div>
     </div>
+</div>
 </div>
 
 <!-- ========================================== -->
